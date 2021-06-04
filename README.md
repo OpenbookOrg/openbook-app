@@ -196,11 +196,11 @@ At Okuna, we wanted to support different combinations of languages and country c
 Someone could want Brazilian Portugese as their language but choose country Netherlands since they live there. The country could be relevant
 for location relevant content, payments etc. while the language is just what the user prefers.
 
-Most locale frameworks only allow locale `pt,BR` which means Brazilian portuguese but this also sets the country code in the locale
+Most locale frameworks only allow locale `pt-BR` which means Brazilian portuguese but this also sets the country code in the locale
 object to Brazil which may not always be the case.
 
 Therefore, localized locales are locales that have a language code that looks like this for eg. `pt-BR` and in addition also a country code. Which makes the locale object
-`Locale('pt-BR', 'BR);` Our API supports many such languages which have different localized versions and we can add new languages as required.
+`Locale('pt-BR', 'BR');` Our API supports many such languages which have different localized versions and we can add new languages as required.
  
 
 While looking for loading locale files when a locale change takes place, the `intl` library converts a locale to a canonical name where dashes in language codes become underscores.
