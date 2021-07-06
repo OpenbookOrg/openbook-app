@@ -23,11 +23,11 @@ import 'package:flutter/material.dart';
 
 class OBConfirmReportObject extends StatefulWidget {
   final dynamic object;
-  final Map<String, dynamic> extraData;
+  final Map<String, dynamic>? extraData;
   final ModerationCategory category;
 
   const OBConfirmReportObject(
-      {Key key, @required this.object, @required this.category, this.extraData})
+      {Key? key, required this.object, required this.category, this.extraData})
       : super(key: key);
 
   @override
@@ -37,16 +37,16 @@ class OBConfirmReportObject extends StatefulWidget {
 }
 
 class OBConfirmReportObjectState extends State<OBConfirmReportObject> {
-  bool _confirmationInProgress;
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  bool _needsBootstrap;
-  TextEditingController _descriptionController;
+  late bool _confirmationInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late bool _needsBootstrap;
+  late TextEditingController _descriptionController;
 
-  String description;
+  String? description;
 
-  CancelableOperation _submitReportOperation;
+  CancelableOperation? _submitReportOperation;
 
   @override
   void initState() {
@@ -59,7 +59,7 @@ class OBConfirmReportObjectState extends State<OBConfirmReportObject> {
   @override
   void dispose() {
     super.dispose();
-    if (_submitReportOperation != null) _submitReportOperation.cancel();
+    if (_submitReportOperation != null) _submitReportOperation!.cancel();
   }
 
   @override
@@ -170,7 +170,7 @@ class OBConfirmReportObjectState extends State<OBConfirmReportObject> {
         _submitReportOperation = CancelableOperation.fromFuture(
             _userService.reportPostComment(
                 description: _descriptionController.text,
-                post: widget.extraData['post'],
+                post: widget.extraData?['post'],
                 postComment: widget.object,
                 moderationCategory: widget.category));
       } else if (widget.object is Community) {
@@ -194,7 +194,7 @@ class OBConfirmReportObjectState extends State<OBConfirmReportObject> {
       } else {
         throw 'Object type not supported';
       }
-      await _submitReportOperation.value;
+      await _submitReportOperation!.value;
       if (widget.object is User ||
           widget.object is Community ||
           widget.object is Post ||
@@ -236,8 +236,8 @@ class OBConfirmReportObjectState extends State<OBConfirmReportObject> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);

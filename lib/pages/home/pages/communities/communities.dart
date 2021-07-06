@@ -29,9 +29,9 @@ import 'package:flutter/material.dart';
 import 'package:pigment/pigment.dart';
 
 class OBMainCommunitiesPage extends StatefulWidget {
-  final OBCommunitiesPageController controller;
+  final OBCommunitiesPageController? controller;
 
-  const OBMainCommunitiesPage({Key key, this.controller}) : super(key: key);
+  const OBMainCommunitiesPage({Key? key, this.controller}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -41,31 +41,31 @@ class OBMainCommunitiesPage extends StatefulWidget {
 
 class OBMainCommunitiesPageState extends State<OBMainCommunitiesPage>
     with TickerProviderStateMixin {
-  UserService _userService;
-  ToastService _toastService;
-  ThemeService _themeService;
-  LocalizationService _localizationService;
-  ThemeValueParserService _themeValueParserService;
-  ModalService _modalService;
-  NavigationService _navigationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late ThemeService _themeService;
+  late LocalizationService _localizationService;
+  late ThemeValueParserService _themeValueParserService;
+  late ModalService _modalService;
+  late NavigationService _navigationService;
 
-  List<Category> _categories;
-  TabController _tabController;
+  late List<Category> _categories;
+  TabController? _tabController;
 
-  ScrollController _myCommunitiesScrollController;
-  ScrollController _allTrendingCommnunitiesScrollController;
+  late ScrollController _myCommunitiesScrollController;
+  late ScrollController _allTrendingCommnunitiesScrollController;
 
-  List<ScrollController> _categoriesScrollControllers;
+  late List<ScrollController> _categoriesScrollControllers;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
-  bool _refreshInProgress;
+  late bool _refreshInProgress;
 
   @override
   void initState() {
     super.initState();
     if (widget.controller != null)
-      widget.controller.attach(context: context, state: this);
+      widget.controller!.attach(context: context, state: this);
     _needsBootstrap = true;
     _refreshInProgress = false;
     _categories = [];
@@ -155,7 +155,7 @@ class OBMainCommunitiesPageState extends State<OBMainCommunitiesPage>
   }
 
   List<Widget> _buildTabs() {
-    User loggedInUser = _userService.getLoggedInUser();
+    User loggedInUser = _userService.getLoggedInUser()!;
 
     List<Widget> tabs = [
       OBUserAvatarTab(
@@ -214,7 +214,7 @@ class OBMainCommunitiesPageState extends State<OBMainCommunitiesPage>
     _setRefreshInProgress(true);
     try {
       CategoriesList categoriesList = await _userService.getCategories();
-      _setCategories(categoriesList.categories);
+      _setCategories(categoriesList.categories ?? []);
     } catch (error) {
       _onError(error);
     } finally {
@@ -227,8 +227,8 @@ class OBMainCommunitiesPageState extends State<OBMainCommunitiesPage>
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;
@@ -243,7 +243,7 @@ class OBMainCommunitiesPageState extends State<OBMainCommunitiesPage>
   }
 
   void scrollToTop() {
-    int currentIndex = _tabController.index;
+    int currentIndex = _tabController!.index;
     ScrollController currentTabScrollController;
 
     if (currentIndex == 0) {
@@ -266,7 +266,7 @@ class OBMainCommunitiesPageState extends State<OBMainCommunitiesPage>
   }
 
   TabController _makeTabController() {
-    int initialIndex = _tabController != null ? _tabController.index : 0;
+    int initialIndex = _tabController != null ? _tabController!.index : 0;
 
     TabController controller = TabController(
         length: _categories.length + 2,
@@ -276,7 +276,7 @@ class OBMainCommunitiesPageState extends State<OBMainCommunitiesPage>
   }
 
   void _onWantsToCreateCommunity() async {
-    Community createdCommunity =
+    Community? createdCommunity =
         await _modalService.openCreateCommunity(context: context);
     if (createdCommunity != null) {
       _navigationService.navigateToCommunity(
@@ -292,15 +292,15 @@ class OBMainCommunitiesPageState extends State<OBMainCommunitiesPage>
 }
 
 class OBCommunitiesPageController extends PoppablePageController {
-  OBMainCommunitiesPageState _state;
+  OBMainCommunitiesPageState? _state;
 
   void attach(
-      {@required BuildContext context, OBMainCommunitiesPageState state}) {
+      {required BuildContext context, OBMainCommunitiesPageState? state}) {
     super.attach(context: context);
     _state = state;
   }
 
   void scrollToTop() {
-    _state.scrollToTop();
+    _state?.scrollToTop();
   }
 }

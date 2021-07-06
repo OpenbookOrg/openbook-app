@@ -11,16 +11,16 @@ import 'package:rxdart/rxdart.dart';
 import 'dart:math';
 
 class ThemeService {
-  UtilsService _utilsService;
+  late UtilsService _utilsService;
 
   Stream<OBTheme> get themeChange => _themeChangeSubject.stream;
   final _themeChangeSubject = ReplaySubject<OBTheme>(maxSize: 1);
 
   Random random = new Random();
 
-  OBTheme _activeTheme;
+  late OBTheme _activeTheme;
 
-  OBStorage _storage;
+  OBStorage? _storage;
 
   List<OBTheme> _themes = [
     OBTheme(
@@ -194,11 +194,11 @@ class ThemeService {
 
   void setActiveTheme(OBTheme theme) {
     _setActiveTheme(theme);
-    _storeActiveThemeId(theme.id);
+    _storeActiveThemeId(theme.id!);
   }
 
   void _bootstrap() async {
-    int activeThemeId = await _getStoredActiveThemeId();
+    int? activeThemeId = await _getStoredActiveThemeId();
     if (activeThemeId != null) {
       OBTheme activeTheme = await _getThemeWithId(activeThemeId);
       _setActiveTheme(activeTheme);
@@ -211,7 +211,7 @@ class ThemeService {
   }
 
   void _storeActiveThemeId(int themeId) {
-    if (_storage != null) _storage.set('activeThemeId', themeId.toString());
+    if (_storage != null) _storage!.set('activeThemeId', themeId.toString());
   }
 
   Future<OBTheme> _getThemeWithId(int id) async {
@@ -220,9 +220,9 @@ class ThemeService {
     });
   }
 
-  Future<int> _getStoredActiveThemeId() async {
-    String activeThemeId = await _storage.get('activeThemeId');
-    return activeThemeId != null ? int.parse(activeThemeId) : null;
+  Future<int?> _getStoredActiveThemeId() async {
+    int? activeThemeId = (await _storage!.get('activeThemeId')) as int?;
+    return activeThemeId;
   }
 
   OBTheme getActiveTheme() {

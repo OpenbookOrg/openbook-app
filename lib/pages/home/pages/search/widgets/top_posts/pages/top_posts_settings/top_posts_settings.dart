@@ -20,10 +20,10 @@ class OBTopPostsSettingsPage extends StatefulWidget {
 }
 
 class OBTopPostsSettingsState extends State<OBTopPostsSettingsPage> {
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
   @override
   void initState() {

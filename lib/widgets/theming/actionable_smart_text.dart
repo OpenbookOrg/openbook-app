@@ -15,17 +15,17 @@ export 'package:Okuna/widgets/theming/smart_text.dart';
 import 'package:flutter/material.dart';
 
 class OBActionableSmartText extends StatefulWidget {
-  final String text;
-  final int maxlength;
+  final String? text;
+  final int? maxlength;
   final OBTextSize size;
   final TextOverflow overflow;
   final TextOverflow lengthOverflow;
-  final SmartTextElement trailingSmartTextElement;
-  final Map<String, Hashtag> hashtagsMap;
-  final List<PostLink> links;
+  final SmartTextElement? trailingSmartTextElement;
+  final Map<String, Hashtag>? hashtagsMap;
+  final List<PostLink>? links;
 
   const OBActionableSmartText(
-      {Key key,
+      {Key? key,
       this.text,
       this.maxlength,
       this.size = OBTextSize.medium,
@@ -43,13 +43,13 @@ class OBActionableSmartText extends StatefulWidget {
 }
 
 class OBActionableTextState extends State<OBActionableSmartText> {
-  NavigationService _navigationService;
-  UserService _userService;
-  UrlLauncherService _urlLauncherService;
-  ToastService _toastService;
+  late NavigationService _navigationService;
+  late UserService _userService;
+  late UrlLauncherService _urlLauncherService;
+  late ToastService _toastService;
 
-  bool _needsBootstrap;
-  StreamSubscription _requestSubscription;
+  late bool _needsBootstrap;
+  StreamSubscription? _requestSubscription;
 
   @override
   void initState() {
@@ -115,16 +115,16 @@ class OBActionableTextState extends State<OBActionableSmartText> {
   }
 
   void _onHashtagNameHashtagRetrieved(
-      {Hashtag hashtag, String rawHashtagName}) {
+      {Hashtag? hashtag, String? rawHashtagName}) {
     if (hashtag != null) {
-      _onHashtagRetrieved(hashtag: hashtag, rawHashtagName: rawHashtagName);
+      _onHashtagRetrieved(hashtag: hashtag, rawHashtagName: rawHashtagName!);
       return;
     }
 
     _clearRequestSubscription();
 
     StreamSubscription requestSubscription = _userService
-        .getHashtagWithName(rawHashtagName)
+        .getHashtagWithName(rawHashtagName!)
         .asStream()
         .listen(
             (Hashtag hashtag) => _onHashtagRetrieved(
@@ -134,7 +134,7 @@ class OBActionableTextState extends State<OBActionableSmartText> {
     _setRequestSubscription(requestSubscription);
   }
 
-  void _onHashtagRetrieved({Hashtag hashtag, String rawHashtagName}) {
+  void _onHashtagRetrieved({required Hashtag hashtag, String? rawHashtagName}) {
     _navigationService.navigateToHashtag(
         rawHashtagName: rawHashtagName, hashtag: hashtag, context: context);
   }
@@ -162,8 +162,8 @@ class OBActionableTextState extends State<OBActionableSmartText> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;
@@ -172,12 +172,12 @@ class OBActionableTextState extends State<OBActionableSmartText> {
 
   void _clearRequestSubscription() {
     if (_requestSubscription != null) {
-      _requestSubscription.cancel();
+      _requestSubscription!.cancel();
       _setRequestSubscription(null);
     }
   }
 
-  void _setRequestSubscription(StreamSubscription requestSubscription) {
+  void _setRequestSubscription(StreamSubscription? requestSubscription) {
     _requestSubscription = requestSubscription;
   }
 }

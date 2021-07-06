@@ -29,7 +29,7 @@ class OBProfileFollowRequest extends StatelessWidget {
         if (isPendingFollowRequestApproval == null ||
             !isPendingFollowRequestApproval) return const SizedBox();
 
-        String userName = user.username;
+        String userName = user!.username!;
 
         return Column(
           children: <Widget>[

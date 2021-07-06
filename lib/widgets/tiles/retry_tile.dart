@@ -9,10 +9,10 @@ class OBRetryTile extends StatelessWidget {
   final bool isLoading;
 
   const OBRetryTile(
-      {Key key,
+      {Key? key,
       this.text = 'Tap to retry.',
-      @required this.onWantsToRetry,
-      this.isLoading})
+      required this.onWantsToRetry,
+      this.isLoading = false})
       : super(key: key);
 
   @override

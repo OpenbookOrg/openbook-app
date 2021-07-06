@@ -28,11 +28,11 @@ import 'package:flutter/rendering.dart';
 import 'package:throttling/throttling.dart';
 
 class OBMainSearchPage extends StatefulWidget {
-  final OBMainSearchPageController controller;
+  final OBMainSearchPageController? controller;
   final OBSearchPageTab selectedTab;
 
   const OBMainSearchPage(
-      {Key key, this.controller, this.selectedTab = OBSearchPageTab.trending})
+      {Key? key, this.controller, this.selectedTab = OBSearchPageTab.trending})
       : super(key: key);
 
   @override
@@ -43,37 +43,37 @@ class OBMainSearchPage extends StatefulWidget {
 
 class OBMainSearchPageState extends State<OBMainSearchPage>
     with WidgetsBindingObserver, TickerProviderStateMixin {
-  UserService _userService;
-  ToastService _toastService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
-  ThemeService _themeService;
-  ThemeValueParserService _themeValueParserService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
+  late ThemeService _themeService;
+  late ThemeValueParserService _themeValueParserService;
 
-  bool _hasSearch;
-  bool _userSearchRequestInProgress;
-  bool _communitySearchRequestInProgress;
-  bool _hashtagSearchRequestInProgress;
-  String _searchQuery;
-  List<User> _userSearchResults;
-  List<Community> _communitySearchResults;
-  List<Hashtag> _hashtagSearchResults;
-  OBTopPostsController _topPostsController;
-  OBTrendingPostsController _trendingPostsController;
-  TabController _tabController;
-  AnimationController _animationController;
-  Animation<Offset> _offset;
-  double _heightTabs;
-  double _lastScrollPosition;
-  double _extraPaddingForSlidableSection;
+  late bool _hasSearch;
+  late bool _userSearchRequestInProgress;
+  late bool _communitySearchRequestInProgress;
+  late bool _hashtagSearchRequestInProgress;
+  String? _searchQuery;
+  late List<User> _userSearchResults;
+  late List<Community> _communitySearchResults;
+  late List<Hashtag> _hashtagSearchResults;
+  late OBTopPostsController _topPostsController;
+  late OBTrendingPostsController _trendingPostsController;
+  late TabController _tabController;
+  late AnimationController _animationController;
+  late Animation<Offset> _offset;
+  late double _heightTabs;
+  double? _lastScrollPosition;
+  double? _extraPaddingForSlidableSection;
 
-  OBUserSearchResultsTab _selectedSearchResultsTab;
+  late OBUserSearchResultsTab _selectedSearchResultsTab;
 
-  StreamSubscription<UsersList> _getUsersWithQuerySubscription;
-  StreamSubscription<CommunitiesList> _getCommunitiesWithQuerySubscription;
-  StreamSubscription<HashtagsList> _getHashtagsWithQuerySubscription;
+  StreamSubscription<UsersList>? _getUsersWithQuerySubscription;
+  StreamSubscription<CommunitiesList>? _getCommunitiesWithQuerySubscription;
+  StreamSubscription<HashtagsList>? _getHashtagsWithQuerySubscription;
 
-  Throttling _setScrollPositionThrottler;
+  late Throttling _setScrollPositionThrottler;
 
   static const double OB_BOTTOM_TAB_BAR_HEIGHT = 50.0;
   static const double HEIGHT_SEARCH_BAR = 76.0;
@@ -84,7 +84,7 @@ class OBMainSearchPageState extends State<OBMainSearchPage>
   void initState() {
     super.initState();
     if (widget.controller != null)
-      widget.controller.attach(context: context, state: this);
+      widget.controller!.attach(context: context, state: this);
     _topPostsController = OBTopPostsController();
     _trendingPostsController = OBTrendingPostsController();
     _userSearchRequestInProgress = false;
@@ -166,9 +166,9 @@ class OBMainSearchPageState extends State<OBMainSearchPage>
         ),
         Padding(
           padding: EdgeInsets.only(
-              top: HEIGHT_SEARCH_BAR + _extraPaddingForSlidableSection),
+              top: HEIGHT_SEARCH_BAR + (_extraPaddingForSlidableSection ?? 0)),
           child: OBSearchResults(
-            searchQuery: _searchQuery,
+            searchQuery: _searchQuery ?? '',
             userResults: _userSearchResults,
             userSearchInProgress: _userSearchRequestInProgress,
             communityResults: _communitySearchResults,
@@ -204,7 +204,7 @@ class OBMainSearchPageState extends State<OBMainSearchPage>
         left: 0,
         top: 0,
         height:
-            HEIGHT_SEARCH_BAR + _heightTabs + _extraPaddingForSlidableSection,
+            HEIGHT_SEARCH_BAR + _heightTabs + (_extraPaddingForSlidableSection ?? 0),
         width: existingMediaQuery.size.width,
         child: OBCupertinoPageScaffold(
           backgroundColor: Colors.transparent,
@@ -267,7 +267,7 @@ class OBMainSearchPageState extends State<OBMainSearchPage>
 
   void _handleScrollThrottle(double scrollPixels, bool isScrollingUp) {
     if (_lastScrollPosition != null) {
-        double offset = (scrollPixels - _lastScrollPosition).abs();
+        double offset = (scrollPixels - (_lastScrollPosition ?? 0)).abs();
         if (offset > MIN_SCROLL_OFFSET_TO_ANIMATE_TABS) _checkScrollDirectionAndAnimateTabs(isScrollingUp);
     }
     _setScrollPosition(scrollPixels);
@@ -309,7 +309,7 @@ class OBMainSearchPageState extends State<OBMainSearchPage>
     FocusScope.of(context).requestFocus(new FocusNode());
   }
 
-  Future<void> _searchWithQuery(String query) {
+  Future<void>? _searchWithQuery(String query) {
     String cleanedUpQuery = _cleanUpQuery(query);
     if(cleanedUpQuery.isEmpty) return null;
 
@@ -334,7 +334,7 @@ class OBMainSearchPageState extends State<OBMainSearchPage>
 
   Future<void> _searchForUsersWithQuery(String query) async {
     if (_getUsersWithQuerySubscription != null)
-      _getUsersWithQuerySubscription.cancel();
+      _getUsersWithQuerySubscription!.cancel();
 
     _setUserSearchRequestInProgress(true);
 
@@ -342,7 +342,7 @@ class OBMainSearchPageState extends State<OBMainSearchPage>
         _userService.getUsersWithQuery(query).asStream().listen(
             (UsersList usersList) {
               _getUsersWithQuerySubscription = null;
-              _setUserSearchResults(usersList.users);
+              _setUserSearchResults(usersList.users ?? []);
             },
             onError: _onError,
             onDone: () {
@@ -352,14 +352,14 @@ class OBMainSearchPageState extends State<OBMainSearchPage>
 
   Future<void> _searchForCommunitiesWithQuery(String query) async {
     if (_getCommunitiesWithQuerySubscription != null)
-      _getCommunitiesWithQuerySubscription.cancel();
+      _getCommunitiesWithQuerySubscription!.cancel();
 
     _setCommunitySearchRequestInProgress(true);
 
     _getCommunitiesWithQuerySubscription =
         _userService.searchCommunitiesWithQuery(query).asStream().listen(
             (CommunitiesList communitiesList) {
-              _setCommunitySearchResults(communitiesList.communities);
+              _setCommunitySearchResults(communitiesList.communities ?? []);
             },
             onError: _onError,
             onDone: () {
@@ -369,14 +369,14 @@ class OBMainSearchPageState extends State<OBMainSearchPage>
 
   Future<void> _searchForHashtagsWithQuery(String query) async {
     if (_getHashtagsWithQuerySubscription != null)
-      _getHashtagsWithQuerySubscription.cancel();
+      _getHashtagsWithQuerySubscription!.cancel();
 
     _setHashtagSearchRequestInProgress(true);
 
     _getHashtagsWithQuerySubscription =
         _userService.getHashtagsWithQuery(query).asStream().listen(
             (HashtagsList hashtagsList) {
-              _setHashtagSearchResults(hashtagsList.hashtags);
+              _setHashtagSearchResults(hashtagsList.hashtags ?? []);
             },
             onError: _onError,
             onDone: () {
@@ -389,8 +389,8 @@ class OBMainSearchPageState extends State<OBMainSearchPage>
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);
@@ -491,15 +491,15 @@ class OBMainSearchPageState extends State<OBMainSearchPage>
 }
 
 class OBMainSearchPageController extends PoppablePageController {
-  OBMainSearchPageState _state;
+  OBMainSearchPageState? _state;
 
-  void attach({@required BuildContext context, OBMainSearchPageState state}) {
+  void attach({required BuildContext context, OBMainSearchPageState? state}) {
     super.attach(context: context);
     _state = state;
   }
 
   void scrollToTop() {
-    _state.scrollToTop();
+    _state?.scrollToTop();
   }
 }
 

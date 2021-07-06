@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class OBRoundedBottomSheet extends StatelessWidget {
   final Widget child;
 
-  const OBRoundedBottomSheet({@required this.child});
+  const OBRoundedBottomSheet({required this.child});
 
   @override
   Widget build(BuildContext context) {

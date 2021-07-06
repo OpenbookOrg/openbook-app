@@ -28,14 +28,14 @@ class OBConnectionsCirclePage extends StatefulWidget {
 }
 
 class OBConnectionsCirclePageState extends State<OBConnectionsCirclePage> {
-  UserService _userService;
-  ToastService _toastService;
-  ModalService _modalService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late ModalService _modalService;
+  late LocalizationService _localizationService;
 
-  GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
-  bool _needsBootstrap;
-  bool _isConnectionsCircle;
+  late GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
+  late bool _needsBootstrap;
+  late bool _isConnectionsCircle;
 
   @override
   void initState() {
@@ -97,7 +97,7 @@ class OBConnectionsCirclePageState extends State<OBConnectionsCirclePage> {
 
   void _bootstrap() async {
     await _refreshConnectionsCircle();
-    var loggedInUser = _userService.getLoggedInUser();
+    var loggedInUser = _userService.getLoggedInUser()!;
     bool isConnectionsCircle =
         loggedInUser.isConnectionsCircle(widget.connectionsCircle);
     _setIsConnectionsCircle(isConnectionsCircle);
@@ -106,7 +106,7 @@ class OBConnectionsCirclePageState extends State<OBConnectionsCirclePage> {
   Future<void> _refreshConnectionsCircle() async {
     try {
       await _userService
-          .getConnectionsCircleWithId(widget.connectionsCircle.id);
+          .getConnectionsCircleWithId(widget.connectionsCircle.id!);
     } catch (error) {
       _onError(error);
     }
@@ -117,8 +117,8 @@ class OBConnectionsCirclePageState extends State<OBConnectionsCirclePage> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(message: _localizationService.trans('error__unknown_error'), context: context);
       throw error;

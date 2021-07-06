@@ -24,7 +24,7 @@ class OBVideosAutoPlaySettingTile extends StatelessWidget {
     return FutureBuilder(
       future: userPreferencesService.getVideosAutoPlaySetting(),
       builder:
-          (BuildContext context, AsyncSnapshot<VideosAutoPlaySetting> snapshot) {
+          (BuildContext context, AsyncSnapshot<VideosAutoPlaySetting?> snapshot) {
         if (snapshot.data == null) return const SizedBox();
 
         return StreamBuilder(
@@ -32,7 +32,7 @@ class OBVideosAutoPlaySettingTile extends StatelessWidget {
           initialData: snapshot.data,
           builder: (BuildContext context,
               AsyncSnapshot<VideosAutoPlaySetting> snapshot) {
-            VideosAutoPlaySetting currentVideosAutoPlaySetting = snapshot.data;
+            VideosAutoPlaySetting currentVideosAutoPlaySetting = snapshot.data!;
 
             return MergeSemantics(
               child: ListTile(
@@ -47,7 +47,7 @@ class OBVideosAutoPlaySettingTile extends StatelessWidget {
                     children: <Widget>[
                       OBPrimaryAccentText(
                         videosAutoPlaySettingsLocalizationMap[
-                            currentVideosAutoPlaySetting],
+                            currentVideosAutoPlaySetting]!,
                         style: TextStyle(fontSize: 16),
                       ),
                     ],

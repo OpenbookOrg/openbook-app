@@ -3,12 +3,12 @@ import 'package:Okuna/provider.dart';
 import 'package:flutter/material.dart';
 
 class OBHighlightedBox extends StatelessWidget {
-  final Widget child;
-  final EdgeInsets padding;
-  final BorderRadius borderRadius;
+  final Widget? child;
+  final EdgeInsets? padding;
+  final BorderRadius? borderRadius;
 
   const OBHighlightedBox(
-      {Key key,
+      {Key? key,
       this.child,
       this.padding,
       this.borderRadius})
@@ -27,7 +27,7 @@ class OBHighlightedBox extends StatelessWidget {
           var theme = snapshot.data;
 
           var primaryColor =
-              themeValueParserService.parseColor(theme.primaryColor);
+              themeValueParserService.parseColor(theme!.primaryColor);
           final bool isDarkPrimaryColor =
               primaryColor.computeLuminance() < 0.179;
 

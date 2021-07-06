@@ -7,13 +7,13 @@ class OBVideoProgressBar extends StatefulWidget {
   final VideoPlayerController controller;
   final ChewieProgressColors colors;
 
-  final Function() onDragStart;
-  final Function() onDragEnd;
-  final Function() onDragUpdate;
+  final Function()? onDragStart;
+  final Function()? onDragEnd;
+  final Function()? onDragUpdate;
 
   OBVideoProgressBar(
     this.controller, {
-    ChewieProgressColors colors,
+    ChewieProgressColors? colors,
     this.onDragEnd,
     this.onDragStart,
     this.onDragUpdate,
@@ -26,7 +26,7 @@ class OBVideoProgressBar extends StatefulWidget {
 }
 
 class _VideoProgressBarState extends State<OBVideoProgressBar> {
-  VoidCallback listener;
+  late VoidCallback listener;
 
   bool _controllerWasPlaying = false;
 
@@ -53,16 +53,16 @@ class _VideoProgressBarState extends State<OBVideoProgressBar> {
   @override
   Widget build(BuildContext context) {
     void seekToRelativePosition(Offset globalPosition) {
-      final RenderBox box = context.findRenderObject();
+      final RenderBox box = context.findRenderObject()! as RenderBox;
       final Offset tapPos = box.globalToLocal(globalPosition);
       final double relative = tapPos.dx / box.size.width;
-      final Duration position = controller.value.duration * relative;
+      final Duration position = controller.value.duration! * relative;
       controller.seekTo(position);
     }
 
     return new GestureDetector(
       child: (controller.value.hasError)
-          ? new Text(controller.value.errorDescription)
+          ? new Text(controller.value.errorDescription ?? '')
           : new Center(
               child: new Container(
                 height: MediaQuery.of(context).size.height / 2,
@@ -86,7 +86,7 @@ class _VideoProgressBarState extends State<OBVideoProgressBar> {
         }
 
         if (widget.onDragStart != null) {
-          widget.onDragStart();
+          widget.onDragStart!();
         }
       },
       onHorizontalDragUpdate: (DragUpdateDetails details) {
@@ -96,7 +96,7 @@ class _VideoProgressBarState extends State<OBVideoProgressBar> {
         seekToRelativePosition(details.globalPosition);
 
         if (widget.onDragUpdate != null) {
-          widget.onDragUpdate();
+          widget.onDragUpdate!();
         }
       },
       onHorizontalDragEnd: (DragEndDetails details) {
@@ -105,7 +105,7 @@ class _VideoProgressBarState extends State<OBVideoProgressBar> {
         }
 
         if (widget.onDragEnd != null) {
-          widget.onDragEnd();
+          widget.onDragEnd!();
         }
       },
       onTapDown: (TapDownDetails details) {
@@ -147,11 +147,11 @@ class _ProgressBarPainter extends CustomPainter {
       return;
     }
     final double playedPart = value.position.inMilliseconds /
-        value.duration.inMilliseconds *
+        value.duration!.inMilliseconds *
         size.width;
     for (DurationRange range in value.buffered) {
-      final double start = range.startFraction(value.duration) * size.width;
-      final double end = range.endFraction(value.duration) * size.width;
+      final double start = range.startFraction(value.duration!) * size.width;
+      final double end = range.endFraction(value.duration!) * size.width;
       canvas.drawRRect(
         new RRect.fromRectAndRadius(
           new Rect.fromPoints(

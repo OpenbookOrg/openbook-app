@@ -16,7 +16,7 @@ class OBCommunityDetails extends StatelessWidget {
       stream: community.updateSubject,
       initialData: community,
       builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
-        Community community = snapshot.data;
+        Community community = snapshot.data!;
 
         return Row(
           mainAxisSize: MainAxisSize.min,

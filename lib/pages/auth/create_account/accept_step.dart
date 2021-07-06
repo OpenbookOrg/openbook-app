@@ -16,8 +16,8 @@ class OBAcceptStepPage extends StatefulWidget {
 
 class OBAcceptStepPageState extends State<OBAcceptStepPage> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  CreateAccountBloc _createAccountBloc;
-  LocalizationService _localizationService;
+  late CreateAccountBloc _createAccountBloc;
+  late LocalizationService _localizationService;
 
   @override
   void initState() {
@@ -105,7 +105,7 @@ class OBAcceptStepPageState extends State<OBAcceptStepPage> {
     );
   }
 
-  Widget _buildPreviousButton({@required BuildContext context}) {
+  Widget _buildPreviousButton({required BuildContext context}) {
     String buttonText =
         _localizationService.trans('auth__create_acc__previous');
 

@@ -12,12 +12,12 @@ import 'notification_tile_title.dart';
 class OBFollowRequestApprovedNotificationTile extends StatelessWidget {
   final OBNotification notification;
   final FollowRequestApprovedNotification followRequestApprovedNotification;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const OBFollowRequestApprovedNotificationTile(
-      {Key key,
-      @required this.notification,
-      @required this.followRequestApprovedNotification,
+      {Key? key,
+      required this.notification,
+      required this.followRequestApprovedNotification,
       this.onPressed})
       : super(key: key);
 
@@ -27,10 +27,10 @@ class OBFollowRequestApprovedNotificationTile extends StatelessWidget {
     var utilsService = openbookProvider.utilsService;
 
     var navigateToConfirmatorProfile = () {
-      if (onPressed != null) onPressed();
+      if (onPressed != null) onPressed!();
       OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
       openbookProvider.navigationService.navigateToUserProfile(
-          user: followRequestApprovedNotification.follow.followedUser,
+          user: followRequestApprovedNotification.follow!.followedUser!,
           context: context);
     };
     LocalizationService _localizationService = OpenbookProvider.of(context).localizationService;
@@ -39,15 +39,15 @@ class OBFollowRequestApprovedNotificationTile extends StatelessWidget {
       onTap: navigateToConfirmatorProfile,
       leading: OBAvatar(
         size: OBAvatarSize.medium,
-        avatarUrl: followRequestApprovedNotification.follow.followedUser
+        avatarUrl: followRequestApprovedNotification.follow!.followedUser!
             .getProfileAvatar(),
       ),
       title: OBNotificationTileTitle(
         onUsernamePressed: navigateToConfirmatorProfile,
-        user: followRequestApprovedNotification.follow.followedUser,
+        user: followRequestApprovedNotification.follow!.followedUser,
         text: TextSpan(text: _localizationService.notifications__approved_follow_request_tile),
       ),
-      subtitle: OBSecondaryText(utilsService.timeAgo(notification.created, _localizationService)),
+      subtitle: OBSecondaryText(utilsService.timeAgo(notification.created!, _localizationService)),
     );
   }
 }

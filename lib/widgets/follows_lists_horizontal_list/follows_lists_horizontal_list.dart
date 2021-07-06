@@ -7,13 +7,13 @@ class OBFollowsListsHorizontalList extends StatelessWidget {
   final OnFollowsListPressed onFollowsListPressed;
   final List<FollowsList> followsLists;
   final List<FollowsList> selectedFollowsLists;
-  final List<FollowsList> previouslySelectedFollowsLists;
+  final List<FollowsList>? previouslySelectedFollowsLists;
   final VoidCallback onWantsToCreateANewFollowsList;
 
   OBFollowsListsHorizontalList(this.followsLists,
-      {@required this.onFollowsListPressed,
-      @required this.selectedFollowsLists,
-      @required this.onWantsToCreateANewFollowsList,
+      {required this.onFollowsListPressed,
+      required this.selectedFollowsLists,
+      required this.onWantsToCreateANewFollowsList,
       this.previouslySelectedFollowsLists});
 
   @override
@@ -37,7 +37,7 @@ class OBFollowsListsHorizontalList extends StatelessWidget {
           var followsList = followsLists[index];
           bool isSelected = selectedFollowsLists.contains(followsList);
           bool wasPreviouslySelected = previouslySelectedFollowsLists != null &&
-              previouslySelectedFollowsLists.contains(followsList);
+              previouslySelectedFollowsLists!.contains(followsList);
           listItem = OBFollowsListHorizontalListItem(followsList,
               wasPreviouslySelected: wasPreviouslySelected,
               onFollowsListPressed: onFollowsListPressed,

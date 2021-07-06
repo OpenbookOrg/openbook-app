@@ -12,7 +12,7 @@ class OBCommunityMembersCount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int membersCount = community.membersCount;
+    int? membersCount = community.membersCount;
     LocalizationService localizationService = OpenbookProvider.of(context).localizationService;
 
     if (membersCount == null || membersCount == 0) return const SizedBox();
@@ -38,7 +38,7 @@ class OBCommunityMembersCount extends StatelessWidget {
             onTap: () {
               bool isPublicCommunity = community.isPublic();
               bool isLoggedInUserMember =
-                  community.isMember(userService.getLoggedInUser());
+                  community.isMember(userService.getLoggedInUser()!);
 
               if (isPublicCommunity || isLoggedInUserMember) {
                 navigationService.navigateToCommunityMembers(
@@ -57,7 +57,7 @@ class OBCommunityMembersCount extends StatelessWidget {
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: themeValueParserService
-                                .parseColor(theme.primaryTextColor))),
+                                .parseColor(theme!.primaryTextColor))),
                     TextSpan(text: ' '),
                     TextSpan(
                         text:

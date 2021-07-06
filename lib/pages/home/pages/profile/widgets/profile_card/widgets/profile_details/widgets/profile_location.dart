@@ -10,7 +10,7 @@ class OBProfileLocation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String location = user.getProfileLocation();
+    String? location = user.getProfileLocation();
 
     if (location == null) {
       return const SizedBox();

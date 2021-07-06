@@ -6,11 +6,11 @@ import 'package:Okuna/models/user.dart';
 class ModerationPenalty {
   static String moderationPenaltyTypeSuspension = 'S';
 
-  final int id;
-  final User user;
-  final DateTime expiration;
-  final ModeratedObject moderatedObject;
-  final ModerationPenaltyType type;
+  final int? id;
+  final User? user;
+  final DateTime? expiration;
+  final ModeratedObject? moderatedObject;
+  final ModerationPenaltyType? type;
 
   ModerationPenalty({
     this.user,
@@ -35,30 +35,30 @@ class ModerationPenalty {
         expiration: parseExpiration(parsedJson['expiration']));
   }
 
-  static User parseUser(Map rawActor) {
+  static User? parseUser(Map<String, dynamic>? rawActor) {
     if (rawActor == null) return null;
     return User.fromJson(rawActor);
   }
 
-  static ModerationCategory parseCategory(Map rawModerationCategory) {
+  static ModerationCategory? parseCategory(Map<String, dynamic>? rawModerationCategory) {
     if (rawModerationCategory == null) return null;
     return ModerationCategory.fromJson(rawModerationCategory);
   }
 
-  static DateTime parseExpiration(String expiration) {
+  static DateTime? parseExpiration(String? expiration) {
     if (expiration == null) return null;
     return DateTime.parse(expiration).toLocal();
   }
 
-  static ModeratedObject parseModeratedObject(Map rawModeratedObject) {
+  static ModeratedObject? parseModeratedObject(Map<String, dynamic>? rawModeratedObject) {
     if (rawModeratedObject == null) return null;
     return ModeratedObject.fromJSON(rawModeratedObject);
   }
 
-  static ModerationPenaltyType parseType(String moderationPenaltyTypeStr) {
+  static ModerationPenaltyType? parseType(String? moderationPenaltyTypeStr) {
     if (moderationPenaltyTypeStr == null) return null;
 
-    ModerationPenaltyType moderationPenaltyType;
+    ModerationPenaltyType? moderationPenaltyType;
     if (moderationPenaltyTypeStr ==
         ModerationPenalty.moderationPenaltyTypeSuspension) {
       moderationPenaltyType = ModerationPenaltyType.suspension;
@@ -72,7 +72,7 @@ class ModerationPenalty {
 
   static String convertModerationPenaltyTypeToHumanReadableString(
       ModerationPenaltyType type,
-      {bool capitalize}) {
+      {bool capitalize = false}) {
     String result;
     switch (type) {
       case ModerationPenaltyType.suspension:

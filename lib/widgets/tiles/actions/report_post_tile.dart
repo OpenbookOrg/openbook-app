@@ -9,13 +9,13 @@ import 'package:flutter/material.dart';
 
 class OBReportPostTile extends StatefulWidget {
   final Post post;
-  final ValueChanged<Post> onPostReported;
-  final VoidCallback onWantsToReportPost;
+  final ValueChanged<Post>? onPostReported;
+  final VoidCallback? onWantsToReportPost;
 
   const OBReportPostTile({
-    Key key,
+    Key? key,
     this.onPostReported,
-    @required this.post,
+    required this.post,
     this.onWantsToReportPost,
   }) : super(key: key);
 
@@ -26,9 +26,9 @@ class OBReportPostTile extends StatefulWidget {
 }
 
 class OBReportPostTileState extends State<OBReportPostTile> {
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
-  bool _requestInProgress;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -48,7 +48,7 @@ class OBReportPostTileState extends State<OBReportPostTile> {
       builder: (BuildContext context, AsyncSnapshot<Post> snapshot) {
         var post = snapshot.data;
 
-        bool isReported = post.isReported ?? false;
+        bool isReported = post?.isReported ?? false;
 
         return OBLoadingTile(
           isLoading: _requestInProgress || isReported,
@@ -62,13 +62,13 @@ class OBReportPostTileState extends State<OBReportPostTile> {
   }
 
   void _reportPost() {
-    if (widget.onWantsToReportPost != null) widget.onWantsToReportPost();
+    if (widget.onWantsToReportPost != null) widget.onWantsToReportPost!();
     _navigationService.navigateToReportObject(
         context: context,
         object: widget.post,
         onObjectReported: (dynamic reportedObject) {
           if (reportedObject != null && widget.onPostReported != null)
-            widget.onPostReported(reportedObject as Post);
+            widget.onPostReported!(reportedObject as Post);
         });
   }
 }

@@ -17,9 +17,9 @@ class OBAuthNameStepPage extends StatefulWidget {
 
 class OBAuthNameStepPageState extends State<OBAuthNameStepPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  CreateAccountBloc _createAccountBloc;
-  LocalizationService _localizationService;
-  ValidationService _validationService;
+  late CreateAccountBloc _createAccountBloc;
+  late LocalizationService _localizationService;
+  late ValidationService _validationService;
 
   TextEditingController _nameController = TextEditingController();
 
@@ -83,7 +83,7 @@ class OBAuthNameStepPageState extends State<OBAuthNameStepPage> {
 
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   void onPressedNextStep() {
@@ -96,7 +96,7 @@ class OBAuthNameStepPageState extends State<OBAuthNameStepPage> {
     }
   }
 
-  Widget _buildPreviousButton({@required BuildContext context}) {
+  Widget _buildPreviousButton({required BuildContext context}) {
     String buttonText = _localizationService.trans('auth__create_acc__previous');
 
     return OBSecondaryButton(
@@ -123,7 +123,7 @@ class OBAuthNameStepPageState extends State<OBAuthNameStepPage> {
     );
   }
 
-  Widget _buildWhatYourName({@required BuildContext context}) {
+  Widget _buildWhatYourName({required BuildContext context}) {
     String whatNameText =
         _localizationService.trans('auth__create_acc__what_name');
 
@@ -161,8 +161,8 @@ class OBAuthNameStepPageState extends State<OBAuthNameStepPage> {
                 textCapitalization: TextCapitalization.words,
                 autocorrect: false,
                 hintText: nameInputPlaceholder,
-                validator: (String name) {
-                  String validateName = _validationService
+                validator: (String? name) {
+                  String? validateName = _validationService
                       .validateUserProfileName(name);
                   if (validateName != null) return validateName;
                 },

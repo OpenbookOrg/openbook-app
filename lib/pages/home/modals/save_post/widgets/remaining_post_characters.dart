@@ -7,7 +7,7 @@ class OBRemainingPostCharacters extends StatelessWidget {
   final int currentCharacters;
 
   const OBRemainingPostCharacters(
-      {Key key, @required this.maxCharacters, @required this.currentCharacters})
+      {Key? key, required this.maxCharacters, required this.currentCharacters})
       : super(key: key);
 
   @override
@@ -30,9 +30,9 @@ class OBRemainingPostCharacters extends StatelessWidget {
             style: TextStyle(
                 fontSize: 12.0,
                 color: exceededMaxCharacters
-                    ? themeValueParserService.parseColor(theme.dangerColor)
+                    ? themeValueParserService.parseColor(theme!.dangerColor)
                     : themeValueParserService
-                        .parseColor(theme.primaryTextColor),
+                        .parseColor(theme!.primaryTextColor),
                 fontWeight: exceededMaxCharacters
                     ? FontWeight.bold
                     : FontWeight.normal),

@@ -20,7 +20,7 @@ class OBFollowsListHeader extends StatelessWidget {
         stream: followsList.updateSubject,
         initialData: followsList,
         builder: (BuildContext context, AsyncSnapshot<FollowsList> snapshot) {
-          var followsList = snapshot.data;
+          var followsList = snapshot.data!;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,7 +33,7 @@ class OBFollowsListHeader extends StatelessWidget {
                     Flexible(
                       child: OBFollowsListName(followsList),
                     ),
-                    OBEmoji(followsList.emoji, size: OBEmojiSize.large,),
+                    OBEmoji(followsList.emoji!, size: OBEmojiSize.large,),
                   ],
                 ),
               ),

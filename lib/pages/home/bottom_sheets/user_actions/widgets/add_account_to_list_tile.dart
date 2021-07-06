@@ -12,10 +12,10 @@ import 'package:flutter/material.dart';
 
 class OBAddAccountToList extends StatefulWidget {
   final User user;
-  final VoidCallback onWillShowModalBottomSheet;
+  final VoidCallback? onWillShowModalBottomSheet;
 
   const OBAddAccountToList(this.user,
-      {Key key, this.onWillShowModalBottomSheet})
+      {Key? key, this.onWillShowModalBottomSheet})
       : super(key: key);
 
   @override
@@ -25,10 +25,10 @@ class OBAddAccountToList extends StatefulWidget {
 }
 
 class OBAddAccountToListState extends State<OBAddAccountToList> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  BottomSheetService _bottomSheetService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late BottomSheetService _bottomSheetService;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class OBAddAccountToListState extends State<OBAddAccountToList> {
 
   void _displayAddConnectionToFollowsListsBottomSheet() async {
     if (widget.onWillShowModalBottomSheet != null)
-      widget.onWillShowModalBottomSheet();
+      widget.onWillShowModalBottomSheet!();
 
     var initialPickedLists = widget.user.followLists?.lists;
 
@@ -70,13 +70,13 @@ class OBAddAccountToListState extends State<OBAddAccountToList> {
   }
 
   Future _connectUserInFollowsLists(List<FollowsList> followsLists) async {
-    bool isAlreadyFollowingUser = widget.user.isFollowing;
+    bool isAlreadyFollowingUser = widget.user.isFollowing ?? false;
 
     try {
       await (isAlreadyFollowingUser
-          ? _userService.updateFollowWithUsername(widget.user.username,
+          ? _userService.updateFollowWithUsername(widget.user.username!,
               followsLists: followsLists)
-          : _userService.followUserWithUsername(widget.user.username,
+          : _userService.followUserWithUsername(widget.user.username!,
               followsLists: followsLists));
       if (!isAlreadyFollowingUser) {
         widget.user.incrementFollowersCount();
@@ -92,8 +92,8 @@ class OBAddAccountToListState extends State<OBAddAccountToList> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

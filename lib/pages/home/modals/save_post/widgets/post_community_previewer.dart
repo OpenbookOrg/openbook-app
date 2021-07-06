@@ -14,7 +14,7 @@ import '../../../../../provider.dart';
 class OBPostCommunityPreviewer extends StatelessWidget {
   final Community community;
 
-  const OBPostCommunityPreviewer({Key key, @required this.community})
+  const OBPostCommunityPreviewer({Key? key, required this.community})
       : super(key: key);
 
   @override

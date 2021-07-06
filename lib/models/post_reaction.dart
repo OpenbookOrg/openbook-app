@@ -4,30 +4,29 @@ import 'package:Okuna/models/user.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class PostReaction {
-  final int id;
-  final DateTime created;
-  final Emoji emoji;
-  final User reactor;
-  final Post post;
+  final int? id;
+  final DateTime? created;
+  final Emoji? emoji;
+  final User? reactor;
+  final Post? post;
 
   PostReaction({this.id, this.created, this.emoji, this.reactor, this.post});
 
   factory PostReaction.fromJson(Map<String, dynamic> parsedJson) {
-    if (parsedJson == null) return null;
-    DateTime created;
+    DateTime? created;
     var createdData = parsedJson['created'];
     if (createdData != null) created = DateTime.parse(createdData).toLocal();
 
-    User reactor;
+    User? reactor;
     var reactorData = parsedJson['reactor'];
     if (reactorData != null) reactor = User.fromJson(reactorData);
 
-    Post post;
+    Post? post;
     if (parsedJson.containsKey('post')) {
       post = Post.fromJson(parsedJson['post']);
     }
 
-    Emoji emoji = Emoji.fromJson(parsedJson['emoji']);
+    Emoji? emoji = Emoji.fromJson(parsedJson['emoji']);
 
     return PostReaction(
         id: parsedJson['id'],
@@ -47,39 +46,43 @@ class PostReaction {
     };
   }
 
-  String getRelativeCreated() {
-    return timeago.format(created);
+  String? getRelativeCreated() {
+    if (created == null) {
+      return null;
+    }
+
+    return timeago.format(created!);
   }
 
-  String getReactorUsername() {
-    return this.reactor.username;
+  String? getReactorUsername() {
+    return this.reactor?.username;
   }
 
-  String getReactorProfileAvatar() {
-    return this.reactor.getProfileAvatar();
+  String? getReactorProfileAvatar() {
+    return this.reactor?.getProfileAvatar();
   }
 
-  int getReactorId() {
-    return this.reactor.id;
+  int? getReactorId() {
+    return this.reactor?.id;
   }
 
-  int getEmojiId() {
-    return this.emoji.id;
+  int? getEmojiId() {
+    return this.emoji?.id;
   }
 
-  String getEmojiImage() {
-    return this.emoji.image;
+  String? getEmojiImage() {
+    return this.emoji?.image;
   }
 
-  String getEmojiKeyword() {
-    return this.emoji.keyword;
+  String? getEmojiKeyword() {
+    return this.emoji?.keyword;
   }
 
-  String getEmojiColor() {
-    return this.emoji.color;
+  String? getEmojiColor() {
+    return this.emoji?.color;
   }
 
-  PostReaction copy({Emoji newEmoji}) {
+  PostReaction copy({Emoji? newEmoji}) {
     return PostReaction(emoji: newEmoji ?? emoji);
   }
 }

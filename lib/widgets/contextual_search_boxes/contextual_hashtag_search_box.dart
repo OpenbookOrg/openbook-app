@@ -13,12 +13,12 @@ import 'package:flutter/material.dart';
 import 'package:async/async.dart';
 
 class OBContextualHashtagSearchBox extends StatefulWidget {
-  final ValueChanged<Hashtag> onHashtagPressed;
-  final OBContextualHashtagSearchBoxController controller;
-  final String initialSearchQuery;
+  final ValueChanged<Hashtag>? onHashtagPressed;
+  final OBContextualHashtagSearchBoxController? controller;
+  final String? initialSearchQuery;
 
   const OBContextualHashtagSearchBox(
-      {Key key,
+      {Key? key,
       this.onHashtagPressed,
       this.controller,
       this.initialSearchQuery})
@@ -32,24 +32,24 @@ class OBContextualHashtagSearchBox extends StatefulWidget {
 
 class OBContextualHashtagSearchBoxState
     extends State<OBContextualHashtagSearchBox> {
-  UserService _userService;
-  LocalizationService _localizationService;
-  ToastService _toastService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
+  late ToastService _toastService;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
-  CancelableOperation _getAllOperation;
-  CancelableOperation _searchParticipantsOperation;
+  CancelableOperation? _getAllOperation;
+  CancelableOperation? _searchParticipantsOperation;
 
-  String _searchQuery;
-  List<Hashtag> _searchResults;
-  bool _searchInProgress;
+  late String _searchQuery;
+  late List<Hashtag> _searchResults;
+  late bool _searchInProgress;
 
   @override
   void initState() {
     super.initState();
     _needsBootstrap = true;
-    if (widget.controller != null) widget.controller.attach(this);
+    if (widget.controller != null) widget.controller!.attach(this);
     _searchResults = [];
     _searchQuery = '';
     _searchInProgress = false;
@@ -72,11 +72,11 @@ class OBContextualHashtagSearchBoxState
       _bootstrap();
       _needsBootstrap = false;
       if (widget.initialSearchQuery != null &&
-          widget.initialSearchQuery.isNotEmpty) {
-        _searchQuery = widget.initialSearchQuery;
+          widget.initialSearchQuery!.isNotEmpty) {
+        _searchQuery = widget.initialSearchQuery!;
         _searchInProgress = true;
         Future.delayed(Duration(milliseconds: 0), () {
-          search(widget.initialSearchQuery);
+          search(widget.initialSearchQuery!);
         });
       }
     }
@@ -119,7 +119,11 @@ class OBContextualHashtagSearchBoxState
             child: const OBIcon(OBIcons.happy),
           ),
           title: OBText(_localizationService.contextual_hashtag_search_box__be_the_first(_searchQuery)),
-          onTap: () => widget.onHashtagPressed(Hashtag(name: _searchQuery)),
+          onTap: () => {
+            if (widget.onHashtagPressed != null) {
+              widget.onHashtagPressed!(Hashtag(name: _searchQuery))
+            }
+          },
         );
       } else {
         return const SizedBox();
@@ -139,7 +143,7 @@ class OBContextualHashtagSearchBoxState
 
   Future search(String searchQuery) async {
     if (_searchParticipantsOperation != null)
-      _searchParticipantsOperation.cancel();
+      _searchParticipantsOperation!.cancel();
     _setSearchInProgress(true);
 
     debugLog('Searching post participants with query:$searchQuery');
@@ -154,8 +158,8 @@ class OBContextualHashtagSearchBoxState
     try {
       _searchParticipantsOperation = CancelableOperation.fromFuture(
           _userService.getHashtagsWithQuery(searchQuery));
-      HashtagsList searchResults = await _searchParticipantsOperation.value;
-      _setSearchResults(searchResults.hashtags);
+      HashtagsList searchResults = await _searchParticipantsOperation!.value;
+      _setSearchResults(searchResults.hashtags!);
     } catch (error) {
       _onError(error);
     } finally {
@@ -169,8 +173,8 @@ class OBContextualHashtagSearchBoxState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);
@@ -200,7 +204,7 @@ class OBContextualHashtagSearchBoxState
     debugLog('Clearing search');
     setState(() {
       if (_searchParticipantsOperation != null)
-        _searchParticipantsOperation.cancel();
+        _searchParticipantsOperation!.cancel();
       _searchInProgress = false;
       _searchQuery = '';
       _searchResults = [];
@@ -213,8 +217,8 @@ class OBContextualHashtagSearchBoxState
 }
 
 class OBContextualHashtagSearchBoxController {
-  OBContextualHashtagSearchBoxState _state;
-  String _lastSearchQuery;
+  OBContextualHashtagSearchBoxState? _state;
+  String? _lastSearchQuery;
 
   void attach(OBContextualHashtagSearchBoxState state) {
     _state = state;
@@ -223,20 +227,20 @@ class OBContextualHashtagSearchBoxController {
   Future search(String searchQuery) async {
     _lastSearchQuery = searchQuery;
 
-    if (_state == null || !_state.mounted) {
+    if (_state == null || (_state != null && !_state!.mounted)) {
       debugLog('Tried to search without mounted state');
       return null;
     }
 
-    return _state.search(searchQuery);
+    return _state!.search(searchQuery);
   }
 
   void clearSearch() {
     _lastSearchQuery = null;
-    _state.clearSearch();
+    _state?.clearSearch();
   }
 
-  String getLastSearchQuery() {
+  String? getLastSearchQuery() {
     return _lastSearchQuery;
   }
 

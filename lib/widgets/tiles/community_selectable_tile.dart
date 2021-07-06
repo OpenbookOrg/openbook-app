@@ -9,10 +9,10 @@ class OBCommunitySelectableTile extends StatelessWidget {
   final bool isSelected;
 
   const OBCommunitySelectableTile(
-      {Key key,
-      @required this.community,
-      @required this.onCommunityPressed,
-      @required this.isSelected})
+      {Key? key,
+      required this.community,
+      required this.onCommunityPressed,
+      required this.isSelected})
       : super(key: key);
 
   @override

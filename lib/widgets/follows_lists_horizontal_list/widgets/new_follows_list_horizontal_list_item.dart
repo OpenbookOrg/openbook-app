@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class OBNewFollowsListHorizontalListItem extends StatelessWidget {
   final VoidCallback onPressed;
 
-  OBNewFollowsListHorizontalListItem({@required this.onPressed});
+  OBNewFollowsListHorizontalListItem({required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

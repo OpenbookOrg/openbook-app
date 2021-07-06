@@ -1,7 +1,7 @@
 import 'package:Okuna/models/moderation/moderated_object_log.dart';
 
 class ModeratedObjectLogsList {
-  final List<ModeratedObjectLog> moderatedObjectLogs;
+  final List<ModeratedObjectLog>? moderatedObjectLogs;
 
   ModeratedObjectLogsList({
     this.moderatedObjectLogs,

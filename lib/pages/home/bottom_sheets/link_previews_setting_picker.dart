@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 class OBLinkPreviewsSettingPickerBottomSheet extends StatefulWidget {
   final ValueChanged<LinkPreviewsSetting> onTypeChanged;
 
-  final LinkPreviewsSetting initialValue;
+  final LinkPreviewsSetting? initialValue;
 
   const OBLinkPreviewsSettingPickerBottomSheet(
-      {Key key, @required this.onTypeChanged, this.initialValue})
+      {Key? key, required this.onTypeChanged, this.initialValue})
       : super(key: key);
 
   @override
@@ -22,8 +22,8 @@ class OBLinkPreviewsSettingPickerBottomSheet extends StatefulWidget {
 
 class OBLinkPreviewsSettingPickerBottomSheetState
     extends State<OBLinkPreviewsSettingPickerBottomSheet> {
-  FixedExtentScrollController _cupertinoPickerController;
-  List<LinkPreviewsSetting> allLinkPreviewsSettings;
+  late FixedExtentScrollController _cupertinoPickerController;
+  late List<LinkPreviewsSetting> allLinkPreviewsSettings;
 
   @override
   void initState() {
@@ -31,8 +31,8 @@ class OBLinkPreviewsSettingPickerBottomSheetState
     allLinkPreviewsSettings = LinkPreviewsSetting.values();
     _cupertinoPickerController = FixedExtentScrollController(
         initialItem: widget.initialValue != null
-            ? allLinkPreviewsSettings.indexOf(widget.initialValue)
-            : null);
+            ? allLinkPreviewsSettings.indexOf(widget.initialValue!)
+            : 0);
   }
 
   @override
@@ -56,7 +56,7 @@ class OBLinkPreviewsSettingPickerBottomSheetState
           itemExtent: 32,
           children:
               allLinkPreviewsSettings.map((LinkPreviewsSetting setting) {
-            return OBText(localizationMap[setting]);
+            return OBText(localizationMap[setting]!);
           }).toList(),
         ),
       ),

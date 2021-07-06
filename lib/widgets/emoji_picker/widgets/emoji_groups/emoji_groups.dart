@@ -4,7 +4,7 @@ import 'package:Okuna/widgets/emoji_picker/widgets/emoji_groups/widgets/emoji_gr
 import 'package:flutter/material.dart';
 
 class OBEmojiGroups extends StatelessWidget {
-  final OnEmojiPressed onEmojiPressed;
+  final OnEmojiPressed? onEmojiPressed;
   final List<EmojiGroup> emojiGroups;
 
   OBEmojiGroups(this.emojiGroups, {this.onEmojiPressed});

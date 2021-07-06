@@ -10,12 +10,12 @@ import 'package:flutter/material.dart';
 
 class OBDisableCommentsPostTile extends StatefulWidget {
   final Post post;
-  final VoidCallback onDisableComments;
-  final VoidCallback onEnableComments;
+  final VoidCallback? onDisableComments;
+  final VoidCallback? onEnableComments;
 
   const OBDisableCommentsPostTile({
-    Key key,
-    @required this.post,
+    Key? key,
+    required this.post,
     this.onDisableComments,
     this.onEnableComments,
   }) : super(key: key);
@@ -27,10 +27,10 @@ class OBDisableCommentsPostTile extends StatefulWidget {
 }
 
 class OBDisableCommentsPostTileState extends State<OBDisableCommentsPostTile> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  bool _requestInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -49,9 +49,9 @@ class OBDisableCommentsPostTileState extends State<OBDisableCommentsPostTile> {
       stream: widget.post.updateSubject,
       initialData: widget.post,
       builder: (BuildContext context, AsyncSnapshot<Post> snapshot) {
-        var post = snapshot.data;
+        var post = snapshot.data!;
 
-        bool areCommentsEnabled = post.areCommentsEnabled;
+        bool areCommentsEnabled = post.areCommentsEnabled ?? false;
 
         return ListTile(
           enabled: !_requestInProgress,
@@ -69,7 +69,7 @@ class OBDisableCommentsPostTileState extends State<OBDisableCommentsPostTile> {
     _setRequestInProgress(true);
     try {
       await _userService.enableCommentsForPost(widget.post);
-      if (widget.onDisableComments != null) widget.onDisableComments();
+      if (widget.onDisableComments != null) widget.onDisableComments!();
       _toastService.success(message: _localizationService.post__comments_enabled_message, context: context);
     } catch (e) {
       _onError(e);
@@ -82,7 +82,7 @@ class OBDisableCommentsPostTileState extends State<OBDisableCommentsPostTile> {
     _setRequestInProgress(true);
     try {
       await _userService.disableCommentsForPost(widget.post);
-      if (widget.onEnableComments != null) widget.onEnableComments();
+      if (widget.onEnableComments != null) widget.onEnableComments!();
       _toastService.success(message: _localizationService.post__comments_disabled_message, context: context);
     } catch (e) {
       _onError(e);
@@ -96,8 +96,8 @@ class OBDisableCommentsPostTileState extends State<OBDisableCommentsPostTile> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

@@ -8,14 +8,14 @@ enum OBAvatarSize { extraSmall, small, medium, large, extraLarge }
 enum OBAvatarType { user, community }
 
 class OBAvatar extends StatelessWidget {
-  final String avatarUrl;
-  final File avatarFile;
-  final OBAvatarSize size;
-  final VoidCallback onPressed;
-  final double borderWidth;
+  final String? avatarUrl;
+  final File? avatarFile;
+  final OBAvatarSize? size;
+  final VoidCallback? onPressed;
+  final double? borderWidth;
   final bool isZoomable;
-  final double borderRadius;
-  final double customSize;
+  final double? borderRadius;
+  final double? customSize;
 
   static const double AVATAR_SIZE_EXTRA_SMALL = 20.0;
   static const double AVATAR_SIZE_SMALL = 30.0;
@@ -27,7 +27,7 @@ class OBAvatar extends StatelessWidget {
   static const double avatarBorderRadius = 10.0;
 
   static double getAvatarSize(OBAvatarSize size) {
-    double avatarSize;
+    late double avatarSize;
 
     switch (size) {
       case OBAvatarSize.extraSmall:
@@ -73,14 +73,14 @@ class OBAvatar extends StatelessWidget {
         height: avatarSize,
         width: avatarSize,
         placeholder: AssetImage(DEFAULT_AVATAR_ASSET),
-        image: FileImage(avatarFile),
+        image: FileImage(avatarFile!),
       );
     } else if (avatarUrl != null) {
       finalAvatarImage = Image(
           height: avatarSize,
           width: avatarSize,
           fit: BoxFit.cover,
-          image: AdvancedNetworkImage(avatarUrl,
+          image: AdvancedNetworkImage(avatarUrl!,
               useDiskCache: true,
               fallbackAssetImage: DEFAULT_AVATAR_ASSET,
               retryLimit: 0));
@@ -92,7 +92,7 @@ class OBAvatar extends StatelessWidget {
             OpenbookProviderState openbookProvider =
                 OpenbookProvider.of(context);
             openbookProvider.dialogService.showZoomablePhotoBoxView(
-                imageUrl: avatarUrl, context: context);
+                imageUrl: avatarUrl!, context: context);
           },
         );
       }

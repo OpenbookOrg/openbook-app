@@ -4,10 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBUserInviteCount extends StatelessWidget {
-  final int count;
-  final double size;
+  final int? count;
+  final double? size;
 
-  const OBUserInviteCount({Key key, this.count, this.size=19}) : super(key: key);
+  const OBUserInviteCount({Key? key, this.count, this.size=19}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class OBUserInviteCount extends StatelessWidget {
         stream: themeService.themeChange,
         initialData: themeService.getActiveTheme(),
         builder: (BuildContext context, AsyncSnapshot<OBTheme> snapshot) {
-          var theme = snapshot.data;
+          var theme = snapshot.data!;
           var primaryAccentColor =
           themeValueParserService.parseGradient(theme.primaryAccentColor);
           return GestureDetector(
@@ -42,7 +42,7 @@ class OBUserInviteCount extends StatelessWidget {
                     count.toString(),
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: count < 10 ? 12 : 10,
+                        fontSize: count! < 10 ? 12 : 10,
                         fontWeight: FontWeight.bold),
                   ) : const SizedBox()
               ),

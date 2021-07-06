@@ -2,7 +2,7 @@
 import 'follow_request.dart';
 
 class FollowRequestList {
-  final List<FollowRequest> followRequests;
+  final List<FollowRequest>? followRequests;
 
   FollowRequestList({
     this.followRequests,

@@ -1,7 +1,7 @@
 import 'package:Okuna/models/device.dart';
 
 class DevicesList {
-  final List<Device> devices;
+  final List<Device>? devices;
 
   DevicesList({
     this.devices,

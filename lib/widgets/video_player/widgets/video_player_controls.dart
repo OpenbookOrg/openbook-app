@@ -13,15 +13,15 @@ import 'package:video_player/video_player.dart';
 import '../../icon.dart';
 
 class OBVideoPlayerControls extends StatefulWidget {
-  final Function(Function) onExpandCollapse;
-  final Function(Function) onPause;
-  final Function(Function) onPlay;
-  final Function(Function) onMute;
-  final Function(Function) onUnmute;
-  final OBVideoPlayerControlsController controller;
+  final Function(Function)? onExpandCollapse;
+  final Function(Function)? onPause;
+  final Function(Function)? onPlay;
+  final Function(Function)? onMute;
+  final Function(Function)? onUnmute;
+  final OBVideoPlayerControlsController? controller;
 
   const OBVideoPlayerControls(
-      {Key key,
+      {Key? key,
       this.onExpandCollapse,
       this.controller,
       this.onMute,
@@ -37,31 +37,31 @@ class OBVideoPlayerControls extends StatefulWidget {
 }
 
 class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
-  VideoPlayerValue _latestValue;
-  double _latestVolume;
+  VideoPlayerValue? _latestValue;
+  double? _latestVolume;
   bool _hideStuff = true;
-  Timer _hideTimer;
-  Timer _initTimer;
-  Timer _showAfterExpandCollapseTimer;
+  Timer? _hideTimer;
+  Timer? _initTimer;
+  Timer? _showAfterExpandCollapseTimer;
   bool _dragging = false;
-  bool _isDismissable;
+  bool? _isDismissable;
 
   final barHeight = 48.0;
   final marginSize = 5.0;
 
-  VideoPlayerController controller;
-  ChewieController chewieController;
+  VideoPlayerController? controller;
+  ChewieController? chewieController;
 
   @override
   Widget build(BuildContext context) {
     Widget mainWidget;
 
     bool isLoading = _latestValue != null &&
-            !_latestValue.isPlaying &&
-            _latestValue.duration == null ||
-        _latestValue != null && _latestValue.isBuffering;
+            !_latestValue!.isPlaying &&
+            _latestValue!.duration == null ||
+        _latestValue != null && _latestValue!.isBuffering;
 
-    bool hasError = _latestValue != null && _latestValue.hasError;
+    bool hasError = _latestValue != null && _latestValue!.hasError;
 
     if (isLoading) {
       mainWidget = Expanded(
@@ -72,10 +72,10 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
         ),
       );
     } else if (hasError) {
-      mainWidget = chewieController.errorBuilder != null
-          ? chewieController.errorBuilder(
+      mainWidget = chewieController?.errorBuilder != null
+          ? chewieController!.errorBuilder!(
               context,
-              chewieController.videoPlayerController.value.errorDescription,
+              chewieController!.videoPlayerController.value.errorDescription ?? '',
             )
           : Center(
               child: new OBIcon(
@@ -99,10 +99,10 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
       new Column(
         children: <Widget>[
           mainWidget,
-          _buildBottomBar(context, controller),
+          _buildBottomBar(context, controller!),
         ],
       ),
-      _hideStuff || !_isDismissable
+      _hideStuff || _isDismissable == null || !_isDismissable!
           ? new Container()
           : new IconButton(
               icon: new OBIcon(
@@ -111,7 +111,7 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
               ),
               onPressed: () async {
                 print("pressed true");
-                controller.pause();
+                controller!.pause();
                 Navigator.pop(context);
               },
             ),
@@ -122,7 +122,7 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
   void initState() {
     super.initState();
     _isDismissable = false;
-    if (widget.controller != null) widget.controller.attach(this);
+    if (widget.controller != null) widget.controller!.attach(this);
   }
 
   @override
@@ -132,7 +132,7 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
   }
 
   void _dispose() {
-    controller.removeListener(_updateState);
+    controller!.removeListener(_updateState);
     _hideTimer?.cancel();
     _initTimer?.cancel();
     _showAfterExpandCollapseTimer?.cancel();
@@ -142,7 +142,7 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
   void didChangeDependencies() {
     final _oldController = chewieController;
     chewieController = ChewieController.of(context);
-    controller = chewieController.videoPlayerController;
+    controller = chewieController!.videoPlayerController;
 
     if (_oldController != chewieController) {
       _dispose();
@@ -168,7 +168,7 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
             _buildPosition(Colors.white),
             _buildProgressBar(),
             _buildMuteButton(controller),
-            chewieController.allowFullScreen
+            chewieController!.allowFullScreen
                 ? _buildExpandButton()
                 : const SizedBox(),
           ],
@@ -181,7 +181,7 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
     return new GestureDetector(
       onTap: widget.onExpandCollapse != null
           ? () {
-              widget.onExpandCollapse(_onExpandCollapse);
+              widget.onExpandCollapse!(_onExpandCollapse);
             }
           : _onExpandCollapse,
       child: new AnimatedOpacity(
@@ -196,7 +196,7 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
           ),
           child: new Center(
             child: new OBIcon(
-              chewieController.isFullScreen
+              chewieController!.isFullScreen
                   ? OBIcons.fullscreen_exit
                   : OBIcons.fullscreen,
               color: Colors.white,
@@ -210,7 +210,7 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
   Expanded _buildHitArea() {
     return new Expanded(
       child: new GestureDetector(
-        onTap: _latestValue != null && _latestValue.isPlaying
+        onTap: _latestValue != null && _latestValue!.isPlaying
             ? () {
                 _playPause();
                 //_cancelAndRestartTimer;
@@ -229,7 +229,7 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
           child: new Center(
             child: new AnimatedOpacity(
               opacity:
-                  _latestValue != null && !_latestValue.isPlaying && !_dragging
+                  _latestValue != null && !_latestValue!.isPlaying && !_dragging
                       ? 1.0
                       : 0.0,
               duration: new Duration(milliseconds: 300),
@@ -263,15 +263,15 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
       onTap: () {
         _cancelAndRestartTimer();
 
-        if (_latestValue.volume == 0) {
+        if (_latestValue?.volume == 0) {
           if (widget.onUnmute != null) {
-            widget.onUnmute(_unMute);
+            widget.onUnmute!(_unMute);
           } else {
             _unMute();
           }
         } else {
           if (widget.onMute != null) {
-            widget.onMute(_mute);
+            widget.onMute!(_mute);
           } else {
             _mute();
           }
@@ -289,7 +289,7 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
                 right: 8.0,
               ),
               child: new OBIcon(
-                (_latestValue != null && _latestValue.volume > 0)
+                (_latestValue != null && _latestValue!.volume > 0)
                     ? OBIcons.volume_up
                     : OBIcons.volume_off,
                 color: Colors.white,
@@ -302,12 +302,12 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
   }
 
   void _mute() {
-    _latestVolume = controller.value.volume;
-    controller.setVolume(0.0);
+    _latestVolume = controller!.value.volume;
+    controller!.setVolume(0.0);
   }
 
   void _unMute() {
-    controller.setVolume(_latestVolume ?? 0.5);
+    controller!.setVolume(_latestVolume ?? 0.5);
   }
 
   GestureDetector _buildPlayPause(VideoPlayerController controller) {
@@ -322,11 +322,11 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
   }
 
   Widget _buildPosition(Color iconColor) {
-    final position = _latestValue != null && _latestValue.position != null
-        ? _latestValue.position
+    final position = _latestValue != null && _latestValue!.position != null
+        ? _latestValue!.position
         : Duration.zero;
-    final duration = _latestValue != null && _latestValue.duration != null
-        ? _latestValue.duration
+    final duration = _latestValue != null && _latestValue!.duration != null
+        ? _latestValue!.duration!
         : Duration.zero;
 
     return new Padding(
@@ -351,16 +351,16 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
   }
 
   Future<Null> _initialize() async {
-    controller.addListener(_updateState);
+    controller?.addListener(_updateState);
 
     _updateState();
 
-    if ((controller.value != null && controller.value.isPlaying) ||
-        chewieController.autoPlay) {
+    if ((controller?.value != null && controller!.value.isPlaying) ||
+        chewieController!.autoPlay) {
       _startHideTimer();
     }
 
-    if (chewieController.showControlsOnInitialize) {
+    if (chewieController!.showControlsOnInitialize) {
       _initTimer = Timer(Duration(milliseconds: 200), () {
         setState(() {
           _hideStuff = false;
@@ -373,7 +373,7 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
     setState(() {
       _hideStuff = true;
 
-      chewieController.toggleFullScreen();
+      chewieController!.toggleFullScreen();
       _showAfterExpandCollapseTimer = Timer(Duration(milliseconds: 300), () {
         setState(() {
           _cancelAndRestartTimer();
@@ -384,15 +384,15 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
 
   void _playPause() {
     setState(() {
-      if (controller.value.isPlaying) {
+      if (controller!.value.isPlaying) {
         if (widget.onPause != null) {
-          widget.onPause(_pause);
+          widget.onPause!(_pause);
         } else {
           _pause();
         }
       } else {
         if (widget.onPlay != null) {
-          widget.onPlay(_play);
+          widget.onPlay!(_play);
         } else {
           _play();
         }
@@ -403,18 +403,18 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
   void _pause() {
     _hideStuff = false;
     _hideTimer?.cancel();
-    controller.pause();
+    controller!.pause();
   }
 
   void _play() {
     _cancelAndRestartTimer();
 
-    if (!controller.value.initialized) {
-      controller.initialize().then((_) {
-        controller.play();
+    if (!controller!.value.initialized) {
+      controller!.initialize().then((_) {
+        controller!.play();
       });
     } else {
-      controller.play();
+      controller!.play();
     }
   }
 
@@ -428,7 +428,7 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
 
   void _updateState() {
     setState(() {
-      _latestValue = controller.value;
+      _latestValue = controller!.value;
     });
   }
 
@@ -452,7 +452,7 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
       child: new Padding(
         padding: new EdgeInsets.only(right: 20.0),
         child: MaterialVideoProgressBar(
-          controller,
+          controller!,
           onDragStart: () {
             setState(() {
               _dragging = true;
@@ -483,7 +483,7 @@ class OBVideoPlayerControlsState extends State<OBVideoPlayerControls> {
 }
 
 class OBVideoPlayerControlsController {
-  OBVideoPlayerControlsState _state;
+  late OBVideoPlayerControlsState _state;
 
   OBVideoPlayerControlsController();
 

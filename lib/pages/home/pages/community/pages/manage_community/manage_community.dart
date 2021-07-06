@@ -17,7 +17,7 @@ import 'package:flutter/material.dart';
 class OBManageCommunityPage extends StatelessWidget {
   final Community community;
 
-  const OBManageCommunityPage({@required this.community});
+  const OBManageCommunityPage({required this.community});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class OBManageCommunityPage extends StatelessWidget {
     UserService userService = openbookProvider.userService;
     LocalizationService _localizationService = openbookProvider.localizationService;
 
-    User loggedInUser = userService.getLoggedInUser();
+    User loggedInUser = userService.getLoggedInUser()!;
     List<Widget> menuListTiles = [];
 
     const TextStyle listItemSubtitleStyle = TextStyle(fontSize: 14);

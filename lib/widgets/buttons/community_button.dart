@@ -16,15 +16,15 @@ class OBCommunityButton extends StatelessWidget {
   static const borderRadius = 30.0;
 
   const OBCommunityButton(
-      {Key key,
+      {Key? key,
       this.isLoading = false,
-      @required this.community,
-      @required this.text,
-      @required this.onPressed})
+      required this.community,
+      required this.text,
+      required this.onPressed})
       : super(key: key);
 
   Widget build(BuildContext context) {
-    String communityHexColor = community.color;
+    String communityHexColor = community.color!;
     OpenbookProviderState openbookProviderState = OpenbookProvider.of(context);
     ThemeValueParserService themeValueParserService =
         openbookProviderState.themeValueParserService;

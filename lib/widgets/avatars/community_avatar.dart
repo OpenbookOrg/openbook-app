@@ -12,14 +12,14 @@ import 'package:tinycolor/tinycolor.dart';
 class OBCommunityAvatar extends StatelessWidget {
   final Community community;
   final OBAvatarSize size;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final bool isZoomable;
-  final double borderRadius;
-  final double customSize;
+  final double? borderRadius;
+  final double? customSize;
 
   const OBCommunityAvatar(
-      {Key key,
-      @required this.community,
+      {Key? key,
+      required this.community,
       this.size = OBAvatarSize.small,
       this.isZoomable = false,
       this.borderRadius,
@@ -33,14 +33,14 @@ class OBCommunityAvatar extends StatelessWidget {
         stream: community.updateSubject,
         initialData: community,
         builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
-          Community community = snapshot.data;
+          Community community = snapshot.data!;
           bool communityHasAvatar = community.hasAvatar();
 
           Widget avatar;
 
           if (communityHasAvatar) {
             avatar = OBAvatar(
-                avatarUrl: community?.avatar,
+                avatarUrl: community.avatar,
                 size: size,
                 onPressed: onPressed,
                 isZoomable: isZoomable,
@@ -79,7 +79,7 @@ class OBCommunityAvatar extends StatelessWidget {
             }
 
             avatar = OBLetterAvatar(
-                letter: community.name[0],
+                letter: community.name![0],
                 color: communityColor,
                 size: size,
                 onPressed: onPressed,

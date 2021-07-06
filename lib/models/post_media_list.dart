@@ -1,7 +1,7 @@
 import 'package:Okuna/models/post_media.dart';
 
 class PostMediaList {
-  final List<PostMedia> postMedia;
+  final List<PostMedia>? postMedia;
 
   PostMediaList({
     this.postMedia,

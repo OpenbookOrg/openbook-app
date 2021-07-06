@@ -1,7 +1,7 @@
 import 'package:Okuna/models/user_invite.dart';
 
 class UserInvitesList {
-  final List<UserInvite> invites;
+  final List<UserInvite>? invites;
 
   UserInvitesList({
     this.invites,

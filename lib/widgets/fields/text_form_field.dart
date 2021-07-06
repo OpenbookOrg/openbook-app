@@ -5,20 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class OBTextFormField extends StatelessWidget {
-  final TextEditingController controller;
-  final FormFieldValidator<String> validator;
+  final TextEditingController? controller;
+  final FormFieldValidator<String>? validator;
   final bool autofocus;
   final bool readOnly;
-  final InputDecoration decoration;
-  final int maxLines;
-  final TextInputType keyboardType;
+  final InputDecoration? decoration;
+  final int? maxLines;
+  final TextInputType? keyboardType;
   final TextInputAction textInputAction;
   final OBTextFormFieldSize size;
   final bool obscureText;
   final TextCapitalization textCapitalization;
   final bool autocorrect;
-  final List<TextInputFormatter> inputFormatters;
-  final FocusNode focusNode;
+  final List<TextInputFormatter>? inputFormatters;
+  final FocusNode? focusNode;
   final TextStyle style;
   final bool hasBorder;
 
@@ -72,7 +72,7 @@ class OBTextFormField extends StatelessWidget {
           TextStyle finalStyle = style.merge(TextStyle(
               fontSize: fontSize,
               color:
-                  themeValueParserService.parseColor(theme.primaryTextColor)));
+                  themeValueParserService.parseColor(theme!.primaryTextColor)));
 
           var primaryColor =
               themeValueParserService.parseColor(theme.primaryColor);

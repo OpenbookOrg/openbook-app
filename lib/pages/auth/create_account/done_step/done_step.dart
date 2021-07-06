@@ -13,8 +13,8 @@ class OBAuthDonePage extends StatefulWidget {
 }
 
 class OBAuthDonePageState extends State<OBAuthDonePage> {
-  LocalizationService localizationService;
-  CreateAccountBloc createAccountBloc;
+  late LocalizationService localizationService;
+  late CreateAccountBloc createAccountBloc;
   bool _isCommunitySelectionInProgress = false;
 
   @override
@@ -110,7 +110,7 @@ class OBAuthDonePageState extends State<OBAuthDonePage> {
     });
   }
 
-  Widget _buildContinueButton({@required BuildContext context}) {
+  Widget _buildContinueButton({required BuildContext context}) {
     String buttonText = localizationService.auth__login__login;
 
     return OBSuccessButton(

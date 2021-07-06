@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 
 class OBSuccessButton extends StatelessWidget {
   final Widget child;
-  final Widget icon;
+  final Widget? icon;
   final VoidCallback onPressed;
   final bool isDisabled;
   final bool isLoading;
   final OBButtonSize size;
-  final double minWidth;
-  final EdgeInsets padding;
+  final double? minWidth;
+  final EdgeInsets? padding;
 
   const OBSuccessButton(
-      {@required this.child,
-      @required this.onPressed,
+      {required this.child,
+      required this.onPressed,
       this.icon,
       this.size = OBButtonSize.medium,
       this.isDisabled = false,

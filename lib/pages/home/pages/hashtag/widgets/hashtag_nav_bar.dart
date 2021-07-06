@@ -14,27 +14,27 @@ class OBHashtagNavBar extends StatelessWidget
   final Hashtag hashtag;
   final String rawHashtagName;
 
-  const OBHashtagNavBar({Key key, this.hashtag, this.rawHashtagName})
+  const OBHashtagNavBar({Key? key, required this.hashtag, required this.rawHashtagName})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
     final Color hashtagTextColor =
-        openbookProvider.utilsService.parseHexColor(hashtag.textColor);
+        openbookProvider.utilsService.parseHexColor(hashtag.textColor ?? '');
 
     return StreamBuilder(
         stream: hashtag.updateSubject,
         initialData: hashtag,
         builder: (BuildContext context, AsyncSnapshot<Hashtag> snapshot) {
-          var hashtag = snapshot.data;
+          var hashtag = snapshot.data!;
 
           return hashtag.image != null
               ? OBImageNavBar(
                   trailing: OBHashtagMoreButton(
                     hashtag: hashtag,
                   ),
-                  imageSrc: hashtag.image,
+                  imageSrc: hashtag.image!,
                   middle: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[

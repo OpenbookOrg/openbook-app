@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 class OBPostActions extends StatelessWidget {
   final Post _post;
-  final VoidCallback onWantsToCommentPost;
+  final VoidCallback? onWantsToCommentPost;
 
   OBPostActions(this._post, {this.onWantsToCommentPost});
 
@@ -24,7 +24,7 @@ class OBPostActions extends StatelessWidget {
       OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
       canDisableOrEnableCommentsForPost = openbookProvider.userService
           .getLoggedInUser()
-          .canDisableOrEnableCommentsForPost(_post);
+          ?.canDisableOrEnableCommentsForPost(_post) ?? false;
     }
 
     if (commentsEnabled || canDisableOrEnableCommentsForPost) {

@@ -30,10 +30,10 @@ class OBText extends StatelessWidget {
   }
 
   final String text;
-  final TextStyle style;
-  final TextAlign textAlign;
-  final TextOverflow overflow;
-  final int maxLines;
+  final TextStyle? style;
+  final TextAlign? textAlign;
+  final TextOverflow? overflow;
+  final int? maxLines;
   final OBTextSize size;
 
   const OBText(this.text,
@@ -58,10 +58,10 @@ class OBText extends StatelessWidget {
           var theme = snapshot.data;
 
           TextStyle themedTextStyle = TextStyle(
-              color: themeValueParserService.parseColor(theme.primaryTextColor),
+              color: themeValueParserService.parseColor(theme!.primaryTextColor),
               fontFamilyFallback: ['NunitoSans'],
-              fontSize: (style != null && style.fontSize != null)
-                  ? style.fontSize
+              fontSize: (style != null && style!.fontSize != null)
+                  ? style!.fontSize
                   : fontSize);
 
           if (style != null) {

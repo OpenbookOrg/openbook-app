@@ -4,28 +4,28 @@ import 'package:Okuna/widgets/theming/text.dart';
 import 'package:flutter/material.dart';
 
 class OBPostReactionTile extends StatelessWidget {
-  final PostReaction postReaction;
-  final ValueChanged<PostReaction> onPostReactionTilePressed;
+  final PostReaction? postReaction;
+  final ValueChanged<PostReaction?>? onPostReactionTilePressed;
 
   const OBPostReactionTile(
-      {Key key, this.postReaction, this.onPostReactionTilePressed})
+      {Key? key, this.postReaction, this.onPostReactionTilePressed})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var reactor = postReaction.reactor;
+    var reactor = postReaction?.reactor;
 
     return ListTile(
       onTap: () {
         if (onPostReactionTilePressed != null)
-          onPostReactionTilePressed(postReaction);
+          onPostReactionTilePressed!(postReaction);
       },
       leading: OBAvatar(
         size: OBAvatarSize.medium,
-        avatarUrl: reactor.getProfileAvatar(),
+        avatarUrl: reactor?.getProfileAvatar(),
       ),
       title: OBText(
-        reactor.username,
+        reactor?.username ?? '',
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
     );

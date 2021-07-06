@@ -19,8 +19,8 @@ class OBCommunityFavorite extends StatelessWidget {
       stream: community.updateSubject,
       initialData: community,
       builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
-        Community community = snapshot.data;
-        if (community.isFavorite == null || !community.isFavorite)
+        Community community = snapshot.data!;
+        if (community.isFavorite == null || !community.isFavorite!)
           return const SizedBox();
 
         return Row(

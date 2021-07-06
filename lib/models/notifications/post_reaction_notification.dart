@@ -1,8 +1,8 @@
 import 'package:Okuna/models/post_reaction.dart';
 
 class PostReactionNotification {
-  final int id;
-  final PostReaction postReaction;
+  final int? id;
+  final PostReaction? postReaction;
 
   PostReactionNotification({this.id, this.postReaction});
 
@@ -12,7 +12,8 @@ class PostReactionNotification {
         postReaction: _parsePostReaction(json['post_reaction']));
   }
 
-  static PostReaction _parsePostReaction(Map postReactionData) {
+  static PostReaction _parsePostReaction(
+      Map<String, dynamic> postReactionData) {
     return PostReaction.fromJson(postReactionData);
   }
 }

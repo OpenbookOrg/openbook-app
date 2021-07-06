@@ -11,12 +11,12 @@ import 'package:flutter/material.dart';
 
 class OBNewPostNotificationsForUserTile extends StatefulWidget {
   final User user;
-  final VoidCallback onSubscribed;
-  final VoidCallback onUnsubscribed;
+  final VoidCallback? onSubscribed;
+  final VoidCallback? onUnsubscribed;
 
   const OBNewPostNotificationsForUserTile({
-    Key key,
-    @required this.user,
+    Key? key,
+    required this.user,
     this.onSubscribed,
     this.onUnsubscribed,
   }) : super(key: key);
@@ -28,10 +28,10 @@ class OBNewPostNotificationsForUserTile extends StatefulWidget {
 }
 
 class OBNewPostNotificationsForUserTileState extends State<OBNewPostNotificationsForUserTile> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  bool _requestInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class OBNewPostNotificationsForUserTileState extends State<OBNewPostNotification
       stream: widget.user.updateSubject,
       initialData: widget.user,
       builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
-        var user = snapshot.data;
+        var user = snapshot.data!;
 
         bool areNotificationsEnabled = user.areNewPostNotificationsEnabled ?? false;
 
@@ -70,7 +70,7 @@ class OBNewPostNotificationsForUserTileState extends State<OBNewPostNotification
     _setRequestInProgress(true);
     try {
       await _userService.enableNewPostNotificationsForUser(widget.user);
-      if (widget.onSubscribed != null) widget.onSubscribed();
+      if (widget.onSubscribed != null) widget.onSubscribed!();
     } catch (e) {
       _onError(e);
     } finally {
@@ -82,7 +82,7 @@ class OBNewPostNotificationsForUserTileState extends State<OBNewPostNotification
     _setRequestInProgress(true);
     try {
       await _userService.disableNewPostNotificationsForUser(widget.user);
-      if (widget.onUnsubscribed != null) widget.onUnsubscribed();
+      if (widget.onUnsubscribed != null) widget.onUnsubscribed!();
     } catch (e) {
       _onError(e);
     } finally {
@@ -95,8 +95,8 @@ class OBNewPostNotificationsForUserTileState extends State<OBNewPostNotification
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

@@ -9,11 +9,11 @@ class OBCategoryBadge extends StatelessWidget {
   final Category category;
   final OBCategoryBadgeSize size;
   final bool isEnabled;
-  final ValueChanged<Category> onPressed;
+  final ValueChanged<Category>? onPressed;
 
   const OBCategoryBadge({
-    Key key,
-    this.category,
+    Key? key,
+    required this.category,
     this.size = OBCategoryBadgeSize.medium,
     this.isEnabled = true,
     this.onPressed,
@@ -37,7 +37,7 @@ class OBCategoryBadge extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<OBTheme> snapshot) {
           var theme = snapshot.data;
           var primaryColor =
-              themeValueParserService.parseColor(theme.primaryColor);
+              themeValueParserService.parseColor(theme!.primaryColor);
           final bool isDarkPrimaryColor =
               themeValueParserService.isDarkColor(primaryColor);
 
@@ -52,7 +52,7 @@ class OBCategoryBadge extends StatelessWidget {
   Widget _buildEnabledBadge(BuildContext context) {
     ThemeValueParserService themeValueParserService =
         OpenbookProvider.of(context).themeValueParserService;
-    Color badgeColor = themeValueParserService.parseColor(category.color);
+    Color badgeColor = themeValueParserService.parseColor(category.color!);
     final bool badgeIsDark = themeValueParserService.isDarkColor(badgeColor);
 
     return _buildBadge(
@@ -60,7 +60,7 @@ class OBCategoryBadge extends StatelessWidget {
         textColor: badgeIsDark ? Colors.white : Colors.black);
   }
 
-  Widget _buildBadge({@required Color color, @required Color textColor}) {
+  Widget _buildBadge({required Color color, required Color textColor}) {
     return GestureDetector(
       onTap: _onTapped,
       child: Container(
@@ -68,7 +68,7 @@ class OBCategoryBadge extends StatelessWidget {
             BoxDecoration(color: color, borderRadius: BorderRadius.circular(5)),
         padding: _getPadding(),
         child: Text(
-          category.name,
+          category.name!,
           style: TextStyle(
               color: textColor,
               //fontWeight: isEnabled ? FontWeight.bold : FontWeight.normal,
@@ -119,7 +119,7 @@ class OBCategoryBadge extends StatelessWidget {
   }
 
   void _onTapped() {
-    if (onPressed != null) onPressed(category);
+    if (onPressed != null) onPressed!(category);
   }
 }
 

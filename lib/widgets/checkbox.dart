@@ -6,8 +6,8 @@ class OBCheckbox extends StatelessWidget {
   final OBCheckboxSize size;
 
   const OBCheckbox({
-    Key key,
-    this.value,
+    Key? key,
+    this.value = false,
     this.size = OBCheckboxSize.medium,
   }) : super(key: key);
 

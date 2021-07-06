@@ -27,7 +27,7 @@ class OBProfileConnectionRequest extends StatelessWidget {
         if (isPendingConnectionConfirmation == null ||
             !isPendingConnectionConfirmation) return const SizedBox();
 
-        String userName = user.getProfileName();
+        String userName = user!.getProfileName()!;
 
         return Column(
           children: <Widget>[

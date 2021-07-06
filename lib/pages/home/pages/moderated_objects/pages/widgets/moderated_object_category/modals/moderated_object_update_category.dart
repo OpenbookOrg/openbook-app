@@ -20,7 +20,7 @@ class OBModeratedObjectUpdateCategoryModal extends StatefulWidget {
   final ModeratedObject moderatedObject;
 
   const OBModeratedObjectUpdateCategoryModal(
-      {Key key, @required this.moderatedObject})
+      {Key? key, required this.moderatedObject})
       : super(key: key);
 
   @override
@@ -31,20 +31,20 @@ class OBModeratedObjectUpdateCategoryModal extends StatefulWidget {
 
 class OBModeratedObjectUpdateCategoryModalState
     extends State<OBModeratedObjectUpdateCategoryModal> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
   List<ModerationCategory> _moderationCategories = [];
-  ModerationCategory _selectedModerationCategory;
-  bool _needsBootstrap;
-  bool _requestInProgress;
+  late ModerationCategory _selectedModerationCategory;
+  late bool _needsBootstrap;
+  late bool _requestInProgress;
 
   @override
   void initState() {
     super.initState();
     _needsBootstrap = true;
     _requestInProgress = false;
-    _selectedModerationCategory = widget.moderatedObject.category;
+    _selectedModerationCategory = widget.moderatedObject.category!;
   }
 
   @override
@@ -104,10 +104,10 @@ class OBModeratedObjectUpdateCategoryModalState
           Expanded(
             child: ListTile(
               title: OBText(
-                category.title,
+                category.title!,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              subtitle: OBSecondaryText(category.description),
+              subtitle: OBSecondaryText(category.description!),
               //trailing: OBIcon(OBIcons.chevronRight),
             ),
           ),
@@ -146,15 +146,15 @@ class OBModeratedObjectUpdateCategoryModalState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(message: _localizationService.trans('error__unknown_error'), context: context);
       throw error;
     }
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
       title: _localizationService.trans('moderation__update_category_title'),
       trailing: OBButton(
@@ -173,7 +173,7 @@ class OBModeratedObjectUpdateCategoryModalState
 
   _setModerationCategories(ModerationCategoriesList moderationCategoriesList) {
     setState(() {
-      _moderationCategories = moderationCategoriesList.moderationCategories;
+      _moderationCategories = moderationCategoriesList.moderationCategories ?? [];
     });
   }
 

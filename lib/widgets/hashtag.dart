@@ -7,14 +7,14 @@ import 'package:flutter_advanced_networkimage/provider.dart';
 
 class OBHashtag extends StatelessWidget {
   final Hashtag hashtag;
-  final ValueChanged<Hashtag> onPressed;
-  final TextStyle textStyle;
-  final String rawHashtagName;
-  final EdgeInsets discoDisplayMargin;
+  final ValueChanged<Hashtag>? onPressed;
+  final TextStyle? textStyle;
+  final String? rawHashtagName;
+  final EdgeInsets? discoDisplayMargin;
 
   const OBHashtag(
-      {Key key,
-      @required this.hashtag,
+      {Key? key,
+      required this.hashtag,
       this.onPressed,
       this.discoDisplayMargin,
       this.textStyle,
@@ -29,7 +29,7 @@ class OBHashtag extends StatelessWidget {
 
     if (textStyle != null) finalTextStyle = finalTextStyle.merge(textStyle);
 
-    String finalHashtagText = rawHashtagName ?? hashtag.name;
+    String finalHashtagText = rawHashtagName ?? hashtag.name!;
 
     return StreamBuilder(
         stream: openbookProvider
@@ -53,12 +53,12 @@ class OBHashtag extends StatelessWidget {
   }
 
   Widget _buildDiscoHashtag(
-      {@required BuildContext context,
-      @required TextStyle style,
-      @required String text,
-      @required OpenbookProviderState provider}) {
+      {required BuildContext context,
+      required TextStyle style,
+      required String text,
+      required OpenbookProviderState provider}) {
     Color hashtagBackgroundColor =
-        provider.utilsService.parseHexColor(hashtag.color);
+        provider.utilsService.parseHexColor(hashtag.color!);
 
     Widget content = Container(
       decoration: BoxDecoration(
@@ -79,9 +79,9 @@ class OBHashtag extends StatelessWidget {
   }
 
   Widget _buildTraditionalHashtag(
-      {@required BuildContext context,
-      @required TextStyle style,
-      @required String text}) {
+      {required BuildContext context,
+      required TextStyle style,
+      required String text}) {
     Widget content = OBText(
       '#$text',
       style: style,
@@ -94,7 +94,7 @@ class OBHashtag extends StatelessWidget {
 
   Widget _wrapWithGestureDetector(Widget child) {
     return GestureDetector(
-        onTap: onPressed != null ? () => onPressed(hashtag) : null,
+        onTap: onPressed != null ? () => onPressed!(hashtag) : null,
         child: child);
   }
 
@@ -108,7 +108,7 @@ class OBHashtag extends StatelessWidget {
             child: Image(
               height: 15,
               image:
-                  AdvancedNetworkImage(hashtag.emoji.image, useDiskCache: true),
+                  AdvancedNetworkImage(hashtag.emoji!.image!, useDiskCache: true),
             )),
       ],
     );

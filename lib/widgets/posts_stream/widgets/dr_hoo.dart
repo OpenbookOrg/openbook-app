@@ -8,15 +8,15 @@ import 'package:Okuna/widgets/theming/text.dart';
 import 'package:flutter/cupertino.dart';
 
 class OBPostsStreamDrHoo extends StatelessWidget {
-  final VoidCallback streamRefresher;
-  final OBPostsStreamStatus streamStatus;
-  final List<Widget> streamPrependedItems;
+  final VoidCallback? streamRefresher;
+  final OBPostsStreamStatus? streamStatus;
+  final List<Widget>? streamPrependedItems;
 
   const OBPostsStreamDrHoo({
-    Key key,
-    @required this.streamRefresher,
-    @required this.streamStatus,
-    @required this.streamPrependedItems,
+    Key? key,
+    required this.streamRefresher,
+    required this.streamStatus,
+    required this.streamPrependedItems,
   }) : super(key: key);
 
   @override
@@ -109,7 +109,7 @@ class OBPostsStreamDrHoo extends StatelessWidget {
       padding: EdgeInsets.symmetric(
           horizontal: 20,
           vertical:
-              streamPrependedItems != null && streamPrependedItems.isNotEmpty ||
+              streamPrependedItems != null && streamPrependedItems!.isNotEmpty ||
                       streamStatus == OBPostsStreamStatus.empty ||
                       streamStatus == OBPostsStreamStatus.refreshing ||
                       streamStatus == OBPostsStreamStatus.loadingMoreFailed

@@ -15,7 +15,7 @@ class OBUserInviteNickname extends StatelessWidget {
         stream: userInvite.updateSubject,
         initialData: userInvite,
         builder: (BuildContext context, AsyncSnapshot<UserInvite> snapshot) {
-          var userInvite = snapshot.data;
+          var userInvite = snapshot.data!;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,7 +28,7 @@ class OBUserInviteNickname extends StatelessWidget {
                 children: <Widget>[
                   Flexible(
                     child: OBPrimaryAccentText(
-                      userInvite.nickname,
+                      userInvite.nickname!,
                       size: OBTextSize.extraLarge,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,

@@ -19,13 +19,13 @@ import 'package:meta/meta.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class OBNotification extends UpdatableModel<OBNotification> {
-  final int id;
-  User owner;
-  NotificationType type;
+  final int? id;
+  User? owner;
+  NotificationType? type;
   dynamic contentObject;
-  DateTime created;
+  DateTime? created;
 
-  bool read;
+  bool? read;
 
   OBNotification(
       {this.id,
@@ -41,8 +41,12 @@ class OBNotification extends UpdatableModel<OBNotification> {
     return factory.fromJson(json);
   }
 
-  String getRelativeCreated() {
-    return timeago.format(created);
+  String? getRelativeCreated() {
+    if (created == null) {
+      return null;
+    }
+
+    return timeago.format(created!);
   }
 
   @override
@@ -77,12 +81,12 @@ class OBNotification extends UpdatableModel<OBNotification> {
 
 class NotificationFactory extends UpdatableModelFactory<OBNotification> {
   @override
-  SimpleCache<int, OBNotification> cache =
+  SimpleCache<int, OBNotification>? cache =
       SimpleCache(storage: UpdatableModelSimpleStorage(size: 120));
 
   @override
   OBNotification makeFromJson(Map json) {
-    NotificationType type = NotificationType.parse(json['notification_type']);
+    NotificationType? type = NotificationType.parse(json['notification_type']);
 
     return OBNotification(
         id: json['id'],
@@ -94,13 +98,13 @@ class NotificationFactory extends UpdatableModelFactory<OBNotification> {
         read: json['read']);
   }
 
-  User parseUser(Map userData) {
+  User? parseUser(Map<String, dynamic>? userData) {
     if (userData == null) return null;
     return User.fromJson(userData);
   }
 
   dynamic parseContentObject(
-      {@required Map contentObjectData, @required NotificationType type}) {
+      {required Map<String, dynamic>? contentObjectData, required NotificationType? type}) {
     if (contentObjectData == null) return null;
 
     dynamic contentObject;
@@ -209,10 +213,10 @@ class NotificationType {
 
   static values() => _values;
 
-  static NotificationType parse(String string) {
+  static NotificationType? parse(String? string) {
     if (string == null) return null;
 
-    NotificationType notificationType;
+    NotificationType? notificationType;
     for (var type in _values) {
       if (string == type.code) {
         notificationType = type;

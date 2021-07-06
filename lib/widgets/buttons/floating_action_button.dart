@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 
 class OBFloatingActionButton extends StatelessWidget {
   final Widget child;
-  final Widget icon;
+  final Widget? icon;
   final VoidCallback onPressed;
   final bool isDisabled;
   final bool isLoading;
   final Color textColor;
   final OBButtonSize size;
-  final double minWidth;
-  final EdgeInsets padding;
-  final OBButtonType type;
-  final Color color;
+  final double? minWidth;
+  final EdgeInsets? padding;
+  final OBButtonType? type;
+  final Color? color;
 
   const OBFloatingActionButton(
-      {@required this.child,
-      @required this.onPressed,
+      {required this.child,
+      required this.onPressed,
       this.type,
       this.size = OBButtonSize.medium,
       this.textColor = Colors.white,
@@ -42,7 +42,7 @@ class OBFloatingActionButton extends StatelessWidget {
       icon: icon,
       onPressed: onPressed,
       size: size,
-      type: type,
+      type: type ?? OBButtonType.primary,
       isDisabled: isDisabled,
       isLoading: isLoading,
       padding: EdgeInsets.all(0),

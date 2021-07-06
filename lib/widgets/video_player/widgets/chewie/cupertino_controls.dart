@@ -13,8 +13,8 @@ import 'package:video_player/video_player.dart';
 
 class CupertinoControls extends StatefulWidget {
   const CupertinoControls({
-    @required this.backgroundColor,
-    @required this.iconColor,
+    required this.backgroundColor,
+    required this.iconColor,
   });
 
   final Color backgroundColor;
@@ -27,26 +27,26 @@ class CupertinoControls extends StatefulWidget {
 }
 
 class _CupertinoControlsState extends State<CupertinoControls> {
-  VideoPlayerValue _latestValue;
-  double _latestVolume;
+  VideoPlayerValue? _latestValue;
+  double? _latestVolume;
   bool _hideStuff = true;
-  Timer _hideTimer;
+  Timer? _hideTimer;
   final marginSize = 5.0;
-  Timer _expandCollapseTimer;
-  Timer _initTimer;
+  Timer? _expandCollapseTimer;
+  Timer? _initTimer;
 
-  VideoPlayerController controller;
-  ChewieController chewieController;
+  late VideoPlayerController controller;
+  late ChewieController chewieController;
 
   @override
   Widget build(BuildContext context) {
     chewieController = ChewieController.of(context);
 
-    if (_latestValue.hasError) {
+    if (_latestValue?.hasError == true) {
       return chewieController.errorBuilder != null
-          ? chewieController.errorBuilder(
+          ? chewieController.errorBuilder!(
               context,
-              chewieController.videoPlayerController.value.errorDescription,
+              chewieController.videoPlayerController.value.errorDescription ?? '',
             )
           : Center(
               child: Icon(
@@ -208,7 +208,7 @@ class _CupertinoControlsState extends State<CupertinoControls> {
   Expanded _buildHitArea() {
     return Expanded(
       child: GestureDetector(
-        onTap: _latestValue != null && _latestValue.isPlaying
+        onTap: _latestValue != null && _latestValue!.isPlaying
             ? _cancelAndRestartTimer
             : () {
                 _hideTimer?.cancel();
@@ -235,7 +235,7 @@ class _CupertinoControlsState extends State<CupertinoControls> {
       onTap: () {
         _cancelAndRestartTimer();
 
-        if (_latestValue.volume == 0) {
+        if (_latestValue?.volume == 0) {
           controller.setVolume(_latestVolume ?? 0.5);
         } else {
           _latestVolume = controller.value.volume;
@@ -258,7 +258,7 @@ class _CupertinoControlsState extends State<CupertinoControls> {
                   right: buttonPadding,
                 ),
                 child: Icon(
-                  (_latestValue != null && _latestValue.volume > 0)
+                  (_latestValue != null && _latestValue!.volume > 0)
                       ? Icons.volume_up
                       : Icons.volume_off,
                   color: iconColor,
@@ -299,7 +299,7 @@ class _CupertinoControlsState extends State<CupertinoControls> {
 
   Widget _buildPosition(Color iconColor) {
     final position =
-        _latestValue != null ? _latestValue.position : Duration(seconds: 0);
+        _latestValue != null ? _latestValue!.position : Duration(seconds: 0);
 
     return Padding(
       padding: EdgeInsets.only(right: 12.0),
@@ -314,8 +314,8 @@ class _CupertinoControlsState extends State<CupertinoControls> {
   }
 
   Widget _buildRemaining(Color iconColor) {
-    final position = _latestValue != null && _latestValue.duration != null
-        ? _latestValue.duration - _latestValue.position
+    final position = _latestValue != null && _latestValue!.duration != null
+        ? _latestValue!.duration! - _latestValue!.position
         : Duration(seconds: 0);
 
     return Padding(
@@ -513,14 +513,14 @@ class _CupertinoControlsState extends State<CupertinoControls> {
   void _skipBack() {
     _cancelAndRestartTimer();
     final beginning = Duration(seconds: 0).inMilliseconds;
-    final skip = (_latestValue.position - Duration(seconds: 15)).inMilliseconds;
+    final skip = (_latestValue!.position - Duration(seconds: 15)).inMilliseconds;
     controller.seekTo(Duration(milliseconds: math.max(skip, beginning)));
   }
 
   void _skipForward() {
     _cancelAndRestartTimer();
-    final end = _latestValue.duration.inMilliseconds;
-    final skip = (_latestValue.position + Duration(seconds: 15)).inMilliseconds;
+    final end = _latestValue!.duration!.inMilliseconds;
+    final skip = (_latestValue!.position + Duration(seconds: 15)).inMilliseconds;
     controller.seekTo(Duration(milliseconds: math.min(skip, end)));
   }
 

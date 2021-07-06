@@ -1,8 +1,8 @@
 import 'package:Okuna/models/emoji.dart';
 
 class ReactionsEmojiCount {
-  final Emoji emoji;
-  int count;
+  final Emoji? emoji;
+  int? count;
 
   ReactionsEmojiCount({this.emoji, this.count});
 
@@ -14,7 +14,7 @@ class ReactionsEmojiCount {
 
   Map<String, dynamic> toJson() {
     return {
-      'emoji': emoji.toJson(),
+      'emoji': emoji?.toJson(),
       'count': count
     };
   }
@@ -28,7 +28,7 @@ class ReactionsEmojiCount {
     return count.toString();
   }
 
-  int getEmojiId() {
-    return emoji.id;
+  int? getEmojiId() {
+    return emoji?.id;
   }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 // TODO Queue toasts.
 
 class OBToast extends StatefulWidget {
-  final Widget child;
+  final Widget? child;
 
   OBToast({this.child});
 
@@ -14,19 +14,19 @@ class OBToast extends StatefulWidget {
 
   static OBToastState of(BuildContext context) {
     final OBToastState toastState =
-        context.findRootAncestorStateOfType<OBToastState>();
+        context.findRootAncestorStateOfType<OBToastState>()!;
     toastState._setCurrentContext(context);
     return toastState;
   }
 }
 
 class OBToastState extends State<OBToast> with SingleTickerProviderStateMixin {
-  OverlayEntry _overlayEntry;
-  BuildContext _currentContext;
-  AnimationController controller;
-  Animation<Offset> offset;
-  bool _toastInProgress;
-  bool _dismissInProgress;
+  OverlayEntry? _overlayEntry;
+  BuildContext? _currentContext;
+  late AnimationController controller;
+  late Animation<Offset> offset;
+  late bool _toastInProgress;
+  late bool _dismissInProgress;
 
   static const double TOAST_CONTAINER_HEIGHT = 75.0;
 
@@ -45,23 +45,23 @@ class OBToastState extends State<OBToast> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return _OpenbookToast(
-      child: widget.child,
+      child: widget.child!,
     );
   }
 
   Future showToast(
-      {@required Color color,
-      String message,
-      Widget child,
-      Duration duration,
-      VoidCallback onDismissed}) async {
+      {required Color color,
+      String? message,
+      Widget? child,
+      Duration? duration,
+      VoidCallback? onDismissed}) async {
     if (_toastInProgress) return;
     _toastInProgress = true;
     this._overlayEntry = this._createOverlayEntryFromTop(
         color: color, message: message, onDismissed: onDismissed, child: child);
-    final overlay = Overlay.of(_currentContext);
+    final overlay = Overlay.of(_currentContext!);
     WidgetsBinding.instance
-        .addPostFrameCallback((_) => overlay.insert(_overlayEntry));
+        ?.addPostFrameCallback((_) => overlay?.insert(_overlayEntry!));
     controller.forward();
 
     duration = duration ?? const Duration(seconds: 3);
@@ -77,17 +77,17 @@ class OBToastState extends State<OBToast> with SingleTickerProviderStateMixin {
 
   Future _dismissToast() async {
     await controller.reverse();
-    if (this._overlayEntry != null) this._overlayEntry.remove();
+    if (this._overlayEntry != null) this._overlayEntry!.remove();
     this._overlayEntry = null;
     _dismissInProgress = false;
     _toastInProgress = false;
   }
 
   OverlayEntry _createOverlayEntryFromTop(
-      {@required Color color,
-      String message,
-      Widget child,
-      VoidCallback onDismissed}) {
+      {required Color color,
+      String? message,
+      Widget? child,
+      VoidCallback? onDismissed}) {
     return OverlayEntry(builder: (context) {
       final MediaQueryData existingMediaQuery = MediaQuery.of(context);
       // 44 is header height
@@ -107,7 +107,7 @@ class OBToastState extends State<OBToast> with SingleTickerProviderStateMixin {
               child: _buildToast(
                   paddingTop: paddingTop,
                   color: color,
-                  message: message,
+                  message: message!,
                   child: child),
             ))
       ]);
@@ -115,10 +115,10 @@ class OBToastState extends State<OBToast> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildToast(
-      {@required double paddingTop,
-      @required Color color,
-      @required String message,
-      Widget child}) {
+      {required double paddingTop,
+      required Color color,
+      required String message,
+      Widget? child}) {
     return Material(
       color: Colors.transparent,
       child: Column(
@@ -186,7 +186,7 @@ class OBToastState extends State<OBToast> with SingleTickerProviderStateMixin {
 }
 
 class _OpenbookToast extends InheritedWidget {
-  _OpenbookToast({Key key, Widget child}) : super(key: key, child: child);
+  _OpenbookToast({Key? key, required Widget child}) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(_OpenbookToast old) {

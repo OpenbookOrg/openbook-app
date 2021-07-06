@@ -6,10 +6,10 @@ import 'package:Okuna/services/string_template.dart';
 import 'package:meta/meta.dart';
 
 class AuthApiService {
-  HttpieService _httpService;
-  StringTemplateService _stringTemplateService;
+  late HttpieService _httpService;
+  late StringTemplateService _stringTemplateService;
 
-  String apiURL;
+  late String apiURL;
 
   static const CHECK_USERNAME_PATH = 'api/auth/username-check/';
   static const CHECK_EMAIL_PATH = 'api/auth/email-check/';
@@ -55,23 +55,23 @@ class AuthApiService {
     apiURL = newApiURL;
   }
 
-  Future<HttpieResponse> deleteUser({@required String password}) {
+  Future<HttpieResponse> deleteUser({required String password}) {
     Map<String, dynamic> body = {'password': password};
     return _httpService.post('$apiURL$DELETE_ACCOUNT_PATH',
         body: body, appendAuthorizationToken: true);
   }
 
-  Future<HttpieResponse> checkUsernameIsAvailable({@required String username}) {
+  Future<HttpieResponse> checkUsernameIsAvailable({required String username}) {
     return _httpService
         .postJSON('$apiURL$CHECK_USERNAME_PATH', body: {'username': username});
   }
 
-  Future<HttpieResponse> checkEmailIsAvailable({@required String email}) {
+  Future<HttpieResponse> checkEmailIsAvailable({required String email}) {
     return _httpService
         .postJSON('$apiURL$CHECK_EMAIL_PATH', body: {'email': email});
   }
 
-  Future<HttpieStreamedResponse> updateUserEmail({@required String email}) {
+  Future<HttpieStreamedResponse> updateUserEmail({required String email}) {
     Map<String, dynamic> body = {};
     body['email'] = email;
     return _httpService.patchMultiform('$apiURL$UPDATE_EMAIL_PATH',
@@ -79,7 +79,7 @@ class AuthApiService {
   }
 
   Future<HttpieStreamedResponse> updateUserPassword(
-      {@required String currentPassword, @required String newPassword}) {
+      {required String currentPassword, required String newPassword}) {
     Map<String, dynamic> body = {};
     body['current_password'] = currentPassword;
     body['new_password'] = newPassword;
@@ -96,14 +96,14 @@ class AuthApiService {
   Future<HttpieStreamedResponse> updateUser({
     dynamic avatar,
     dynamic cover,
-    String name,
-    String username,
-    String url,
-    bool followersCountVisible,
-    bool communityPostsVisible,
-    String bio,
-    String location,
-    String visibility,
+    String? name,
+    String? username,
+    String? url,
+    bool? followersCountVisible,
+    bool? communityPostsVisible,
+    String? bio,
+    String? location,
+    String? visibility,
   }) {
     Map<String, dynamic> body = {};
 
@@ -144,14 +144,14 @@ class AuthApiService {
   }
 
   Future<HttpieStreamedResponse> createUser(
-      {@required String email,
-      @required String token,
-      @required String name,
-      @required String username,
-      @required bool isOfLegalAge,
-      @required bool areGuidelinesAccepted,
-      @required String password,
-      File avatar}) {
+      {required String email,
+      required String token,
+      required String name,
+      required String username,
+      required bool isOfLegalAge,
+      required bool areGuidelinesAccepted,
+      required String password,
+      File? avatar}) {
     Map<String, dynamic> body = {
       'email': email,
       'token': token,
@@ -171,7 +171,7 @@ class AuthApiService {
   }
 
   Future<HttpieResponse> verifyRegisterToken(
-      {@required String token}) {
+      {required String token}) {
     Map<String, dynamic> body = {'token': token};
 
     return _httpService.post('$apiURL$VERIFY_REGISTER_TOKEN',
@@ -205,7 +205,7 @@ class AuthApiService {
   }
 
   Future<HttpieResponse> searchLinkedUsers(
-      {@required String query, int count, String withCommunity}) {
+      {required String query, int? count, String? withCommunity}) {
     Map<String, dynamic> queryParams = {'query': query};
 
     if (count != null) queryParams['count'] = count;
@@ -218,9 +218,9 @@ class AuthApiService {
 
   Future<HttpieResponse> getLinkedUsers(
       {bool authenticatedRequest = true,
-      int maxId,
-      int count,
-      String withCommunity}) {
+      int? maxId,
+      int? count,
+      String? withCommunity}) {
     Map<String, dynamic> queryParams = {};
 
     if (count != null) queryParams['count'] = count;
@@ -235,7 +235,7 @@ class AuthApiService {
   }
 
   Future<HttpieResponse> searchBlockedUsers(
-      {@required String query, int count}) {
+      {required String query, int? count}) {
     Map<String, dynamic> queryParams = {'query': query};
 
     if (count != null) queryParams['count'] = count;
@@ -246,8 +246,8 @@ class AuthApiService {
 
   Future<HttpieResponse> getBlockedUsers({
     bool authenticatedRequest = true,
-    int maxId,
-    int count,
+    int? maxId,
+    int? count,
   }) {
     Map<String, dynamic> queryParams = {};
 
@@ -280,7 +280,7 @@ class AuthApiService {
     return _httpService.delete(_makeApiUrl(path), appendAuthorizationToken: true);
   }
 
-  Future<HttpieResponse> searchFollowers({@required String query, int count}) {
+  Future<HttpieResponse> searchFollowers({required String query, int? count}) {
     Map<String, dynamic> queryParams = {'query': query};
 
     if (count != null) queryParams['count'] = count;
@@ -290,7 +290,7 @@ class AuthApiService {
   }
 
   Future<HttpieResponse> getFollowers(
-      {bool authenticatedRequest = true, int maxId, int count}) {
+      {bool authenticatedRequest = true, int? maxId, int? count}) {
     Map<String, dynamic> queryParams = {};
 
     if (count != null) queryParams['count'] = count;
@@ -302,7 +302,7 @@ class AuthApiService {
         appendAuthorizationToken: authenticatedRequest);
   }
 
-  Future<HttpieResponse> searchFollowings({@required String query, int count}) {
+  Future<HttpieResponse> searchFollowings({required String query, int? count}) {
     Map<String, dynamic> queryParams = {'query': query};
 
     if (count != null) queryParams['count'] = count;
@@ -313,8 +313,8 @@ class AuthApiService {
 
   Future<HttpieResponse> getFollowings({
     bool authenticatedRequest = true,
-    int maxId,
-    int count,
+    int? maxId,
+    int? count,
   }) {
     Map<String, dynamic> queryParams = {};
 
@@ -328,13 +328,13 @@ class AuthApiService {
   }
 
   Future<HttpieResponse> loginWithCredentials(
-      {@required String username, @required String password}) {
+      {required String username, required String password}) {
 
     return this._httpService.postJSON('$apiURL$LOGIN_PATH',
         body: {'username': username, 'password': password});
   }
 
-  Future<HttpieResponse> requestPasswordReset({@required String email}) {
+  Future<HttpieResponse> requestPasswordReset({required String email}) {
     var body = {};
     if (email != null && email != '') {
       body['email'] = email;
@@ -345,7 +345,7 @@ class AuthApiService {
   }
 
   Future<HttpieResponse> verifyPasswordReset(
-      {String newPassword, String passwordResetToken}) {
+      {String? newPassword, String? passwordResetToken}) {
     return this._httpService.postJSON('$apiURL$VERIFY_RESET_PASSWORD_PATH',
         body: {'new_password': newPassword, 'token': passwordResetToken});
   }
@@ -357,20 +357,20 @@ class AuthApiService {
   }
 
   Future<HttpieResponse> updateAuthenticatedUserNotificationsSettings({
-    bool postCommentNotifications,
-    bool postCommentReplyNotifications,
-    bool postCommentReactionNotifications,
-    bool postCommentUserMentionNotifications,
-    bool postUserMentionNotifications,
-    bool postReactionNotifications,
-    bool followNotifications,
-    bool followRequestNotifications,
-    bool followRequestApprovedNotifications,
-    bool connectionRequestNotifications,
-    bool connectionConfirmedNotifications,
-    bool communityInviteNotifications,
-    bool communityNewPostNotifications,
-    bool userNewPostNotifications,
+    bool? postCommentNotifications,
+    bool? postCommentReplyNotifications,
+    bool? postCommentReactionNotifications,
+    bool? postCommentUserMentionNotifications,
+    bool? postUserMentionNotifications,
+    bool? postReactionNotifications,
+    bool? followNotifications,
+    bool? followRequestNotifications,
+    bool? followRequestApprovedNotifications,
+    bool? connectionRequestNotifications,
+    bool? connectionConfirmedNotifications,
+    bool? communityInviteNotifications,
+    bool? communityNewPostNotifications,
+    bool? userNewPostNotifications,
   }) {
     Map<String, dynamic> body = {};
 
@@ -443,9 +443,9 @@ class AuthApiService {
   }
 
   Future<HttpieResponse> reportUserWithUsername(
-      {@required String userUsername,
-      @required int moderationCategoryId,
-      String description}) {
+      {required String userUsername,
+      required int moderationCategoryId,
+      String? description}) {
     String path = _makeReportUserPath(username: userUsername);
 
     Map<String, String> body = {'category_id': moderationCategoryId.toString()};
@@ -473,7 +473,7 @@ class AuthApiService {
         .parse(ENABLE_NEW_POST_NOTIFICATIONS_FOR_USER_PATH, {'userUsername': username});
   }
 
-  String _makeReportUserPath({@required username}) {
+  String _makeReportUserPath({required username}) {
     return _stringTemplateService
         .parse(REPORT_USER_PATH, {'userUsername': username});
   }

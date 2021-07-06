@@ -8,22 +8,22 @@ import 'package:flutter_advanced_networkimage/provider.dart';
 class OBCategoryTab extends StatelessWidget {
   final Category category;
 
-  const OBCategoryTab({Key key, @required this.category}) : super(key: key);
+  const OBCategoryTab({Key? key, required this.category}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
     ThemeValueParserService _themeValueParser = OpenbookProvider.of(context).themeValueParserService;
 
-    Color categoryColor = _themeValueParser.parseColor(category.color);
+    Color categoryColor = _themeValueParser.parseColor(category.color!);
     bool categoryColorIsDark = _themeValueParser.isDarkColor(categoryColor);
 
     return OBImageTab(
-      text: category.title,
+      text: category.title!,
       color: categoryColor,
       textColor: categoryColorIsDark ? Colors.white : Colors.black,
       imageProvider:
-      AdvancedNetworkImage(category.avatar, useDiskCache: true),
+      AdvancedNetworkImage(category.avatar ?? '', useDiskCache: true),
     );
   }
 }

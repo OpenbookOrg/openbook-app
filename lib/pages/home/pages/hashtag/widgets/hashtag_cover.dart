@@ -14,7 +14,7 @@ class OBHashtagCover extends StatelessWidget {
       stream: hashtag.updateSubject,
       initialData: hashtag,
       builder: (BuildContext context, AsyncSnapshot<Hashtag> snapshot) {
-        String hashtagCover = hashtag?.image;
+        String? hashtagCover = hashtag.image;
 
         return Stack(
           children: <Widget>[

@@ -6,17 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 
 class OBPostImagePreviewer extends StatelessWidget {
-  final PostImage postImage;
-  final File postImageFile;
-  final VoidCallback onRemove;
-  final VoidCallback onWillEditImage;
+  final PostImage? postImage;
+  final File? postImageFile;
+  final VoidCallback? onRemove;
+  final VoidCallback? onWillEditImage;
 
-  final ValueChanged<File> onPostImageEdited;
+  final ValueChanged<File>? onPostImageEdited;
 
   final double buttonSize = 30.0;
 
   const OBPostImagePreviewer(
-      {Key key,
+      {Key? key,
       this.postImage,
       this.postImageFile,
       this.onRemove,
@@ -37,12 +37,12 @@ class OBPostImagePreviewer extends StatelessWidget {
             borderRadius: new BorderRadius.circular(avatarBorderRadius),
             child: isFileImage
                 ? Image.file(
-                    postImageFile,
+                    postImageFile!,
                     fit: BoxFit.cover,
                   )
                 : Image(
                     fit: BoxFit.cover,
-                    image: AdvancedNetworkImage(postImage.image,
+                    image: AdvancedNetworkImage(postImage!.image ?? '',
                         useDiskCache: true,
                         fallbackAssetImage:
                             'assets/images/fallbacks/post-fallback.png',
@@ -91,7 +91,7 @@ class OBPostImagePreviewer extends StatelessWidget {
   }
 
   Widget _buildEditButton(BuildContext context) {
-    Function onWantsToEditImage = () {
+    VoidCallback onWantsToEditImage = () {
       _onWantsToEditImage(context);
     };
 
@@ -115,12 +115,12 @@ class OBPostImagePreviewer extends StatelessWidget {
   }
 
   void _onWantsToEditImage(BuildContext context) async {
-    if (onWillEditImage != null) onWillEditImage();
+    if (onWillEditImage != null) onWillEditImage!();
 
     OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
 
-    File croppedFile =
-        await openbookProvider.mediaService.cropImage(postImageFile);
-    if (croppedFile != null) onPostImageEdited(croppedFile);
+    File? croppedFile =
+        await openbookProvider.mediaService.cropImage(postImageFile!);
+    if (croppedFile != null) onPostImageEdited!(croppedFile);
   }
 }

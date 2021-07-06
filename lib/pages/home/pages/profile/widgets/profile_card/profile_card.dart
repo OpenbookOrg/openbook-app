@@ -20,13 +20,13 @@ import 'package:flutter/material.dart';
 
 class OBProfileCard extends StatelessWidget {
   final User user;
-  final VoidCallback onUserProfileUpdated;
-  final ValueChanged<Community> onExcludedCommunityRemoved;
-  final ValueChanged<List<Community>> onExcludedCommunitiesAdded;
+  final VoidCallback? onUserProfileUpdated;
+  final ValueChanged<Community>? onExcludedCommunityRemoved;
+  final ValueChanged<List<Community>>? onExcludedCommunitiesAdded;
 
   const OBProfileCard(
     this.user, {
-    Key key,
+    Key? key,
     this.onUserProfileUpdated,
     this.onExcludedCommunityRemoved,
     this.onExcludedCommunitiesAdded,
@@ -95,7 +95,7 @@ class OBProfileCard extends StatelessWidget {
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                       color: themeValueParserService
-                          .parseColor(theme.primaryColor),
+                          .parseColor(theme!.primaryColor),
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(50),
                           topRight: Radius.circular(50))),
@@ -125,10 +125,10 @@ class OBProfileCard extends StatelessWidget {
   }
 
   Widget _buildNameRow(
-      {@required User user,
-      @required BuildContext context,
-      @required ToastService toastService}) {
-    if (user.hasProfileBadges() && user.getProfileBadges().length > 0) {
+      {required User user,
+      required BuildContext context,
+      required ToastService toastService}) {
+    if (user.hasProfileBadges() && user.getProfileBadges()!.length > 0) {
       return Row(children: <Widget>[
         OBProfileName(user),
         _getUserBadge(user: user, toastService: toastService, context: context)
@@ -138,10 +138,10 @@ class OBProfileCard extends StatelessWidget {
   }
 
   Widget _getUserBadge(
-      {@required User user,
-      @required ToastService toastService,
-      @required BuildContext context}) {
-    Badge badge = user.getProfileBadges()[0];
+      {required User user,
+      required ToastService toastService,
+      required BuildContext context}) {
+    Badge badge = user.getProfileBadges()![0];
     return GestureDetector(
       onTap: () {
         toastService.info(
@@ -152,7 +152,7 @@ class OBProfileCard extends StatelessWidget {
   }
 
   String _getUserBadgeDescription(User user) {
-    Badge badge = user.getProfileBadges()[0];
-    return badge.getKeywordDescription();
+    Badge badge = user.getProfileBadges()![0];
+    return badge.getKeywordDescription()!;
   }
 }

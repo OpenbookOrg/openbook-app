@@ -33,12 +33,12 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 class OBNotificationTile extends StatelessWidget {
   final OBNotification notification;
-  final ValueChanged<OBNotification> onNotificationTileDeleted;
-  final ValueChanged<OBNotification> onPressed;
+  final ValueChanged<OBNotification>? onNotificationTileDeleted;
+  final ValueChanged<OBNotification>? onPressed;
 
   const OBNotificationTile(
-      {Key key,
-      @required this.notification,
+      {Key? key,
+      required this.notification,
       this.onNotificationTileDeleted,
       this.onPressed})
       : super(key: key);
@@ -64,7 +64,7 @@ class OBNotificationTile extends StatelessWidget {
 
   Widget _buildNotificationBackground(
       BuildContext context, AsyncSnapshot<OBNotification> snapshot) {
-    return snapshot.data.read ? const SizedBox() : OBHighlightedBox();
+    return snapshot.data?.read == true ? const SizedBox() : OBHighlightedBox();
   }
 
   Widget _buildNotification(OBNotification notification) {
@@ -72,9 +72,9 @@ class OBNotificationTile extends StatelessWidget {
 
     dynamic notificationContentObject = this.notification.contentObject;
 
-    Function finalOnPressed = onPressed != null
+    VoidCallback? finalOnPressed = onPressed != null
         ? () {
-            onPressed(notification);
+            onPressed!(notification);
           }
         : null;
 
@@ -197,7 +197,9 @@ class OBNotificationTile extends StatelessWidget {
           color: Colors.red,
           icon: Icons.delete,
           onTap: () {
-            onNotificationTileDeleted(notification);
+            if (onNotificationTileDeleted != null) {
+              onNotificationTileDeleted!(notification);
+            }
           },
         ),
       ],

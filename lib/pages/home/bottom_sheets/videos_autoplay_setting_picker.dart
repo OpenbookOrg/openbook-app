@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 class OBVideosAutoPlaySettingPickerBottomSheet extends StatefulWidget {
   final ValueChanged<VideosAutoPlaySetting> onTypeChanged;
 
-  final VideosAutoPlaySetting initialValue;
+  final VideosAutoPlaySetting? initialValue;
 
   const OBVideosAutoPlaySettingPickerBottomSheet(
-      {Key key, @required this.onTypeChanged, this.initialValue})
+      {Key? key, required this.onTypeChanged, this.initialValue})
       : super(key: key);
 
   @override
@@ -22,8 +22,8 @@ class OBVideosAutoPlaySettingPickerBottomSheet extends StatefulWidget {
 
 class OBVideosAutoPlaySettingPickerBottomSheetState
     extends State<OBVideosAutoPlaySettingPickerBottomSheet> {
-  FixedExtentScrollController _cupertinoPickerController;
-  List<VideosAutoPlaySetting> allVideosAutoPlaySettings;
+  late FixedExtentScrollController _cupertinoPickerController;
+  late List<VideosAutoPlaySetting> allVideosAutoPlaySettings;
 
   @override
   void initState() {
@@ -31,8 +31,8 @@ class OBVideosAutoPlaySettingPickerBottomSheetState
     allVideosAutoPlaySettings = VideosAutoPlaySetting.values();
     _cupertinoPickerController = FixedExtentScrollController(
         initialItem: widget.initialValue != null
-            ? allVideosAutoPlaySettings.indexOf(widget.initialValue)
-            : null);
+            ? allVideosAutoPlaySettings.indexOf(widget.initialValue!)
+            : 0);
   }
 
   @override
@@ -56,7 +56,7 @@ class OBVideosAutoPlaySettingPickerBottomSheetState
           itemExtent: 32,
           children:
               allVideosAutoPlaySettings.map((VideosAutoPlaySetting setting) {
-            return OBText(localizationMap[setting]);
+            return OBText(localizationMap[setting]!);
           }).toList(),
         ),
       ),

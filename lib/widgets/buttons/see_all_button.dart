@@ -12,11 +12,11 @@ class OBSeeAllButton extends StatelessWidget {
   final int resourcesCount;
 
   const OBSeeAllButton(
-      {Key key,
-      @required this.onPressed,
-      @required this.resourceName,
-      @required this.previewedResourcesCount,
-      @required this.resourcesCount})
+      {Key? key,
+      required this.onPressed,
+      required this.resourceName,
+      required this.previewedResourcesCount,
+      required this.resourcesCount})
       : super(key: key);
 
   @override

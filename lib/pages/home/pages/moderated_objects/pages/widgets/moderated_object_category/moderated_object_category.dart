@@ -11,12 +11,12 @@ import 'package:flutter/material.dart';
 class OBModeratedObjectCategory extends StatelessWidget {
   final bool isEditable;
   final ModeratedObject moderatedObject;
-  final ValueChanged<ModerationCategory> onCategoryChanged;
+  final ValueChanged<ModerationCategory>? onCategoryChanged;
 
   const OBModeratedObjectCategory(
-      {Key key,
-      @required this.moderatedObject,
-      @required this.isEditable,
+      {Key? key,
+      required this.moderatedObject,
+      required this.isEditable,
       this.onCategoryChanged})
       : super(key: key);
 
@@ -36,17 +36,17 @@ class OBModeratedObjectCategory extends StatelessWidget {
           builder:
               (BuildContext context, AsyncSnapshot<ModeratedObject> snapshot) {
             return OBModerationCategoryTile(
-              category: snapshot.data.category,
+              category: snapshot.data!.category!,
               onPressed: (category) async {
                 if (!isEditable) return;
                 OpenbookProviderState openbookProvider =
                     OpenbookProvider.of(context);
-                ModerationCategory newModerationCategory =
+                ModerationCategory? newModerationCategory =
                     await openbookProvider.modalService
                         .openModeratedObjectUpdateCategory(
                             context: context, moderatedObject: moderatedObject);
                 if (newModerationCategory != null && onCategoryChanged != null)
-                  onCategoryChanged(newModerationCategory);
+                  onCategoryChanged!(newModerationCategory);
               },
               trailing: isEditable ? const OBIcon(
                 OBIcons.edit,

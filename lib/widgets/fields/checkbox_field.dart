@@ -6,19 +6,19 @@ import 'package:flutter/material.dart';
 
 class OBCheckboxField extends StatelessWidget {
   final bool value;
-  final VoidCallback onTap;
-  final Widget leading;
+  final VoidCallback? onTap;
+  final Widget? leading;
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final bool isDisabled;
-  final TextStyle titleStyle;
+  final TextStyle? titleStyle;
 
   OBCheckboxField(
-      {@required this.value,
+      {required this.value,
       this.subtitle,
       this.onTap,
       this.leading,
-      @required this.title,
+      required this.title,
       this.isDisabled = false,
       this.titleStyle});
 
@@ -35,7 +35,7 @@ class OBCheckboxField extends StatelessWidget {
             title,
             style: finalTitleStyle,
           ),
-          subtitle: subtitle != null ? OBSecondaryText(subtitle) : null,
+          subtitle: subtitle != null ? OBSecondaryText(subtitle!) : null,
           trailing: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -47,7 +47,7 @@ class OBCheckboxField extends StatelessWidget {
             ],
           ),
           onTap: () {
-            if (!isDisabled && onTap != null) onTap();
+            if (!isDisabled && onTap != null) onTap!();
           }),
     );
 

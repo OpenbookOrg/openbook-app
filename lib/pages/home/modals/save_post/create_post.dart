@@ -42,14 +42,14 @@ import 'package:flutter/material.dart';
 import 'package:pigment/pigment.dart';
 
 class OBSavePostModal extends StatefulWidget {
-  final Community community;
-  final String text;
-  final File image;
-  final File video;
-  final Post post;
+  final Community? community;
+  final String? text;
+  final File? image;
+  final File? video;
+  final Post? post;
 
   const OBSavePostModal(
-      {Key key, this.community, this.text, this.image, this.video, this.post})
+      {Key? key, this.community, this.text, this.image, this.video, this.post})
       : super(key: key);
 
   @override
@@ -59,50 +59,50 @@ class OBSavePostModal extends StatefulWidget {
 }
 
 class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
-  ValidationService _validationService;
-  UserService _userService;
-  NavigationService _navigationService;
-  MediaService _mediaService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  DraftService _draftService;
-  ShareService _shareService;
-  UtilsService _utilsService;
+  late ValidationService _validationService;
+  late UserService _userService;
+  late NavigationService _navigationService;
+  late MediaService _mediaService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late DraftService _draftService;
+  late ShareService _shareService;
+  late UtilsService _utilsService;
 
-  TextEditingController _textController;
-  FocusNode _focusNode;
-  int _charactersCount;
-  LinkPreview _linkPreview;
+  late TextEditingController _textController;
+  late FocusNode _focusNode;
+  late int _charactersCount;
+  LinkPreview? _linkPreview;
 
-  bool _isPostTextAllowedLength;
-  bool _isPostTextContainingValidHashtags;
+  late bool _isPostTextAllowedLength;
+  late bool _isPostTextContainingValidHashtags;
 
-  bool _hasFocus;
-  bool _hasImage;
-  bool _hasVideo;
+  late bool _hasFocus;
+  late bool _hasImage;
+  late bool _hasVideo;
 
   // When creating a post
-  File _postImageFile;
-  File _postVideoFile;
+  File? _postImageFile;
+  File? _postVideoFile;
 
   // When editing a post
-  PostImage _postImage;
-  PostVideo _postVideo;
+  PostImage? _postImage;
+  PostVideo? _postVideo;
 
-  VoidCallback _postImageWidgetRemover;
-  VoidCallback _postVideoWidgetRemover;
-  VoidCallback _linkPreviewWidgetRemover;
+  VoidCallback? _postImageWidgetRemover;
+  VoidCallback? _postVideoWidgetRemover;
+  VoidCallback? _linkPreviewWidgetRemover;
 
-  List<Widget> _postItemsWidgets;
+  late List<Widget> _postItemsWidgets;
 
-  bool _needsBootstrap;
-  bool _isCreateCommunityPostInProgress;
+  late bool _needsBootstrap;
+  late bool _isCreateCommunityPostInProgress;
 
-  bool _isEditingPost;
+  late bool _isEditingPost;
 
-  bool _saveInProgress;
-  CancelableOperation _saveOperation;
-  CancelableOperation<LinkPreview> _linkPreviewCheckOperation;
+  late bool _saveInProgress;
+  CancelableOperation? _saveOperation;
+  CancelableOperation<LinkPreview>? _linkPreviewCheckOperation;
 
   @override
   void initState() {
@@ -129,8 +129,8 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
       _postItemsWidgets = [
         OBCreatePostText(controller: _textController, focusNode: _focusNode)
       ];
-      if (widget.post.hasMedia()) {
-        PostMedia postMedia = widget.post.getFirstMedia();
+      if (widget.post!.hasMedia()) {
+        PostMedia postMedia = widget.post!.getFirstMedia()!;
         if (postMedia.type == PostMediaType.video) {
           _setPostVideo(postMedia.contentObject as PostVideo);
           _hasImage = false;
@@ -145,7 +145,7 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
     } else {
       _textController = DraftTextEditingController.post(
           text: widget.text,
-          communityId: widget.community != null ? widget.community.id : null,
+          communityId: widget.community != null ? widget.community!.id : null,
           draftService: _draftService);
       _postItemsWidgets = [
         OBCreatePostText(controller: _textController, focusNode: _focusNode)
@@ -153,10 +153,10 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
       _hasImage = false;
       _hasVideo = false;
       if (widget.image != null) {
-        _setPostImageFile(widget.image);
+        _setPostImageFile(widget.image!);
       }
       if (widget.video != null) {
-        _setPostVideoFile(widget.video);
+        _setPostVideoFile(widget.video!);
       }
     }
 
@@ -164,7 +164,7 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
 
     if (!_isEditingPost && widget.community != null)
       _postItemsWidgets.add(OBPostCommunityPreviewer(
-        community: widget.community,
+        community: widget.community!,
       ));
 
     _textController.addListener(_onPostTextChanged);
@@ -235,7 +235,7 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
         )));
   }
 
-  Widget _buildNavigationBar(LocalizationService _localizationService) {
+  ObstructingPreferredSizeWidget _buildNavigationBar(LocalizationService _localizationService) {
     bool isPrimaryActionButtonIsEnabled =
         (_isPostTextAllowedLength && _charactersCount > 0) ||
             _hasImage ||
@@ -246,10 +246,10 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
         child: OBIcon(OBIcons.close,
             semanticLabel: _localizationService.post__close_create_post_label),
         onTap: () {
-          if (this._postImageFile != null) this._postImageFile.delete();
+          if (this._postImageFile != null) this._postImageFile!.delete();
           if (this._postVideoFile != null)
-            _mediaService.clearThumbnailForFile(this._postVideoFile);
-          if (this._postVideoFile != null) this._postVideoFile.delete();
+            _mediaService.clearThumbnailForFile(this._postVideoFile!);
+          if (this._postVideoFile != null) this._postVideoFile!.delete();
           Navigator.pop(context);
         },
       ),
@@ -261,7 +261,7 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
     );
   }
 
-  Widget _buildPrimaryActionButton({bool isEnabled}) {
+  Widget _buildPrimaryActionButton({bool isEnabled = false}) {
     Widget nextButton;
 
     if (_isEditingPost) {
@@ -297,7 +297,7 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
     return nextButton;
   }
 
-  Future<void> _onWantsToCreateCommunityPost() {
+  Future<void>? _onWantsToCreateCommunityPost() {
     if (!_isPostTextContainingValidHashtags) {
       _toastService.error(
           message: _localizationService.post__create_hashtags_invalid(
@@ -319,13 +319,13 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
       return;
     }
 
-    OBNewPostData createPostData = await _navigationService.navigateToSharePost(
+    OBNewPostData? createPostData = await _navigationService.navigateToSharePost(
         context: context, createPostData: _makeNewPostData());
 
     if (createPostData != null) {
       // Remove modal
       if (this._postVideoFile != null)
-        _mediaService.clearThumbnailForFile(this._postVideoFile);
+        _mediaService.clearThumbnailForFile(this._postVideoFile!);
       Navigator.pop(context, createPostData);
       _clearDraft();
     }
@@ -475,7 +475,7 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
       _hasImage = true;
 
       var postImageWidget = OBPostImagePreviewer(
-        key: Key(_postImageFile.path),
+        key: Key(_postImageFile!.path),
         postImageFile: _postImageFile,
         onRemove: () {
           _removePostImageFile();
@@ -505,7 +505,7 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
       _hasVideo = true;
 
       var postVideoWidget = OBPostVideoPreview(
-        key: Key(_postVideoFile.path),
+        key: Key(_postVideoFile!.path),
         postVideoFile: _postVideoFile,
         onRemove: () {
           _removePostVideoFile();
@@ -542,7 +542,7 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
     _addPostItemWidget(postImageWidget);
   }
 
-  Future<dynamic> _onShare({String text, File image, File video}) async {
+  Future<dynamic> _onShare({String? text, File? image, File? video}) async {
     if (image != null || video != null) {
       if (_hasImage) {
         _removePostImageFile();
@@ -572,19 +572,19 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
   Future<void> _createCommunityPost() async {
     OBNewPostData newPostData = _makeNewPostData();
     if (this._postVideoFile != null)
-      _mediaService.clearThumbnailForFile(this._postVideoFile);
+      _mediaService.clearThumbnailForFile(this._postVideoFile!);
     Navigator.pop(context, newPostData);
     _clearDraft();
   }
 
   void _savePost() async {
     _setSaveInProgress(true);
-    Post editedPost;
+    Post? editedPost;
     try {
       _saveOperation = CancelableOperation.fromFuture(_userService.editPost(
-          postUuid: widget.post.uuid, text: _textController.text));
+          postUuid: widget.post!.uuid!, text: _textController.text));
 
-      editedPost = await _saveOperation.value;
+      editedPost = await _saveOperation?.value;
       Navigator.pop(context, editedPost);
     } catch (error) {
       _onError(error);
@@ -602,13 +602,13 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
 
   void _checkForLinkPreview() async {
     if (_linkPreviewCheckOperation != null) {
-      _linkPreviewCheckOperation.cancel();
+      _linkPreviewCheckOperation!.cancel();
       _linkPreviewCheckOperation = null;
     }
 
     String text = _textController.text;
 
-    String linkPreviewUrl = _utilsService.getLinkToPreviewFromText(text);
+    String? linkPreviewUrl = _utilsService.getLinkToPreviewFromText(text);
 
     if (_hasImage || _hasVideo || linkPreviewUrl == null) {
       _clearLinkPreview();
@@ -616,13 +616,13 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
     }
 
     bool isNewLinkPreview =
-        _linkPreview == null || _linkPreview.url != linkPreviewUrl;
+        _linkPreview == null || _linkPreview!.url != linkPreviewUrl;
 
     if (isNewLinkPreview) {
       try {
         _linkPreviewCheckOperation = CancelableOperation.fromFuture(
             _userService.previewLink(link: linkPreviewUrl));
-        LinkPreview linkPreview = await _linkPreviewCheckOperation.value;
+        LinkPreview linkPreview = await _linkPreviewCheckOperation!.value;
         _setLinkPreview(linkPreview);
       } catch (error) {
         debugLog('Could not check whether link was previewable');
@@ -634,7 +634,7 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
   }
 
   void _setLinkPreview(LinkPreview linkPreview) {
-    if (_linkPreviewWidgetRemover != null) _linkPreviewWidgetRemover();
+    if (_linkPreviewWidgetRemover != null) _linkPreviewWidgetRemover!();
 
     setState(() {
       _linkPreview = linkPreview;
@@ -647,7 +647,7 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
   void _clearLinkPreview() {
     setState(() {
       _linkPreview = null;
-      if (_linkPreviewWidgetRemover != null) _linkPreviewWidgetRemover();
+      if (_linkPreviewWidgetRemover != null) _linkPreviewWidgetRemover!();
     });
   }
 
@@ -656,8 +656,8 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else if (error is FileTooLargeException) {
       int limit = error.getLimitInMB();
       _toastService.error(
@@ -673,27 +673,37 @@ class OBSavePostModalState extends OBContextualSearchBoxState<OBSavePostModal> {
 
   void _removePostImageFile() {
     setState(() {
-      if (this._postImageFile != null) this._postImageFile.deleteSync();
+      if (this._postImageFile != null) this._postImageFile!.deleteSync();
       this._postImage = null;
       _hasImage = false;
-      _postImageWidgetRemover();
+
+      if (_postImageWidgetRemover != null) {
+        _postImageWidgetRemover!();
+      }
     });
   }
 
   void _removePostVideoFile() {
+    if (this._postVideoFile == null) {
+      return;
+    }
+
     setState(() {
-      _mediaService.clearThumbnailForFile(this._postVideoFile);
-      if (this._postVideoFile != null) this._postVideoFile.deleteSync();
+      _mediaService.clearThumbnailForFile(this._postVideoFile!);
+      if (this._postVideoFile != null) this._postVideoFile!.deleteSync();
       this._postVideoFile = null;
       _hasVideo = false;
-      _postVideoWidgetRemover();
+
+      if (_postVideoWidgetRemover != null) {
+        _postVideoWidgetRemover!();
+      }
     });
   }
 
   OBNewPostData _makeNewPostData() {
     List<File> media = [];
-    if (_postImageFile != null) media.add(_postImageFile);
-    if (_postVideoFile != null) media.add(_postVideoFile);
+    if (_postImageFile != null) media.add(_postImageFile!);
+    if (_postVideoFile != null) media.add(_postVideoFile!);
 
     return OBNewPostData(
         text: _textController.text, media: media, community: widget.community);

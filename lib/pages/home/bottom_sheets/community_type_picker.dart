@@ -15,10 +15,10 @@ class OBCommunityTypePickerBottomSheet extends StatefulWidget {
   final ValueChanged<CommunityType> onTypeChanged;
 
   // Useless for now given the bug
-  final CommunityType initialType;
+  final CommunityType? initialType;
 
   const OBCommunityTypePickerBottomSheet(
-      {Key key, @required this.onTypeChanged, this.initialType})
+      {Key? key, required this.onTypeChanged, this.initialType})
       : super(key: key);
 
   @override
@@ -29,7 +29,7 @@ class OBCommunityTypePickerBottomSheet extends StatefulWidget {
 
 class OBCommunityTypePickerBottomSheetState
     extends State<OBCommunityTypePickerBottomSheet> {
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
   @override
   void initState() {

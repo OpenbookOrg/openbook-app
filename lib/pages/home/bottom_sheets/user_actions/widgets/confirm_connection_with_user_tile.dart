@@ -12,10 +12,10 @@ import 'package:flutter/material.dart';
 
 class OBConfirmConnectionWithUserTile extends StatefulWidget {
   final User user;
-  final VoidCallback onWillShowModalBottomSheet;
+  final VoidCallback? onWillShowModalBottomSheet;
 
   const OBConfirmConnectionWithUserTile(this.user,
-      {Key key, this.onWillShowModalBottomSheet})
+      {Key? key, this.onWillShowModalBottomSheet})
       : super(key: key);
 
   @override
@@ -26,10 +26,10 @@ class OBConfirmConnectionWithUserTile extends StatefulWidget {
 
 class OBConfirmConnectionWithUserTileState
     extends State<OBConfirmConnectionWithUserTile> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  BottomSheetService _bottomSheetService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late BottomSheetService _bottomSheetService;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class OBConfirmConnectionWithUserTileState
     _localizationService = openbookProvider.localizationService;
     _bottomSheetService = openbookProvider.bottomSheetService;
 
-    String userName = widget.user.getProfileName();
+    String userName = widget.user.getProfileName()!;
 
     return ListTile(
         title: OBText(_localizationService.user__confirm_connection_with(userName)),
@@ -49,7 +49,7 @@ class OBConfirmConnectionWithUserTileState
 
   void _displayAddConnectionToCirclesBottomSheet() {
     if (widget.onWillShowModalBottomSheet != null)
-      widget.onWillShowModalBottomSheet();
+      widget.onWillShowModalBottomSheet!();
     _bottomSheetService.showConnectionsCirclesPicker(
         context: context,
         title: _localizationService.trans('user__confirm_connection_add_connection'),
@@ -64,9 +64,9 @@ class OBConfirmConnectionWithUserTileState
   Future _confirmConnectionWithUser(List<Circle> circles) async {
     try {
       await _userService.confirmConnectionWithUserWithUsername(
-          widget.user.username,
+          widget.user.username!,
           circles: circles);
-      if (!widget.user.isFollowing) widget.user.incrementFollowersCount();
+      if (!widget.user.isFollowing!) widget.user.incrementFollowersCount();
       _toastService.success(message: _localizationService.trans('user__confirm_connection_connection_confirmed'), context: context);
     } catch (error) {
       _onError(error);
@@ -78,8 +78,8 @@ class OBConfirmConnectionWithUserTileState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(message: _localizationService.trans('error__unknown_error'), context: context);
       throw error;

@@ -12,12 +12,12 @@ import 'notification_tile_title.dart';
 class OBFollowRequestNotificationTile extends StatelessWidget {
   final OBNotification notification;
   final FollowRequestNotification followRequestNotification;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const OBFollowRequestNotificationTile(
-      {Key key,
-      @required this.notification,
-      @required this.followRequestNotification,
+      {Key? key,
+      required this.notification,
+      required this.followRequestNotification,
       this.onPressed})
       : super(key: key);
 
@@ -28,11 +28,11 @@ class OBFollowRequestNotificationTile extends StatelessWidget {
     LocalizationService _localizationService = openbookProvider.localizationService;
 
     var navigateToRequesterProfile = () {
-      if (onPressed != null) onPressed();
+      if (onPressed != null) onPressed!();
       OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
 
       openbookProvider.navigationService.navigateToUserProfile(
-        user: followRequestNotification.followRequest.creator,
+        user: followRequestNotification.followRequest!.creator!,
           context: context);
     };
 
@@ -40,16 +40,16 @@ class OBFollowRequestNotificationTile extends StatelessWidget {
       onTap: navigateToRequesterProfile,
       leading: OBAvatar(
         size: OBAvatarSize.medium,
-        avatarUrl: followRequestNotification.followRequest.creator
+        avatarUrl: followRequestNotification.followRequest!.creator!
             .getProfileAvatar(),
       ),
       title: OBNotificationTileTitle(
           onUsernamePressed: navigateToRequesterProfile,
-          user: followRequestNotification.followRequest.creator,
+          user: followRequestNotification.followRequest!.creator,
           text: TextSpan(
             text: _localizationService.notifications__follow_request_tile,
           )),
-      subtitle: OBSecondaryText(utilsService.timeAgo(notification.created, _localizationService)),
+      subtitle: OBSecondaryText(utilsService.timeAgo(notification.created!, _localizationService)),
     );
   }
 }

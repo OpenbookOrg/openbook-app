@@ -12,7 +12,7 @@ class OBProfileFollowersCount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int followersCount = user.followersCount;
+    int? followersCount = user.followersCount;
 
     if (followersCount == null ||
         followersCount == 0 ||
@@ -51,7 +51,7 @@ class OBProfileFollowersCount extends StatelessWidget {
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: themeValueParserService
-                                .parseColor(theme.primaryTextColor))),
+                                .parseColor(theme!.primaryTextColor))),
                     TextSpan(
                         text: followersCount == 1 ? _localizationService.post__profile_counts_follower : _localizationService.post__profile_counts_followers,
                         style: TextStyle(

@@ -12,12 +12,12 @@ import 'package:flutter/material.dart';
 
 class OBBlockUserTile extends StatelessWidget {
   final User user;
-  final VoidCallback onBlockedUser;
-  final VoidCallback onUnblockedUser;
+  final VoidCallback? onBlockedUser;
+  final VoidCallback? onUnblockedUser;
 
   const OBBlockUserTile({
-    Key key,
-    @required this.user,
+    Key? key,
+    required this.user,
     this.onBlockedUser,
     this.onUnblockedUser,
   }) : super(key: key);
@@ -34,7 +34,7 @@ class OBBlockUserTile extends StatelessWidget {
       stream: user.updateSubject,
       initialData: user,
       builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
-        var user = snapshot.data;
+        var user = snapshot.data!;
 
         bool isBlocked = user.isBlocked ?? false;
 
@@ -53,7 +53,7 @@ class OBBlockUserTile extends StatelessWidget {
                         toastService.success(
                             message: localizationService.user__profile_action_user_unblocked,
                             context: context);
-                        if (onUnblockedUser != null) onUnblockedUser();
+                        if (onUnblockedUser != null) onUnblockedUser!();
                       });
                 }
               : () {
@@ -65,7 +65,7 @@ class OBBlockUserTile extends StatelessWidget {
                         toastService.success(
                             message: localizationService.user__profile_action_user_blocked,
                             context: context);
-                        if (onBlockedUser != null) onBlockedUser();
+                        if (onBlockedUser != null) onBlockedUser!();
                       });
                 },
         );

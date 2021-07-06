@@ -18,16 +18,16 @@ class OBAuthForgotPasswordPage extends StatefulWidget {
 class OBAuthForgotPasswordPageState extends State<OBAuthForgotPasswordPage> {
   final _formKey = GlobalKey<FormState>();
 
-  bool _isSubmitted;
-  String _errorFeedback;
-  bool _requestInProgress;
+  late bool _isSubmitted;
+  String? _errorFeedback;
+  late bool _requestInProgress;
 
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
+  late TextEditingController _usernameController = TextEditingController();
+  late TextEditingController _emailController = TextEditingController();
 
-  LocalizationService _localizationService;
-  ValidationService _validationService;
-  UserService _userService;
+  late LocalizationService _localizationService;
+  late ValidationService _validationService;
+  late UserService _userService;
 
   @override
   void initState() {
@@ -99,7 +99,7 @@ class OBAuthForgotPasswordPageState extends State<OBAuthForgotPasswordPage> {
 
     return SizedBox(
       child: Text(
-        _errorFeedback,
+        _errorFeedback!,
         style: TextStyle(fontSize: 16.0, color: Colors.deepOrange),
         textAlign: TextAlign.center,
       ),
@@ -120,7 +120,7 @@ class OBAuthForgotPasswordPageState extends State<OBAuthForgotPasswordPage> {
 
   Future<void> _submitForm() async {
     _isSubmitted = true;
-    if (_validateForm()) {
+    if (_validateForm() == true) {
       await _requestPasswordReset(context);
     }
   }
@@ -135,7 +135,7 @@ class OBAuthForgotPasswordPageState extends State<OBAuthForgotPasswordPage> {
       Navigator.pushNamed(context, '/auth/verify_reset_password_link_step');
     } catch (error) {
       if (error is HttpieRequestError) {
-        String errorMessage = await error.toHumanReadableMessage();
+        String? errorMessage = await error.toHumanReadableMessage();
         _setErrorFeedback(errorMessage);
       }
       if (error is HttpieConnectionRefusedError) {
@@ -147,7 +147,7 @@ class OBAuthForgotPasswordPageState extends State<OBAuthForgotPasswordPage> {
     }
   }
 
-  Widget _buildPreviousButton({@required BuildContext context}) {
+  Widget _buildPreviousButton({required BuildContext context}) {
     String buttonText = _localizationService.trans('auth__login__previous');
 
     return OBSecondaryButton(
@@ -171,7 +171,7 @@ class OBAuthForgotPasswordPageState extends State<OBAuthForgotPasswordPage> {
     );
   }
 
-  Widget _buildHeading({@required BuildContext context}) {
+  Widget _buildHeading({required BuildContext context}) {
     String titleText = _localizationService.auth__login__forgot_password;
     String subtitleText = _localizationService.auth__login__forgot_password_subtitle;
 
@@ -241,7 +241,7 @@ class OBAuthForgotPasswordPageState extends State<OBAuthForgotPasswordPage> {
         ));
   }
 
-  String _validateEmail(String value) {
+  String? _validateEmail(String? value) {
     if (!_isSubmitted) return null;
     if (_usernameController.text.trim().length > 0) {
       return null;
@@ -249,14 +249,14 @@ class OBAuthForgotPasswordPageState extends State<OBAuthForgotPasswordPage> {
     return _validationService.validateUserEmail(value);
   }
 
-  bool _validateForm() {
+  bool? _validateForm() {
     if (_errorFeedback != null) {
       _setErrorFeedback(null);
     }
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate();
   }
 
-  void _setErrorFeedback(String feedback) {
+  void _setErrorFeedback(String? feedback) {
     setState(() {
       _errorFeedback = feedback;
     });

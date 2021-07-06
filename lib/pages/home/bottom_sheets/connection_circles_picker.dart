@@ -14,14 +14,14 @@ class OBConnectionCirclesPickerBottomSheet extends StatefulWidget {
   final String title;
   final String actionLabel;
   final OnPickedCircles onPickedCircles;
-  final List<Circle> initialPickedCircles;
+  final List<Circle>? initialPickedCircles;
 
   const OBConnectionCirclesPickerBottomSheet(
-      {Key key,
+      {Key? key,
       this.initialPickedCircles,
-      @required this.title,
-      @required this.actionLabel,
-      @required this.onPickedCircles})
+      required this.title,
+      required this.actionLabel,
+      required this.onPickedCircles})
       : super(key: key);
 
   @override
@@ -32,15 +32,15 @@ class OBConnectionCirclesPickerBottomSheet extends StatefulWidget {
 
 class OBConnectionCirclesPickerBottomSheetState
     extends State<OBConnectionCirclesPickerBottomSheet> {
-  UserService _userService;
-  ModalService _modalService;
+  late UserService _userService;
+  late ModalService _modalService;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
-  List<Circle> _circles;
-  List<Circle> _circleSearchResults;
-  List<Circle> _pickedCircles;
-  List<Circle> _disabledCircles;
+  late List<Circle> _circles;
+  late List<Circle> _circleSearchResults;
+  late List<Circle> _pickedCircles;
+  late List<Circle> _disabledCircles;
 
   @override
   void initState() {
@@ -48,7 +48,7 @@ class OBConnectionCirclesPickerBottomSheetState
     _circles = [];
     _circleSearchResults = [];
     _pickedCircles = widget.initialPickedCircles != null
-        ? widget.initialPickedCircles.toList()
+        ? widget.initialPickedCircles!.toList()
         : [];
     _needsBootstrap = true;
     _disabledCircles = [];
@@ -117,7 +117,7 @@ class OBConnectionCirclesPickerBottomSheetState
     String standarisedSearchStr = searchString.toLowerCase();
 
     List<Circle> results = _circles.where((Circle circle) {
-      return circle.name.toLowerCase().contains(standarisedSearchStr);
+      return circle.name!.toLowerCase().contains(standarisedSearchStr);
     }).toList();
 
     _setCircleSearchResults(results);
@@ -130,7 +130,7 @@ class OBConnectionCirclesPickerBottomSheetState
   }
 
   void _onWantsToCreateANewCircle() async {
-    Circle createdCircle =
+    Circle? createdCircle =
         await _modalService.openCreateConnectionsCircle(context: context);
     if (createdCircle != null) {
       _addCircle(createdCircle);
@@ -157,7 +157,7 @@ class OBConnectionCirclesPickerBottomSheetState
   void _bootstrap() async {
     CirclesList circleList = await _userService.getConnectionsCircles();
     // We assume the connections circle will always be the last one
-    var connectionsCircles = circleList.circles;
+    var connectionsCircles = circleList.circles!;
     Circle connectionsCircle = connectionsCircles.removeLast();
     connectionsCircles.insert(0, connectionsCircle);
     this._setCircles(connectionsCircles);
@@ -176,7 +176,7 @@ class OBConnectionCirclesPickerBottomSheetState
       _circles = circles;
       _circleSearchResults = circles.toList();
       var connectionsCircle = _circles.firstWhere((Circle circle) {
-        return circle.id == user.connectionsCircleId;
+        return circle.id == user!.connectionsCircleId;
       });
       _disabledCircles.removeWhere((Circle circle) {
         return !circles.contains(circle);

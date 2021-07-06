@@ -1,7 +1,7 @@
 import 'package:Okuna/models/notifications/notification.dart';
 
 class NotificationsList {
-  final List<OBNotification> notifications;
+  final List<OBNotification>? notifications;
 
   NotificationsList({
     this.notifications,

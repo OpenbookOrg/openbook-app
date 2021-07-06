@@ -1,8 +1,8 @@
 import 'package:Okuna/models/follow.dart';
 
 class FollowRequestApprovedNotification {
-  final int id;
-  final Follow follow;
+  final int? id;
+  final Follow? follow;
 
   FollowRequestApprovedNotification({this.id, this.follow});
 

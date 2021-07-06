@@ -3,12 +3,12 @@ import 'dart:convert' show json;
 import 'package:flutter/services.dart' show rootBundle;
 
 class EnvironmentLoader {
-  final String environmentPath;
+  final String? environmentPath;
 
   EnvironmentLoader({this.environmentPath});
 
   Future<Environment> load() {
-    return rootBundle.loadStructuredData<Environment>(this.environmentPath,
+    return rootBundle.loadStructuredData<Environment>(this.environmentPath!,
         (jsonStr) async {
       final environmentLoader = Environment.fromJson(json.decode(jsonStr));
       return environmentLoader;

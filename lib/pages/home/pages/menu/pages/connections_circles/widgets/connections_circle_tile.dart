@@ -14,12 +14,12 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 class OBConnectionsCircleTile extends StatefulWidget {
   final Circle connectionsCircle;
-  final VoidCallback onConnectionsCircleDeletedCallback;
+  final VoidCallback? onConnectionsCircleDeletedCallback;
   final bool isReadOnly;
 
   OBConnectionsCircleTile(
-      {@required this.connectionsCircle,
-      Key key,
+      {required this.connectionsCircle,
+      Key? key,
       this.onConnectionsCircleDeletedCallback,
       this.isReadOnly = false})
       : super(key: key);
@@ -31,11 +31,11 @@ class OBConnectionsCircleTile extends StatefulWidget {
 }
 
 class OBConnectionsCircleTileState extends State<OBConnectionsCircleTile> {
-  bool _requestInProgress;
-  UserService _userService;
-  ToastService _toastService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
+  late bool _requestInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
 
   @override
   void initState() {
@@ -76,7 +76,7 @@ class OBConnectionsCircleTileState extends State<OBConnectionsCircleTile> {
 
   Widget _buildTile() {
     String prettyCount = getPrettyCount(
-        widget.connectionsCircle.usersCount, _localizationService);
+        widget.connectionsCircle.usersCount ?? 0, _localizationService);
 
     return ListTile(
         onTap: () {
@@ -88,7 +88,7 @@ class OBConnectionsCircleTileState extends State<OBConnectionsCircleTile> {
           size: OBCircleColorPreviewSize.medium,
         ),
         title: OBText(
-          widget.connectionsCircle.name,
+          widget.connectionsCircle.name!,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: OBSecondaryText(
@@ -102,7 +102,7 @@ class OBConnectionsCircleTileState extends State<OBConnectionsCircleTile> {
       // widget.post.decreaseCommentsCount();
       _setRequestInProgress(false);
       if (widget.onConnectionsCircleDeletedCallback != null) {
-        widget.onConnectionsCircleDeletedCallback();
+        widget.onConnectionsCircleDeletedCallback!();
       }
     } catch (error) {
       _onError(error);
@@ -116,8 +116,8 @@ class OBConnectionsCircleTileState extends State<OBConnectionsCircleTile> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);

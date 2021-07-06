@@ -23,12 +23,12 @@ class OBFollowingPage extends StatefulWidget {
 }
 
 class OBFollowingPageState extends State<OBFollowingPage> {
-  UserService _userService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
 
-  OBHttpListController _httpListController;
-  bool _needsBootstrap;
+  late OBHttpListController _httpListController;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -82,7 +82,7 @@ class OBFollowingPageState extends State<OBFollowingPage> {
 
   Future<List<User>> _refreshFollowing() async {
     UsersList following = await _userService.getFollowings();
-    return following.users;
+    return following.users ?? [];
   }
 
   Future<List<User>> _loadMoreFollowing(List<User> followingList) async {
@@ -93,12 +93,12 @@ class OBFollowingPageState extends State<OBFollowingPage> {
       count: 20,
     ))
         .users;
-    return moreFollowing;
+    return moreFollowing ?? [];
   }
 
   Future<List<User>> _searchFollowing(String query) async {
     UsersList results = await _userService.searchFollowings(query: query);
 
-    return results.users;
+    return results.users ?? [];
   }
 }

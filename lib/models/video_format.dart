@@ -1,11 +1,11 @@
 class OBVideoFormat {
-  final int id;
-  final double progress;
-  final double duration;
-  final String format;
-  final String file;
+  final int? id;
+  final double? progress;
+  final double? duration;
+  final String? format;
+  final String? file;
 
-  OBVideoFormatType type;
+  OBVideoFormatType? type;
 
   OBVideoFormat(
       {this.id, this.progress, this.duration, this.format, this.file}) {
@@ -50,10 +50,10 @@ class OBVideoFormatType {
 
   static values() => _values;
 
-  static OBVideoFormatType parse(String string) {
+  static OBVideoFormatType? parse(String? string) {
     if (string == null) return null;
 
-    OBVideoFormatType videoFormatType;
+    OBVideoFormatType? videoFormatType;
     for (var type in _values) {
       if (string == type.code) {
         videoFormatType = type;

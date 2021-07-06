@@ -1,7 +1,7 @@
 class Language {
-  final String code;
-  final String name;
-  final int id;
+  final String? code;
+  final String? name;
+  final int? id;
 
   Language(
       {this.code,
@@ -10,8 +10,6 @@ class Language {
        });
 
   factory Language.fromJson(Map<String, dynamic> parsedJson) {
-    if (parsedJson == null) return null;
-
     return Language(
         id: parsedJson['id'],
         code: parsedJson['code'],

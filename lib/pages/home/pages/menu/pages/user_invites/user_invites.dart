@@ -27,24 +27,24 @@ class OBUserInvitesPage extends StatefulWidget {
 }
 
 class OBUserInvitesPageState extends State<OBUserInvitesPage> {
-  UserService _userService;
-  ToastService _toastService;
-  ModalService _modalService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late ModalService _modalService;
+  late LocalizationService _localizationService;
 
-  User _user;
-  GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
-  ScrollController _userInvitesScrollController;
-  OBMyInvitesGroupController _acceptedInvitesGroupController;
-  OBMyInvitesGroupController _pendingInvitesGroupController;
+  late User _user;
+  late GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
+  late ScrollController _userInvitesScrollController;
+  late OBMyInvitesGroupController _acceptedInvitesGroupController;
+  late OBMyInvitesGroupController _pendingInvitesGroupController;
 
-  bool _hasAcceptedInvites;
-  bool _hasPendingInvites;
-  bool _refreshInProgress;
+  late bool _hasAcceptedInvites;
+  late bool _hasPendingInvites;
+  late bool _refreshInProgress;
 
-  CancelableOperation _refreshUserOperation;
+  CancelableOperation? _refreshUserOperation;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -62,7 +62,7 @@ class OBUserInvitesPageState extends State<OBUserInvitesPage> {
   @override
   void dispose() {
     super.dispose();
-    if (_refreshUserOperation != null) _refreshUserOperation.cancel();
+    if (_refreshUserOperation != null) _refreshUserOperation!.cancel();
   }
 
   @override
@@ -73,7 +73,7 @@ class OBUserInvitesPageState extends State<OBUserInvitesPage> {
       _toastService = provider.toastService;
       _modalService = provider.modalService;
       _localizationService = provider.localizationService;
-      _user = _userService.getLoggedInUser();
+      _user = _userService.getLoggedInUser()!;
       _bootstrap();
       _needsBootstrap = false;
     }
@@ -167,7 +167,7 @@ class OBUserInvitesPageState extends State<OBUserInvitesPage> {
   }
 
   Widget _buildNoInvitesFallback() {
-    bool hasInvites = _user.inviteCount > 0;
+    bool hasInvites = _user.inviteCount != null && _user.inviteCount! > 0;
 
     String message = hasInvites
         ? _localizationService.user__invites_none_used
@@ -177,7 +177,7 @@ class OBUserInvitesPageState extends State<OBUserInvitesPage> {
         ? 'assets/images/stickers/perplexed-owl.png'
         : 'assets/images/stickers/owl-instructor.png';
 
-    Function _onPressed = hasInvites
+    VoidCallback _onPressed = hasInvites
         ? _onWantsToCreateInvite
         : _refreshInvites;
 
@@ -195,10 +195,12 @@ class OBUserInvitesPageState extends State<OBUserInvitesPage> {
     );
   }
 
-  Widget _onUserInviteDeletedCallback(
+  Widget? _onUserInviteDeletedCallback(
       BuildContext context, UserInvite userInvite) {
     setState(() {
-      if (userInvite.createdUser == null) _user.inviteCount += 1;
+      if (userInvite.createdUser == null) {
+        _user.inviteCount = _user.inviteCount! + 1;
+      }
     });
   }
 
@@ -223,11 +225,11 @@ class OBUserInvitesPageState extends State<OBUserInvitesPage> {
   }
 
   Future<void> _refreshUser() async {
-    if (_refreshUserOperation != null) _refreshUserOperation.cancel();
+    if (_refreshUserOperation != null) _refreshUserOperation!.cancel();
     _refreshUserOperation =
         CancelableOperation.fromFuture(_userService.refreshUser());
-    await _refreshUserOperation.value;
-    User refreshedUser = _userService.getLoggedInUser();
+    await _refreshUserOperation!.value;
+    User refreshedUser = _userService.getLoggedInUser()!;
     setState(() {
       _user = refreshedUser;
     });
@@ -236,15 +238,15 @@ class OBUserInvitesPageState extends State<OBUserInvitesPage> {
   Future<List<UserInvite>> _refreshPendingInvites() async {
     UserInvitesList pendingInvitesList = await _userService.getUserInvites(
         status: UserInviteFilterByStatus.pending);
-    _setHasPendingInvites(pendingInvitesList.invites.isNotEmpty);
-    return pendingInvitesList.invites;
+    _setHasPendingInvites(pendingInvitesList.invites?.isNotEmpty ?? false);
+    return pendingInvitesList.invites ?? [];
   }
 
   Future<List<UserInvite>> _refreshAcceptedInvites() async {
     UserInvitesList acceptedInvitesList = await _userService.getUserInvites(
         status: UserInviteFilterByStatus.accepted);
-    _setHasAcceptedInvites(acceptedInvitesList.invites.isNotEmpty);
-    return acceptedInvitesList.invites;
+    _setHasAcceptedInvites(acceptedInvitesList.invites?.isNotEmpty ?? false);
+    return acceptedInvitesList.invites ?? [];
   }
 
   Future<List<UserInvite>> _loadMorePendingInvites(
@@ -253,7 +255,7 @@ class OBUserInvitesPageState extends State<OBUserInvitesPage> {
 
     UserInvitesList morePendingInvites = await _userService.getUserInvites(
         offset: offset, status: UserInviteFilterByStatus.pending);
-    return morePendingInvites.invites;
+    return morePendingInvites.invites ?? [];
   }
 
   Future<List<UserInvite>> _loadMoreAcceptedInvites(
@@ -262,19 +264,19 @@ class OBUserInvitesPageState extends State<OBUserInvitesPage> {
 
     UserInvitesList moreAcceptedInvites = await _userService.getUserInvites(
         offset: offset, status: UserInviteFilterByStatus.accepted);
-    return moreAcceptedInvites.invites;
+    return moreAcceptedInvites.invites ?? [];
   }
 
   Future<List<UserInvite>> _searchPendingUserInvites(String query) async {
     UserInvitesList results = await _userService.searchUserInvites(
         query: query, status: UserInviteFilterByStatus.pending);
-    return results.invites;
+    return results.invites ?? [];
   }
 
   Future<List<UserInvite>> _searchAcceptedUserInvites(String query) async {
     UserInvitesList results = await _userService.searchUserInvites(
         query: query, status: UserInviteFilterByStatus.accepted);
-    return results.invites;
+    return results.invites ?? [];
   }
 
   void _onError(error) async {
@@ -282,8 +284,8 @@ class OBUserInvitesPageState extends State<OBUserInvitesPage> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;
@@ -295,7 +297,7 @@ class OBUserInvitesPageState extends State<OBUserInvitesPage> {
       _showNoInvitesLeft();
       return;
     }
-    UserInvite createdUserInvite =
+    UserInvite? createdUserInvite =
         await _modalService.openCreateUserInvite(context: context);
     if (createdUserInvite != null) {
       _onUserInviteCreated(createdUserInvite);

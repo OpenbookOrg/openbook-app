@@ -2,7 +2,7 @@ import 'package:Okuna/models/top_post.dart';
 import 'package:Okuna/models/trending_post.dart';
 
 class TrendingPostsList {
-  final List<TrendingPost> posts;
+  final List<TrendingPost>? posts;
 
   TrendingPostsList({
     this.posts,

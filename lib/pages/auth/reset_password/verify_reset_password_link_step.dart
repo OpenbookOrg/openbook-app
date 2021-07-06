@@ -19,10 +19,10 @@ class OBAuthVerifyPasswordPage extends StatefulWidget {
 class OBAuthVerifyPasswordPageState extends State<OBAuthVerifyPasswordPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  CreateAccountBloc _createAccountBloc;
-  LocalizationService _localizationService;
-  ValidationService _validationService;
-  ToastService _toastService;
+  late CreateAccountBloc _createAccountBloc;
+  late LocalizationService _localizationService;
+  late ValidationService _validationService;
+  late ToastService _toastService;
 
   TextEditingController _linkController = TextEditingController();
 
@@ -80,7 +80,7 @@ class OBAuthVerifyPasswordPageState extends State<OBAuthVerifyPasswordPage> {
 
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   void onPressedNextStep(BuildContext context) {
@@ -99,7 +99,7 @@ class OBAuthVerifyPasswordPageState extends State<OBAuthVerifyPasswordPage> {
     final params = Uri.parse(uri).queryParametersAll;
     var token = '';
     if (params.containsKey('token')) {
-      token = params['token'][0];
+      token = params['token']![0];
     } else {
       token = uri.split('?token=')[1];
     }
@@ -119,7 +119,7 @@ class OBAuthVerifyPasswordPageState extends State<OBAuthVerifyPasswordPage> {
     );
   }
 
-  Widget _buildPreviousButton({@required BuildContext context}) {
+  Widget _buildPreviousButton({required BuildContext context}) {
     String buttonText = _localizationService.trans('auth__create_acc__previous');
 
     return OBSecondaryButton(
@@ -146,7 +146,7 @@ class OBAuthVerifyPasswordPageState extends State<OBAuthVerifyPasswordPage> {
     );
   }
 
-  Widget _buildPasteRegisterLink({@required BuildContext context}) {
+  Widget _buildPasteRegisterLink({required BuildContext context}) {
     String pasteLinkText =
     _localizationService.trans('auth__create_acc__paste_password_reset_link');
 
@@ -180,8 +180,8 @@ class OBAuthVerifyPasswordPageState extends State<OBAuthVerifyPasswordPage> {
               child: OBAuthTextField(
                 autocorrect: false,
                 hintText: '',
-                validator: (String link) {
-                  String validateLink = _validationService.validateUserRegistrationLink(link.trim());
+                validator: (String? link) {
+                  String? validateLink = _validationService.validateUserRegistrationLink(link?.trim());
                   if (validateLink != null) {
                     return validateLink;
                   }

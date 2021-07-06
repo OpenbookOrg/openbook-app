@@ -14,13 +14,13 @@ import 'package:flutter/material.dart';
 import 'package:async/async.dart';
 
 class OBContextualAccountSearchBox extends StatefulWidget {
-  final ValueChanged<User> onPostParticipantPressed;
-  final Post post;
-  final OBContextualAccountSearchBoxController controller;
-  final String initialSearchQuery;
+  final ValueChanged<User>? onPostParticipantPressed;
+  final Post? post;
+  final OBContextualAccountSearchBoxController? controller;
+  final String? initialSearchQuery;
 
   const OBContextualAccountSearchBox(
-      {Key key,
+      {Key? key,
       this.onPostParticipantPressed,
       // If passed, searches for post participants, if not all users using the global search API
       this.post,
@@ -36,28 +36,28 @@ class OBContextualAccountSearchBox extends StatefulWidget {
 
 class OBContextualAccountSearchBoxState
     extends State<OBContextualAccountSearchBox> {
-  UserService _userService;
-  LocalizationService _localizationService;
-  ToastService _toastService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
+  late ToastService _toastService;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
-  CancelableOperation _getAllOperation;
-  CancelableOperation _searchParticipantsOperation;
+  CancelableOperation? _getAllOperation;
+  CancelableOperation? _searchParticipantsOperation;
 
-  String _searchQuery;
-  List<User> _all;
-  bool _getAllInProgress;
-  List<User> _searchResults;
-  bool _searchInProgress;
-  bool _isInPostContext;
+  late String _searchQuery;
+  late List<User> _all;
+  late bool _getAllInProgress;
+  late List<User> _searchResults;
+  late bool _searchInProgress;
+  late bool _isInPostContext;
 
   @override
   void initState() {
     super.initState();
     _isInPostContext = widget.post != null;
     _needsBootstrap = true;
-    if (widget.controller != null) widget.controller.attach(this);
+    if (widget.controller != null) widget.controller!.attach(this);
     _all = [];
     _searchResults = [];
     _searchQuery = '';
@@ -82,11 +82,11 @@ class OBContextualAccountSearchBoxState
       _bootstrap();
       _needsBootstrap = false;
       if (widget.initialSearchQuery != null &&
-          widget.initialSearchQuery.isNotEmpty) {
-        _searchQuery = widget.initialSearchQuery;
+          widget.initialSearchQuery!.isNotEmpty) {
+        _searchQuery = widget.initialSearchQuery!;
         _searchInProgress = true;
         Future.delayed(Duration(milliseconds: 0), () {
-          search(widget.initialSearchQuery);
+          search(widget.initialSearchQuery!);
         });
       }
     }
@@ -184,7 +184,7 @@ class OBContextualAccountSearchBoxState
   }
 
   Future refreshAll() async {
-    if (_getAllOperation != null) _getAllOperation.cancel();
+    if (_getAllOperation != null) _getAllOperation!.cancel();
 
     _setGetAllInProgress(true);
 
@@ -192,10 +192,10 @@ class OBContextualAccountSearchBoxState
 
     try {
       _getAllOperation = CancelableOperation.fromFuture(_isInPostContext
-          ? _userService.getPostParticipants(post: widget.post)
+          ? _userService.getPostParticipants(post: widget.post!)
           : _userService.getLinkedUsers());
-      UsersList all = await _getAllOperation.value;
-      _setAll(all.users);
+      UsersList all = await _getAllOperation!.value;
+      _setAll(all.users!);
     } catch (error) {
       _onError(error);
     } finally {
@@ -206,7 +206,7 @@ class OBContextualAccountSearchBoxState
 
   Future search(String searchQuery) async {
     if (_searchParticipantsOperation != null)
-      _searchParticipantsOperation.cancel();
+      _searchParticipantsOperation!.cancel();
     _setSearchInProgress(true);
 
     debugLog('Searching post participants with query:$searchQuery');
@@ -222,10 +222,10 @@ class OBContextualAccountSearchBoxState
       _searchParticipantsOperation = CancelableOperation.fromFuture(
           _isInPostContext
               ? _userService.searchPostParticipants(
-                  query: searchQuery, post: widget.post)
+                  query: searchQuery, post: widget.post!)
               : _userService.getUsersWithQuery(searchQuery));
-      UsersList searchResults = await _searchParticipantsOperation.value;
-      _setSearchResults(searchResults.users);
+      UsersList searchResults = await _searchParticipantsOperation!.value;
+      _setSearchResults(searchResults.users!);
     } catch (error) {
       _onError(error);
     } finally {
@@ -239,8 +239,8 @@ class OBContextualAccountSearchBoxState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);
@@ -282,7 +282,7 @@ class OBContextualAccountSearchBoxState
     debugLog('Clearing search');
     setState(() {
       if (_searchParticipantsOperation != null)
-        _searchParticipantsOperation.cancel();
+        _searchParticipantsOperation!.cancel();
       _searchInProgress = false;
       _searchQuery = '';
       _searchResults = [];
@@ -295,8 +295,8 @@ class OBContextualAccountSearchBoxState
 }
 
 class OBContextualAccountSearchBoxController {
-  OBContextualAccountSearchBoxState _state;
-  String _lastSearchQuery;
+  OBContextualAccountSearchBoxState? _state;
+  String? _lastSearchQuery;
 
   void attach(OBContextualAccountSearchBoxState state) {
     _state = state;
@@ -305,20 +305,20 @@ class OBContextualAccountSearchBoxController {
   Future search(String searchQuery) async {
     _lastSearchQuery = searchQuery;
 
-    if (_state == null || !_state.mounted) {
+    if (_state == null || (_state != null && !_state!.mounted)) {
       debugLog('Tried to search without mounted state');
       return null;
     }
 
-    return _state.search(searchQuery);
+    return _state!.search(searchQuery);
   }
 
   void clearSearch() {
     _lastSearchQuery = null;
-    _state.clearSearch();
+    _state?.clearSearch();
   }
 
-  String getLastSearchQuery() {
+  String? getLastSearchQuery() {
     return _lastSearchQuery;
   }
 

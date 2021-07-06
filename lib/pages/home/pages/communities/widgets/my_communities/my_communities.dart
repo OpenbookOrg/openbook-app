@@ -13,9 +13,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBMyCommunities extends StatefulWidget {
-  final ScrollController scrollController;
+  final ScrollController? scrollController;
 
-  const OBMyCommunities({Key key, this.scrollController}) : super(key: key);
+  const OBMyCommunities({Key? key, this.scrollController}) : super(key: key);
 
   @override
   OBMyCommunitiesState createState() {
@@ -25,16 +25,16 @@ class OBMyCommunities extends StatefulWidget {
 
 class OBMyCommunitiesState extends State<OBMyCommunities>
     with AutomaticKeepAliveClientMixin {
-  OBMyCommunitiesGroupController _favoriteCommunitiesGroupController;
-  OBMyCommunitiesGroupController _joinedCommunitiesGroupController;
-  OBMyCommunitiesGroupController _moderatedCommunitiesGroupController;
-  OBMyCommunitiesGroupController _administratedCommunitiesGroupController;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
-  UserService _userService;
-  bool _needsBootstrap;
-  bool _refreshInProgress;
-  GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
+  late OBMyCommunitiesGroupController _favoriteCommunitiesGroupController;
+  late OBMyCommunitiesGroupController _joinedCommunitiesGroupController;
+  late OBMyCommunitiesGroupController _moderatedCommunitiesGroupController;
+  late OBMyCommunitiesGroupController _administratedCommunitiesGroupController;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
+  late UserService _userService;
+  late bool _needsBootstrap;
+  late bool _refreshInProgress;
+  late GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
 
   @override
   void initState() {
@@ -138,7 +138,7 @@ class OBMyCommunitiesState extends State<OBMyCommunities>
   Future<List<Community>> _refreshJoinedCommunities() async {
     CommunitiesList joinedCommunitiesList =
         await _userService.getJoinedCommunities();
-    return joinedCommunitiesList.communities;
+    return joinedCommunitiesList.communities ?? [];
   }
 
   Future<List<Community>> _loadMoreJoinedCommunities(
@@ -147,13 +147,13 @@ class OBMyCommunitiesState extends State<OBMyCommunities>
 
     CommunitiesList moreJoinedCommunitiesList =
         await _userService.getJoinedCommunities(offset: offset);
-    return moreJoinedCommunitiesList.communities;
+    return moreJoinedCommunitiesList.communities ?? [];
   }
 
   Future<List<Community>> _refreshFavoriteCommunities() async {
     CommunitiesList favoriteCommunitiesList =
         await _userService.getFavoriteCommunities();
-    return favoriteCommunitiesList.communities;
+    return favoriteCommunitiesList.communities ?? [];
   }
 
   Future<List<Community>> _loadMoreFavoriteCommunities(
@@ -162,13 +162,13 @@ class OBMyCommunitiesState extends State<OBMyCommunities>
 
     CommunitiesList moreFavoriteCommunitiesList =
         await _userService.getFavoriteCommunities(offset: offset);
-    return moreFavoriteCommunitiesList.communities;
+    return moreFavoriteCommunitiesList.communities ?? [];
   }
 
   Future<List<Community>> _refreshAdministratedCommunities() async {
     CommunitiesList administratedCommunitiesList =
         await _userService.getAdministratedCommunities();
-    return administratedCommunitiesList.communities;
+    return administratedCommunitiesList.communities ?? [];
   }
 
   Future<List<Community>> _loadMoreAdministratedCommunities(
@@ -177,13 +177,13 @@ class OBMyCommunitiesState extends State<OBMyCommunities>
 
     CommunitiesList moreAdministratedCommunitiesList =
         await _userService.getAdministratedCommunities(offset: offset);
-    return moreAdministratedCommunitiesList.communities;
+    return moreAdministratedCommunitiesList.communities ?? [];
   }
 
   Future<List<Community>> _refreshModeratedCommunities() async {
     CommunitiesList moderatedCommunitiesList =
         await _userService.getModeratedCommunities();
-    return moderatedCommunitiesList.communities;
+    return moderatedCommunitiesList.communities ?? [];
   }
 
   Future<List<Community>> _loadMoreModeratedCommunities(
@@ -192,7 +192,7 @@ class OBMyCommunitiesState extends State<OBMyCommunities>
 
     CommunitiesList moreModeratedCommunitiesList =
         await _userService.getModeratedCommunities(offset: offset);
-    return moreModeratedCommunitiesList.communities;
+    return moreModeratedCommunitiesList.communities ?? [];
   }
 
   Widget _buildNoJoinedCommunitiesFallback(
@@ -214,9 +214,9 @@ class OBMyCommunitiesState extends State<OBMyCommunities>
       stream: community.updateSubject,
       initialData: community,
       builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
-        Community latestCommunity = snapshot.data;
+        Community latestCommunity = snapshot.data!;
 
-        User loggedInUser = _userService.getLoggedInUser();
+        User loggedInUser = _userService.getLoggedInUser()!;
         return latestCommunity.isMember(loggedInUser)
             ? _buildCommunityListItem(community)
             : const SizedBox();
@@ -230,9 +230,9 @@ class OBMyCommunitiesState extends State<OBMyCommunities>
       stream: community.updateSubject,
       initialData: community,
       builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
-        Community latestCommunity = snapshot.data;
+        Community latestCommunity = snapshot.data!;
 
-        User loggedInUser = _userService.getLoggedInUser();
+        User loggedInUser = _userService.getLoggedInUser()!;
         return latestCommunity.isModerator(loggedInUser)
             ? _buildCommunityListItem(community)
             : const SizedBox();
@@ -246,9 +246,9 @@ class OBMyCommunitiesState extends State<OBMyCommunities>
       stream: community.updateSubject,
       initialData: community,
       builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
-        Community latestCommunity = snapshot.data;
+        Community latestCommunity = snapshot.data!;
 
-        User loggedInUser = _userService.getLoggedInUser();
+        User loggedInUser = _userService.getLoggedInUser()!;
         return latestCommunity.isAdministrator(loggedInUser)
             ? _buildCommunityListItem(community)
             : const SizedBox();
@@ -262,9 +262,9 @@ class OBMyCommunitiesState extends State<OBMyCommunities>
       initialData: community,
       stream: community.updateSubject,
       builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
-        Community latestCommunity = snapshot.data;
+        Community latestCommunity = snapshot.data!;
 
-        return latestCommunity.isFavorite
+        return latestCommunity.isFavorite == true
             ? _buildCommunityListItem(community)
             : const SizedBox();
       },
@@ -274,25 +274,25 @@ class OBMyCommunitiesState extends State<OBMyCommunities>
   Future<List<Community>> _searchFavoriteCommunities(String query) async {
     CommunitiesList results = await _userService.searchFavoriteCommunities(query: query);
 
-    return results.communities;
+    return results.communities ?? [];
   }
 
   Future<List<Community>> _searchAdministratedCommunities(String query) async {
     CommunitiesList results = await _userService.searchAdministratedCommunities(query: query);
 
-    return results.communities;
+    return results.communities ?? [];
   }
 
   Future<List<Community>> _searchModeratedCommunities(String query) async {
     CommunitiesList results = await _userService.searchModeratedCommunities(query: query);
 
-    return results.communities;
+    return results.communities ?? [];
   }
 
   Future<List<Community>> _searchJoinedCommunities(String query) async {
     CommunitiesList results = await _userService.searchJoinedCommunities(query: query);
 
-    return results.communities;
+    return results.communities ?? [];
   }
 
   Widget _buildCommunityListItem(Community community) {

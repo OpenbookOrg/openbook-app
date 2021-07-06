@@ -2,9 +2,9 @@ import 'package:Okuna/models/updatable_model.dart';
 import 'package:dcache/dcache.dart';
 
 class OBTheme extends UpdatableModel<OBTheme> {
-  int id;
+  int? id;
 
-  String name;
+  String? name;
 
   String primaryTextColor;
   String secondaryTextColor;
@@ -18,7 +18,7 @@ class OBTheme extends UpdatableModel<OBTheme> {
   String dangerColor;
   String dangerColorAccent;
 
-  String themePreview;
+  String? themePreview;
 
   static final factory = OBThemeFactory();
 
@@ -29,15 +29,15 @@ class OBTheme extends UpdatableModel<OBTheme> {
   OBTheme(
       {this.id,
       this.name,
-      this.primaryColor,
-      this.primaryAccentColor,
-      this.dangerColor,
-      this.dangerColorAccent,
-      this.successColor,
-      this.successColorAccent,
+      required this.primaryColor,
+      required this.primaryAccentColor,
+      required this.dangerColor,
+      required this.dangerColorAccent,
+      required this.successColor,
+      required this.successColorAccent,
       this.themePreview,
-      this.primaryTextColor,
-      this.secondaryTextColor})
+      required this.primaryTextColor,
+      required this.secondaryTextColor})
       : super();
 
   @override
@@ -55,7 +55,7 @@ class OBTheme extends UpdatableModel<OBTheme> {
 
 class OBThemeFactory extends UpdatableModelFactory<OBTheme> {
   @override
-  SimpleCache<int, OBTheme> cache = LruCache(storage: UpdatableModelSimpleStorage(size: 10));
+  SimpleCache<int, OBTheme>? cache = LruCache(storage: UpdatableModelSimpleStorage(size: 10));
 
   @override
   OBTheme makeFromJson(Map json) {

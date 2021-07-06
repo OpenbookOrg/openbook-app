@@ -17,7 +17,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBSendUserInviteEmailModal extends StatefulWidget {
-  final UserInvite userInvite;
+  final UserInvite? userInvite;
   final bool autofocusEmailTextField;
 
   OBSendUserInviteEmailModal(
@@ -32,25 +32,25 @@ class OBSendUserInviteEmailModal extends StatefulWidget {
 class OBSendUserInviteEmailModalState
     extends State<OBSendUserInviteEmailModal> {
 
-  UserService _userService;
-  ToastService _toastService;
-  ValidationService _validationService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late ValidationService _validationService;
+  late LocalizationService _localizationService;
 
-  CancelableOperation _emailOperation;
+  CancelableOperation? _emailOperation;
 
-  bool _requestInProgress;
-  bool _formWasSubmitted;
-  bool _formValid;
+  late bool _requestInProgress;
+  late bool _formWasSubmitted;
+  late bool _formValid;
 
-  GlobalKey<FormState> _formKey;
+  late GlobalKey<FormState> _formKey;
 
-  TextEditingController _emailController;
+  late TextEditingController _emailController;
 
   @override
   void dispose() {
     super.dispose();
-    if (_emailOperation != null) _emailOperation.cancel();
+    if (_emailOperation != null) _emailOperation!.cancel();
   }
 
   @override
@@ -61,8 +61,8 @@ class OBSendUserInviteEmailModalState
     _formWasSubmitted = false;
     _emailController = TextEditingController();
     _formKey = GlobalKey<FormState>();
-    if (widget.userInvite.email != null) {
-      _emailController.text = widget.userInvite.email;
+    if (widget.userInvite?.email != null) {
+      _emailController.text = widget.userInvite!.email!;
     }
 
     _emailController.addListener(_updateFormValid);
@@ -99,7 +99,7 @@ class OBSendUserInviteEmailModalState
                                 decoration: InputDecoration(
                                     labelText: _localizationService.user__invites_email_text,
                                     hintText: _localizationService.user__invites_email_hint),
-                                validator: (String email) {
+                                validator: (String? email) {
                                   if (!_formWasSubmitted) return null;
                                   return _validationService.validateUserEmail(email);
                                 }),
@@ -111,7 +111,7 @@ class OBSendUserInviteEmailModalState
         ));
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
         leading: GestureDetector(
           child: const OBIcon(OBIcons.close),
@@ -130,7 +130,7 @@ class OBSendUserInviteEmailModalState
   }
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   bool _updateFormValid() {
@@ -148,9 +148,9 @@ class OBSendUserInviteEmailModalState
     try {
       _emailOperation = CancelableOperation.fromFuture(
           _userService.sendUserInviteEmail(
-              widget.userInvite, _emailController.text)
+              widget.userInvite!, _emailController.text)
       );
-      await _emailOperation.value;
+      await _emailOperation?.value;
       _showUserInviteSent();
       Navigator.of(context).pop(widget.userInvite);
     } catch (error) {
@@ -170,8 +170,8 @@ class OBSendUserInviteEmailModalState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

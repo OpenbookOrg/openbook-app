@@ -14,8 +14,8 @@ import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
 
 class DialogService {
-  ThemeService _themeService;
-  ThemeValueParserService _themeValueParserService;
+  late ThemeService _themeService;
+  late ThemeValueParserService _themeValueParserService;
 
   void setThemeService(ThemeService themeService) {
     _themeService = themeService;
@@ -27,9 +27,9 @@ class DialogService {
   }
 
   Future<dynamic> showColorPicker({
-    @required ValueChanged<Color> onColorChanged,
-    @required BuildContext context,
-    @required Color initialColor,
+    required ValueChanged<Color> onColorChanged,
+    required BuildContext context,
+    required Color initialColor,
     bool enableAlpha = false,
   }) {
     return showAlert(
@@ -46,7 +46,7 @@ class DialogService {
   }
 
   Future<void> showZoomablePhotoBoxView(
-      {@required String imageUrl, @required BuildContext context}) {
+      {required String imageUrl, required BuildContext context}) {
     return showGeneralDialog(
       context: context,
       pageBuilder: (BuildContext buildContext, Animation<double> animation,
@@ -68,12 +68,12 @@ class DialogService {
   }
 
   Future<void> showVideo(
-      {String videoUrl,
-      File video,
-      VideoPlayerController videoPlayerController,
-      ChewieController chewieController,
+      {String? videoUrl,
+      File? video,
+      VideoPlayerController? videoPlayerController,
+      ChewieController? chewieController,
       bool autoPlay: true,
-      @required BuildContext context}) async {
+      required BuildContext context}) async {
     SystemChrome.setEnabledSystemUIOverlays([]);
     Wakelock.enable();
     await showGeneralDialog(
@@ -122,10 +122,10 @@ class DialogService {
   }
 
   Future<dynamic> showAlert(
-      {@required Widget content,
-      List<Widget> actions,
-      Widget title,
-      @required BuildContext context}) {
+      {required Widget content,
+      List<Widget>? actions,
+      Widget? title,
+      required BuildContext context}) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {

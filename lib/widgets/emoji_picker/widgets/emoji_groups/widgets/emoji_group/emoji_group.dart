@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 class OBEmojiGroup extends StatelessWidget {
   final EmojiGroup emojiGroup;
-  final OnEmojiPressed onEmojiPressed;
+  final OnEmojiPressed? onEmojiPressed;
 
   OBEmojiGroup(this.emojiGroup, {this.onEmojiPressed});
 
@@ -17,14 +17,14 @@ class OBEmojiGroup extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          OBText(emojiGroup.keyword,
+          OBText(emojiGroup.keyword ?? '',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
           const SizedBox(
             height: 10.0,
           ),
           Wrap(
             spacing: 20.0,
-            children: this.emojiGroup.emojis.emojis.map((Emoji emoji) {
+            children: this.emojiGroup.emojis!.emojis!.map((Emoji emoji) {
               return OBEmoji(
                 emoji,
                 emojiGroup: emojiGroup,

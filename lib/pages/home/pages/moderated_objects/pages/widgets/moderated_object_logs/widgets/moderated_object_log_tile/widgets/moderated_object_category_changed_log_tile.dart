@@ -9,12 +9,12 @@ import 'moderated_object_log_actor.dart';
 class OBModeratedObjectCategoryChangedLogTile extends StatelessWidget {
   final ModeratedObjectLog log;
   final ModeratedObjectCategoryChangedLog moderatedObjectCategoryChangedLog;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const OBModeratedObjectCategoryChangedLogTile(
-      {Key key,
-      @required this.log,
-      @required this.moderatedObjectCategoryChangedLog,
+      {Key? key,
+      required this.log,
+      required this.moderatedObjectCategoryChangedLog,
       this.onPressed})
       : super(key: key);
 
@@ -30,14 +30,14 @@ class OBModeratedObjectCategoryChangedLogTile extends StatelessWidget {
           ),
           OBModerationCategoryTile(
               contentPadding: const EdgeInsets.all(0),
-              category: moderatedObjectCategoryChangedLog.changedFrom),
+              category: moderatedObjectCategoryChangedLog.changedFrom!),
           OBText(
             'To:',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           OBModerationCategoryTile(
               contentPadding: const EdgeInsets.all(0),
-              category: moderatedObjectCategoryChangedLog.changedTo),
+              category: moderatedObjectCategoryChangedLog.changedTo!),
         ],
       ),
     );

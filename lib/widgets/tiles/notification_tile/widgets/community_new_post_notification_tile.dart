@@ -16,20 +16,20 @@ class OBCommunityNewPostNotificationTile extends StatelessWidget {
   final OBNotification notification;
   final CommunityNewPostNotification communityNewPostNotification;
   static final double postImagePreviewSize = 40;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const OBCommunityNewPostNotificationTile(
-      {Key key,
-      @required this.notification,
-      @required this.communityNewPostNotification,
+      {Key? key,
+      required this.notification,
+      required this.communityNewPostNotification,
       this.onPressed})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Post post = communityNewPostNotification.post;
+    Post post = communityNewPostNotification.post!;
 
-    Widget postImagePreview;
+    Widget? postImagePreview;
     if (post.hasMediaThumbnail()) {
       postImagePreview = Padding(
           padding: const EdgeInsets.only(left: 10),
@@ -42,14 +42,14 @@ class OBCommunityNewPostNotificationTile extends StatelessWidget {
     LocalizationService _localizationService =
         openbookProvider.localizationService;
 
-    Function navigateToCommunity = () {
+    VoidCallback navigateToCommunity = () {
       openbookProvider.navigationService
-          .navigateToCommunity(community: post.community, context: context);
+          .navigateToCommunity(community: post.community!, context: context);
     };
 
     return OBNotificationTileSkeleton(
       onTap: () {
-        if (onPressed != null) onPressed();
+        if (onPressed != null) onPressed!();
         OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
         openbookProvider.navigationService
             .navigateToPost(post: post, context: context);
@@ -57,14 +57,14 @@ class OBCommunityNewPostNotificationTile extends StatelessWidget {
       leading: OBCommunityAvatar(
         onPressed: navigateToCommunity,
         size: OBAvatarSize.medium,
-        community: post.community,
+        community: post.community!,
       ),
       title: OBNotificationTileTitle(
         text: TextSpan(
-          text: _localizationService.notifications__community_new_post_tile(post.community.name)),
+          text: _localizationService.notifications__community_new_post_tile(post.community!.name!)),
       ),
       subtitle: OBSecondaryText(
-          utilsService.timeAgo(notification.created, _localizationService)),
+          utilsService.timeAgo(notification.created!, _localizationService)),
       trailing: postImagePreview,
     );
   }

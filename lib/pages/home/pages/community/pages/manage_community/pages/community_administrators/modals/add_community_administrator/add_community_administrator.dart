@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 class OBAddCommunityAdministratorModal extends StatefulWidget {
   final Community community;
 
-  const OBAddCommunityAdministratorModal({Key key, @required this.community})
+  const OBAddCommunityAdministratorModal({Key? key, required this.community})
       : super(key: key);
 
   @override
@@ -29,11 +29,11 @@ class OBAddCommunityAdministratorModal extends StatefulWidget {
 
 class OBAddCommunityAdministratorModalState
     extends State<OBAddCommunityAdministratorModal> {
-  UserService _userService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -80,7 +80,7 @@ class OBAddCommunityAdministratorModalState
     UsersList communityMembers = await _userService.getMembersForCommunity(
         widget.community,
         exclude: [CommunityMembersExclusion.administrators]);
-    return communityMembers.users;
+    return communityMembers.users ?? [];
   }
 
   Future<List<User>> _loadMoreCommunityMembers(
@@ -93,7 +93,7 @@ class OBAddCommunityAdministratorModalState
             count: 20,
             exclude: [CommunityMembersExclusion.administrators]))
         .users;
-    return moreCommunityMembers;
+    return moreCommunityMembers ?? [];
   }
 
   Future<List<User>> _searchCommunityMembers(String query) async {
@@ -102,7 +102,7 @@ class OBAddCommunityAdministratorModalState
         community: widget.community,
         exclude: [CommunityMembersExclusion.administrators]);
 
-    return results.users;
+    return results.users ?? [];
   }
 
   void _onWantsToAddNewAdministrator(User user) async {

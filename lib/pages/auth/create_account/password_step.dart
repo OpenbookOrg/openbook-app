@@ -16,10 +16,10 @@ class OBAuthPasswordStepPage extends StatefulWidget {
 }
 
 class OBAuthPasswordStepPageState extends State<OBAuthPasswordStepPage> {
-  bool passwordIsVisible;
-  CreateAccountBloc createAccountBloc;
-  LocalizationService localizationService;
-  ValidationService validationService;
+  late bool passwordIsVisible;
+  late CreateAccountBloc createAccountBloc;
+  late LocalizationService localizationService;
+  late ValidationService validationService;
   static const passwordMaxLength = ValidationService.PASSWORD_MAX_LENGTH;
   static const passwordMinLength = ValidationService.PASSWORD_MIN_LENGTH;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -88,7 +88,7 @@ class OBAuthPasswordStepPageState extends State<OBAuthPasswordStepPage> {
   }
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   void onPressedNextStep() {
@@ -101,7 +101,7 @@ class OBAuthPasswordStepPageState extends State<OBAuthPasswordStepPage> {
     }
   }
 
-  Widget _buildPreviousButton({@required BuildContext context}) {
+  Widget _buildPreviousButton({required BuildContext context}) {
     String buttonText = localizationService.trans('auth__create_acc__previous');
 
     return OBSecondaryButton(
@@ -128,7 +128,7 @@ class OBAuthPasswordStepPageState extends State<OBAuthPasswordStepPage> {
     );
   }
 
-  Widget _buildWhatYourPassword({@required BuildContext context}) {
+  Widget _buildWhatYourPassword({required BuildContext context}) {
     String whatPasswordText =
         localizationService.trans('auth__create_acc__what_password');
     String passwordCharactersText =
@@ -172,8 +172,8 @@ class OBAuthPasswordStepPageState extends State<OBAuthPasswordStepPage> {
               child: OBAuthTextField(
                 autocorrect: false,
                 obscureText: !passwordIsVisible,
-                validator: (String password) {
-                  String validatePassword =
+                validator: (String? password) {
+                  String? validatePassword =
                       validationService.validateUserPassword(password);
                   if (validatePassword != null) return validatePassword;
                 },

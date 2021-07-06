@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 class OBCommunityBannedUsersPage extends StatefulWidget {
   final Community community;
 
-  const OBCommunityBannedUsersPage({Key key, @required this.community})
+  const OBCommunityBannedUsersPage({Key? key, required this.community})
       : super(key: key);
 
   @override
@@ -34,14 +34,14 @@ class OBCommunityBannedUsersPage extends StatefulWidget {
 
 class OBCommunityBannedUsersPageState
     extends State<OBCommunityBannedUsersPage> {
-  UserService _userService;
-  ModalService _modalService;
-  NavigationService _navigationService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ModalService _modalService;
+  late NavigationService _navigationService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
 
-  OBHttpListController _httpListController;
-  bool _needsBootstrap;
+  late OBHttpListController _httpListController;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -123,8 +123,8 @@ class OBCommunityBannedUsersPageState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;
@@ -134,7 +134,7 @@ class OBCommunityBannedUsersPageState
   Future<List<User>> _refreshCommunityBannedUsers() async {
     UsersList communityBannedUsers =
         await _userService.getBannedUsersForCommunity(widget.community);
-    return communityBannedUsers.users;
+    return communityBannedUsers.users ?? [];
   }
 
   Future<List<User>> _loadMoreCommunityBannedUsers(
@@ -148,18 +148,18 @@ class OBCommunityBannedUsersPageState
       count: 20,
     ))
             .users;
-    return moreCommunityBannedUsers;
+    return moreCommunityBannedUsers ?? [];
   }
 
   Future<List<User>> _searchCommunityBannedUsers(String query) async {
     UsersList results = await _userService.searchCommunityBannedUsers(
         query: query, community: widget.community);
 
-    return results.users;
+    return results.users ?? [];
   }
 
   void _onWantsToAddNewBannedUser() async {
-    User addedCommunityBannedUser = await _modalService.openBanCommunityUser(
+    User? addedCommunityBannedUser = await _modalService.openBanCommunityUser(
         context: context, community: widget.community);
 
     if (addedCommunityBannedUser != null) {

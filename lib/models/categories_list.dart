@@ -1,7 +1,7 @@
 import 'package:Okuna/models/category.dart';
 
 class CategoriesList {
-  final List<Category> categories;
+  final List<Category>? categories;
 
   CategoriesList({
     this.categories,

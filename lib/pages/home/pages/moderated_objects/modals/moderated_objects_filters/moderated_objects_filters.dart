@@ -17,7 +17,7 @@ class OBModeratedObjectsFiltersModal extends StatefulWidget {
   final OBModeratedObjectsPageController moderatedObjectsPageController;
 
   const OBModeratedObjectsFiltersModal(
-      {Key key, @required this.moderatedObjectsPageController})
+      {Key? key, required this.moderatedObjectsPageController})
       : super(key: key);
 
   @override
@@ -28,18 +28,18 @@ class OBModeratedObjectsFiltersModal extends StatefulWidget {
 
 class OBModeratedObjectsFiltersModalState
     extends State<OBModeratedObjectsFiltersModal> {
-  bool _requestInProgress;
-  LocalizationService _localizationService;
+  late bool _requestInProgress;
+  late LocalizationService _localizationService;
 
-  List<ModeratedObjectType> _types;
-  List<ModeratedObjectType> _selectedTypes;
+  late List<ModeratedObjectType> _types;
+  late List<ModeratedObjectType> _selectedTypes;
   List<ModeratedObjectStatus> _statuses = [
     ModeratedObjectStatus.approved,
     ModeratedObjectStatus.rejected,
     ModeratedObjectStatus.pending,
   ];
-  List<ModeratedObjectStatus> _selectedStatuses;
-  bool _onlyVerified;
+  late List<ModeratedObjectStatus> _selectedStatuses;
+  late bool _onlyVerified;
 
   @override
   void initState() {
@@ -47,7 +47,7 @@ class OBModeratedObjectsFiltersModalState
     _requestInProgress = false;
 
     OBModeratedObjectsFilters currentFilters =
-        widget.moderatedObjectsPageController.getFilters();
+        widget.moderatedObjectsPageController.getFilters()!;
 
     if (widget.moderatedObjectsPageController.hasCommunity()) {
       _types = [
@@ -155,7 +155,7 @@ class OBModeratedObjectsFiltersModalState
   Widget _buildTypeListTile(BuildContext context, int index) {
     ModeratedObjectType type = _types[index];
     String typeString = ModeratedObject.factory
-        .convertTypeToHumanReadableString(type, capitalize: true);
+        .convertTypeToHumanReadableString(type, capitalize: true) ?? '';
     return OBCheckboxField(
       titleStyle: TextStyle(fontWeight: FontWeight.normal),
       onTap: () {
@@ -169,7 +169,7 @@ class OBModeratedObjectsFiltersModalState
   Widget _buildStatusListTile(BuildContext context, int index) {
     ModeratedObjectStatus status = _statuses[index];
     String statusString = ModeratedObject.factory
-        .convertStatusToHumanReadableString(status, capitalize: true);
+        .convertStatusToHumanReadableString(status, capitalize: true) ?? '';
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
@@ -216,7 +216,7 @@ class OBModeratedObjectsFiltersModalState
     );
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
         leading: GestureDetector(
           child: const OBIcon(OBIcons.close),

@@ -1,7 +1,7 @@
 import 'package:Okuna/models/post_comment_reaction.dart';
 
 class PostCommentReactionList {
-  final List<PostCommentReaction> reactions;
+  final List<PostCommentReaction>? reactions;
 
   PostCommentReactionList({
     this.reactions,

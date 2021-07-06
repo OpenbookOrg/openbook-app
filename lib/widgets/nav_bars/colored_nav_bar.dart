@@ -7,16 +7,16 @@ import 'package:flutter/material.dart';
 class OBColoredNavBar extends StatelessWidget
     implements ObstructingPreferredSizeWidget {
   final Color color;
-  final Color textColor;
-  final Color actionsColor;
-  final Widget leading;
-  final Widget middle;
-  final Widget trailing;
-  final String title;
+  final Color? textColor;
+  final Color? actionsColor;
+  final Widget? leading;
+  final Widget? middle;
+  final Widget? trailing;
+  final String? title;
 
   const OBColoredNavBar(
-      {Key key,
-      @required this.color,
+      {Key? key,
+      required this.color,
       this.leading,
       this.trailing,
       this.title,
@@ -47,7 +47,7 @@ class OBColoredNavBar extends StatelessWidget
           leading: leading,
           middle: middle ??
               Text(
-                title,
+                title ?? '',
                 style: TextStyle(color: textColor ?? finalActionsColor),
               ),
           transitionBetweenRoutes: false,

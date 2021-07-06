@@ -4,10 +4,10 @@ class Share {
   static const String TEXT = 'text';
   static const String ERROR = 'error';
 
-  final String image;
-  final String video;
-  final String text;
-  final String error;
+  final String? image;
+  final String? video;
+  final String? text;
+  final String? error;
 
   const Share({
     this.image,
@@ -17,10 +17,11 @@ class Share {
   });
 
   static Share fromReceived(Map received) {
-    String text;
-    String image;
-    String video;
-    String error;
+    late String text;
+    late String image;
+    late String video;
+    late String error;
+
     if (received.containsKey(TEXT)) {
       text = received[TEXT];
     }
@@ -33,6 +34,7 @@ class Share {
     if (received.containsKey(ERROR)) {
       error = received[ERROR];
     }
+
     return Share(image: image, video: video, text: text, error: error);
   }
 }

@@ -18,9 +18,9 @@ class OBDeleteAccountPage extends StatefulWidget {
 }
 
 class OBDeleteAccountPageState extends State<OBDeleteAccountPage> {
-  ValidationService _validationService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
+  late ValidationService _validationService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
 
   static const double INPUT_ICONS_SIZE = 16;
   static const EdgeInsetsGeometry INPUT_CONTENT_PADDING =
@@ -66,9 +66,9 @@ class OBDeleteAccountPageState extends State<OBDeleteAccountPage> {
                         labelText: _localizationService.user__delete_account_current_pwd,
                         hintText: _localizationService.user__delete_account_current_pwd_hint,
                       ),
-                      validator: (String password) {
+                      validator: (String? password) {
                         if (!_formWasSubmitted) return null;
-                        String validatePassword =
+                        String? validatePassword =
                             _validationService.validateUserPassword(password);
                         if (validatePassword != null) return validatePassword;
                       },
@@ -79,7 +79,7 @@ class OBDeleteAccountPageState extends State<OBDeleteAccountPage> {
         ));
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
       title: _localizationService.user__delete_account_title,
       trailing: OBButton(
@@ -92,7 +92,7 @@ class OBDeleteAccountPageState extends State<OBDeleteAccountPage> {
   }
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   bool _updateFormValid() {

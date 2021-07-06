@@ -1,7 +1,7 @@
 import 'package:Okuna/models/emoji.dart';
 
 class EmojisList {
-  final List<Emoji> emojis;
+  final List<Emoji>? emojis;
 
   EmojisList({
     this.emojis,

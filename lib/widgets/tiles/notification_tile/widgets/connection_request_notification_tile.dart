@@ -12,12 +12,12 @@ import 'notification_tile_title.dart';
 class OBConnectionRequestNotificationTile extends StatelessWidget {
   final OBNotification notification;
   final ConnectionRequestNotification connectionRequestNotification;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const OBConnectionRequestNotificationTile(
-      {Key key,
-      @required this.notification,
-      @required this.connectionRequestNotification,
+      {Key? key,
+      required this.notification,
+      required this.connectionRequestNotification,
       this.onPressed})
       : super(key: key);
 
@@ -28,11 +28,11 @@ class OBConnectionRequestNotificationTile extends StatelessWidget {
     LocalizationService _localizationService = openbookProvider.localizationService;
 
     var navigateToRequesterProfile = () {
-      if (onPressed != null) onPressed();
+      if (onPressed != null) onPressed!();
       OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
 
       openbookProvider.navigationService.navigateToUserProfile(
-          user: connectionRequestNotification.connectionRequester,
+          user: connectionRequestNotification.connectionRequester!,
           context: context);
     };
 
@@ -40,7 +40,7 @@ class OBConnectionRequestNotificationTile extends StatelessWidget {
       onTap: navigateToRequesterProfile,
       leading: OBAvatar(
         size: OBAvatarSize.medium,
-        avatarUrl: connectionRequestNotification.connectionRequester
+        avatarUrl: connectionRequestNotification.connectionRequester!
             .getProfileAvatar(),
       ),
       title: OBNotificationTileTitle(
@@ -49,7 +49,7 @@ class OBConnectionRequestNotificationTile extends StatelessWidget {
           text: TextSpan(
             text: _localizationService.notifications__connection_request_tile,
           )),
-      subtitle: OBSecondaryText(utilsService.timeAgo(notification.created, _localizationService)),
+      subtitle: OBSecondaryText(utilsService.timeAgo(notification.created!, _localizationService)),
     );
   }
 }

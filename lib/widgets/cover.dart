@@ -6,8 +6,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class OBCover extends StatelessWidget {
-  final String coverUrl;
-  final File coverFile;
+  final String? coverUrl;
+  final File? coverFile;
   static const double largeSizeHeight = 230.0;
   static const double mediumSizedHeight = 190.0;
   static const double smallSizeHeight = 160.0;
@@ -25,7 +25,7 @@ class OBCover extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget image;
 
-    double coverHeight;
+    late double coverHeight;
 
     switch (size) {
       case OBCoverSize.large:
@@ -44,7 +44,7 @@ class OBCover extends StatelessWidget {
     if (coverFile != null) {
       image = FadeInImage(
         placeholder: AssetImage(COVER_PLACEHOLDER),
-        image: FileImage(coverFile),
+        image: FileImage(coverFile!),
         fit: BoxFit.cover,
         height: double.infinity,
         width: double.infinity,
@@ -55,13 +55,13 @@ class OBCover extends StatelessWidget {
     } else {
       image = CachedNetworkImage(
         fit: BoxFit.cover,
-        imageUrl: coverUrl != null ? coverUrl : '',
+        imageUrl: coverUrl ?? '',
         placeholder: (BuildContext context, String url) {
           return const Center(
             child: const CircularProgressIndicator(),
           );
         },
-        errorWidget: (BuildContext context, String url, Object error) {
+        errorWidget: (BuildContext context, String url, dynamic error) {
           return const SizedBox(
             child: const Center(
               child: const OBText('Could not load cover'),
@@ -80,7 +80,7 @@ class OBCover extends StatelessWidget {
             OpenbookProviderState openbookProvider =
                 OpenbookProvider.of(context);
             openbookProvider.dialogService
-                .showZoomablePhotoBoxView(imageUrl: coverUrl, context: context);
+                .showZoomablePhotoBoxView(imageUrl: coverUrl!, context: context);
           },
         );
       }

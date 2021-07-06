@@ -43,45 +43,45 @@ class Community extends UpdatableModel<Community> {
     factory.clearCache();
   }
 
-  final int id;
-  final User creator;
-  String name;
-  String title;
-  String description;
-  String rules;
-  String color;
-  String avatar;
-  String cover;
-  String userAdjective;
-  String usersAdjective;
-  int membersCount;
-  int postsCount;
-  int pendingModeratedObjectsCount;
+  final int? id;
+  final User? creator;
+  String? name;
+  String? title;
+  String? description;
+  String? rules;
+  String? color;
+  String? avatar;
+  String? cover;
+  String? userAdjective;
+  String? usersAdjective;
+  int? membersCount;
+  int? postsCount;
+  int? pendingModeratedObjectsCount;
 
-  CommunityType type;
+  CommunityType? type;
 
   // Whether the user has been invited to the community
-  bool isInvited;
+  bool? isInvited;
 
   // Whether the user has subscribed to the community
-  bool areNewPostNotificationsEnabled;
+  bool? areNewPostNotificationsEnabled;
 
   // Whether the user is the creator of the community
-  bool isCreator;
+  bool? isCreator;
 
-  bool isFavorite;
+  bool? isFavorite;
 
-  bool isReported;
+  bool? isReported;
 
-  bool invitesEnabled;
+  bool? invitesEnabled;
 
-  CategoriesList categories;
+  CategoriesList? categories;
 
-  UsersList moderators;
+  UsersList? moderators;
 
-  UsersList administrators;
+  UsersList? administrators;
 
-  CommunityMembershipList memberships;
+  CommunityMembershipList? memberships;
 
   Community(
       {this.id,
@@ -131,25 +131,25 @@ class Community extends UpdatableModel<Community> {
   }
 
   bool isAdministrator(User user) {
-    CommunityMembership membership = getMembershipForUser(user);
+    CommunityMembership? membership = getMembershipForUser(user);
     if (membership == null) return false;
-    return membership.isAdministrator;
+    return membership.isAdministrator ?? false;
   }
 
   bool isModerator(User user) {
-    CommunityMembership membership = getMembershipForUser(user);
+    CommunityMembership? membership = getMembershipForUser(user);
     if (membership == null) return false;
-    return membership.isModerator;
+    return membership.isModerator ?? false;
   }
 
   bool isMember(User user) {
     return getMembershipForUser(user) != null;
   }
 
-  CommunityMembership getMembershipForUser(User user) {
+  CommunityMembership? getMembershipForUser(User user) {
     if (memberships == null) return null;
 
-    int membershipIndex = memberships.communityMemberships
+    int membershipIndex = memberships!.communityMemberships!
         .indexWhere((CommunityMembership communityMembership) {
       return communityMembership.userId == user.id &&
           communityMembership.communityId == this.id;
@@ -157,13 +157,12 @@ class Community extends UpdatableModel<Community> {
 
     if (membershipIndex < 0) return null;
 
-    return memberships.communityMemberships[membershipIndex];
+    return memberships!.communityMemberships![membershipIndex];
   }
 
   static final factory = CommunityFactory();
 
   factory Community.fromJSON(Map<String, dynamic> json) {
-    if (json == null) return null;
     return factory.fromJson(json);
   }
 
@@ -186,12 +185,12 @@ class Community extends UpdatableModel<Community> {
       'is_creator': isCreator,
       'is_reported': isReported,
       'moderators':
-          moderators?.users?.map((User user) => user.toJson())?.toList(),
+          moderators?.users?.map((User user) => user.toJson()).toList(),
       'memberships': memberships?.communityMemberships
           ?.map((CommunityMembership membership) => membership.toJson())
-          ?.toList(),
+          .toList(),
       'administrators':
-          administrators?.users?.map((User user) => user.toJson())?.toList(),
+          administrators?.users?.map((User user) => user.toJson()).toList(),
       'is_favorite': isFavorite,
       'invites_enabled': invitesEnabled,
       'members_count': membersCount,
@@ -199,7 +198,7 @@ class Community extends UpdatableModel<Community> {
       'pending_moderated_objects_count': pendingModeratedObjectsCount,
       'categories': categories?.categories
           ?.map((Category category) => category.toJson())
-          ?.toList()
+          .toList()
     };
   }
 
@@ -305,28 +304,28 @@ class Community extends UpdatableModel<Community> {
 
   void incrementMembersCount() {
     if (this.membersCount != null) {
-      this.membersCount += 1;
+      this.membersCount = this.membersCount! + 1;
       notifyUpdate();
     }
   }
 
   void decrementMembersCount() {
-    if (this.membersCount != null && this.membersCount > 0) {
-      this.membersCount -= 1;
+    if (this.membersCount != null && this.membersCount! > 0) {
+      this.membersCount = this.membersCount! - 1;
       notifyUpdate();
     }
   }
 
   void incrementPostsCount() {
     if (this.postsCount != null) {
-      this.postsCount += 1;
+      this.postsCount = this.postsCount! + 1;
       notifyUpdate();
     }
   }
 
   void decrementPostsCount() {
-    if (this.postsCount != null && this.postsCount > 0) {
-      this.postsCount -= 1;
+    if (this.postsCount != null && this.postsCount! > 0) {
+      this.postsCount = this.postsCount! - 1;
       notifyUpdate();
     }
   }
@@ -339,7 +338,7 @@ class Community extends UpdatableModel<Community> {
 
 class CommunityFactory extends UpdatableModelFactory<Community> {
   @override
-  SimpleCache<int, Community> cache =
+  SimpleCache<int, Community>? cache =
       SimpleCache(storage: UpdatableModelSimpleStorage(size: 200));
 
   @override
@@ -373,27 +372,27 @@ class CommunityFactory extends UpdatableModelFactory<Community> {
         categories: parseCategories(json['categories']));
   }
 
-  User parseUser(Map userData) {
+  User? parseUser(Map<String, dynamic>? userData) {
     if (userData == null) return null;
     return User.fromJson(userData);
   }
 
-  UsersList parseUsers(List usersData) {
+  UsersList? parseUsers(List? usersData) {
     if (usersData == null) return null;
     return UsersList.fromJson(usersData);
   }
 
-  CommunityMembershipList parseMemberships(List membershipsData) {
+  CommunityMembershipList? parseMemberships(List? membershipsData) {
     if (membershipsData == null) return null;
     return CommunityMembershipList.fromJson(membershipsData);
   }
 
-  CategoriesList parseCategories(List categoriesData) {
+  CategoriesList? parseCategories(List? categoriesData) {
     if (categoriesData == null) return null;
     return CategoriesList.fromJson(categoriesData);
   }
 
-  CommunityType parseType(String strType) {
+  CommunityType? parseType(String? strType) {
     if (strType == null) return null;
 
     CommunityType type;
@@ -408,14 +407,14 @@ class CommunityFactory extends UpdatableModelFactory<Community> {
     return type;
   }
 
-  String typeToString(CommunityType type) {
+  String typeToString(CommunityType? type) {
     switch (type) {
       case CommunityType.public:
         return 'P';
-        break;
       case CommunityType.private:
         return 'T';
-        break;
+      default:
+        return '<unknown>';
     }
   }
 }

@@ -2,12 +2,12 @@ import 'package:Okuna/models/emoji.dart';
 import 'package:Okuna/models/emoji_list.dart';
 
 class EmojiGroup {
-  final String keyword;
-  final int id;
-  final int order;
-  final DateTime created;
-  final String color;
-  final EmojisList emojis;
+  final String? keyword;
+  final int? id;
+  final int? order;
+  final DateTime? created;
+  final String? color;
+  final EmojisList? emojis;
 
   EmojiGroup(
       {this.keyword,
@@ -30,11 +30,11 @@ class EmojiGroup {
         emojis: emojis);
   }
 
-  List<Emoji> getEmojis() {
-    return emojis.emojis;
+  List<Emoji>? getEmojis() {
+    return emojis?.emojis;
   }
 
-  static DateTime _parseCreated(String created) {
+  static DateTime? _parseCreated(String? created) {
     if (created == null) return null;
     return DateTime.parse(created).toLocal();
   }

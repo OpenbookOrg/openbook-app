@@ -23,12 +23,12 @@ class OBBlockedUsersPage extends StatefulWidget {
 }
 
 class OBBlockedUsersPageState extends State<OBBlockedUsersPage> {
-  UserService _userService;
-  NavigationService _navigationService;
-  ToastService _toastService;
+  late UserService _userService;
+  late NavigationService _navigationService;
+  late ToastService _toastService;
 
-  OBHttpListController _httpListController;
-  bool _needsBootstrap;
+  late OBHttpListController _httpListController;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -93,8 +93,8 @@ class OBBlockedUsersPageState extends State<OBBlockedUsersPage> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;
@@ -103,7 +103,7 @@ class OBBlockedUsersPageState extends State<OBBlockedUsersPage> {
 
   Future<List<User>> _refreshBlockedUsers() async {
     UsersList blockedUsers = await _userService.getBlockedUsers();
-    return blockedUsers.users;
+    return blockedUsers.users ?? [];
   }
 
   Future<List<User>> _loadMoreBlockedUsers(List<User> blockedUsersList) async {
@@ -114,13 +114,13 @@ class OBBlockedUsersPageState extends State<OBBlockedUsersPage> {
       count: 10,
     ))
         .users;
-    return moreBlockedUsers;
+    return moreBlockedUsers ?? [];
   }
 
   Future<List<User>> _searchBlockedUsers(String query) async {
     UsersList results = await _userService.searchBlockedUsers(query: query);
 
-    return results.users;
+    return results.users ?? [];
   }
 }
 

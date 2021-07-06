@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 
 class OBHashtagTile extends StatelessWidget {
   final Hashtag hashtag;
-  final ValueChanged<Hashtag> onHashtagTilePressed;
-  final ValueChanged<Hashtag> onHashtagTileDeleted;
+  final ValueChanged<Hashtag>? onHashtagTilePressed;
+  final ValueChanged<Hashtag>? onHashtagTileDeleted;
 
   const OBHashtagTile(this.hashtag,
-      {Key key,
+      {Key? key,
       this.onHashtagTilePressed,
       this.onHashtagTileDeleted})
       : super(key: key);
@@ -21,7 +21,7 @@ class OBHashtagTile extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget tile = ListTile(
       onTap: () {
-        if (onHashtagTilePressed != null) onHashtagTilePressed(hashtag);
+        if (onHashtagTilePressed != null) onHashtagTilePressed!(hashtag);
       },
       leading: OBHashtagAvatar(
         key: Key('Avatar-${hashtag.name}'),
@@ -53,4 +53,3 @@ class OBHashtagTile extends StatelessWidget {
   }
 
 }
-

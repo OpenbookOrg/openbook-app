@@ -9,13 +9,13 @@ import 'package:flutter/material.dart';
 
 class OBReportCommunityTile extends StatefulWidget {
   final Community community;
-  final ValueChanged<dynamic> onCommunityReported;
-  final VoidCallback onWantsToReportCommunity;
+  final ValueChanged<dynamic>? onCommunityReported;
+  final VoidCallback? onWantsToReportCommunity;
 
   const OBReportCommunityTile({
-    Key key,
+    Key? key,
     this.onCommunityReported,
-    @required this.community,
+    required this.community,
     this.onWantsToReportCommunity,
   }) : super(key: key);
 
@@ -26,8 +26,8 @@ class OBReportCommunityTile extends StatefulWidget {
 }
 
 class OBReportCommunityTileState extends State<OBReportCommunityTile> {
-  NavigationService _navigationService;
-  bool _requestInProgress;
+  late NavigationService _navigationService;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -47,7 +47,7 @@ class OBReportCommunityTileState extends State<OBReportCommunityTile> {
       builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
         var community = snapshot.data;
 
-        bool isReported = community.isReported ?? false;
+        bool isReported = community?.isReported ?? false;
 
         return OBLoadingTile(
           isLoading: _requestInProgress || isReported,
@@ -63,7 +63,7 @@ class OBReportCommunityTileState extends State<OBReportCommunityTile> {
 
   void _reportCommunity() {
     if (widget.onWantsToReportCommunity != null)
-      widget.onWantsToReportCommunity();
+      widget.onWantsToReportCommunity!();
     _navigationService.navigateToReportObject(
         context: context,
         object: widget.community,

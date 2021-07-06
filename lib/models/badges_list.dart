@@ -1,7 +1,7 @@
 import 'package:Okuna/models/badge.dart';
 
 class BadgesList {
-  final List<Badge> badges;
+  final List<Badge>? badges;
 
   BadgesList({
     this.badges,

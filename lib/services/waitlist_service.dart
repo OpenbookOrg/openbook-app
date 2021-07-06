@@ -1,8 +1,8 @@
 import 'package:Okuna/services/httpie.dart';
 
 class WaitlistApiService {
-  HttpieService _httpService;
-  String openbookSocialApiURL;
+  late HttpieService _httpService;
+  late String openbookSocialApiURL;
 
   static const MAILCHIMP_SUBSCRIBE_PATH = 'waitlist/subscribe/';
   static const HEALTH_PATH = 'health/';
@@ -15,7 +15,7 @@ class WaitlistApiService {
     _httpService = httpService;
   }
 
-  Future<HttpieResponse> subscribeToBetaWaitlist({String email}) {
+  Future<HttpieResponse> subscribeToBetaWaitlist({String? email}) {
     var body = {};
     if (email != null && email != '') {
       body['email'] = email;

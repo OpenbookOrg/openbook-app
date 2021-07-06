@@ -23,23 +23,23 @@ class OBUserVisibilityTile extends StatelessWidget {
         userService.getUserVisibilityLocalizationMap();
 
     return StreamBuilder(
-      stream: userService.getLoggedInUser().updateSubject,
+      stream: userService.getLoggedInUser()!.updateSubject,
       builder:
           (BuildContext context, AsyncSnapshot<User> snapshot) {
         if (snapshot.data == null) return const SizedBox();
 
-        UserVisibility currentUserVisibility = snapshot.data.visibility;
+        UserVisibility currentUserVisibility = snapshot.data!.visibility!;
 
-        var visibilityLocalizationsMap = userVisibilitiesLocalizationMap[currentUserVisibility];
+        var visibilityLocalizationsMap = userVisibilitiesLocalizationMap[currentUserVisibility]!;
 
         return ListTile(
           leading: OBUserVisibilityIcon(visibility: currentUserVisibility),
-          title: OBText(visibilityLocalizationsMap['title']),
+          title: OBText(visibilityLocalizationsMap['title']!),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               OBText(
-                visibilityLocalizationsMap['description'],
+                visibilityLocalizationsMap['description']!,
                 size: OBTextSize.mediumSecondary,
               ),
               OBText(

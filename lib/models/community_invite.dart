@@ -2,14 +2,14 @@ import 'package:Okuna/models/community.dart';
 import 'package:Okuna/models/user.dart';
 
 class CommunityInvite {
-  final int id;
-  final int creatorId;
-  final int communityId;
-  final int invitedUserId;
+  final int? id;
+  final int? creatorId;
+  final int? communityId;
+  final int? invitedUserId;
 
-  User invitedUser;
-  User creator;
-  Community community;
+  User? invitedUser;
+  User? creator;
+  Community? community;
 
   CommunityInvite(
       {this.id,
@@ -21,16 +21,15 @@ class CommunityInvite {
       this.creator});
 
   factory CommunityInvite.fromJSON(Map<String, dynamic> parsedJson) {
-    assert(parsedJson != null);
-    User invitedUser;
+    User? invitedUser;
     if (parsedJson.containsKey('invited_user'))
       invitedUser = User.fromJson(parsedJson['invited_user']);
 
-    User creator;
+    User? creator;
     if (parsedJson.containsKey('creator'))
       creator = User.fromJson(parsedJson['creator']);
 
-    Community community;
+    Community? community;
     if (parsedJson.containsKey('community'))
       community = Community.fromJSON(parsedJson['community']);
 

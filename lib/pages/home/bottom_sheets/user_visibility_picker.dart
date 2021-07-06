@@ -22,18 +22,18 @@ class OBUserVisibilityPickerBottomSheet extends StatefulWidget {
 
 class OBUserVisibilityPickerBottomSheetState
     extends State<OBUserVisibilityPickerBottomSheet> {
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  UserService _userService;
-  bool _needsBootstrap;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late UserService _userService;
+  late bool _needsBootstrap;
 
-  bool _isUserVisibilityPickerInProgress;
-  CancelableOperation _userVisibilityPickerOperation;
+  late bool _isUserVisibilityPickerInProgress;
+  CancelableOperation? _userVisibilityPickerOperation;
 
-  Map<UserVisibility, Map<String, String>> _userVisibilitiesLocalizationMap;
+  late Map<UserVisibility, Map<String, String>> _userVisibilitiesLocalizationMap;
 
-  UserVisibility _selectedUserVisibility;
-  UserVisibility _currentUserVisibility;
+  late UserVisibility _selectedUserVisibility;
+  late UserVisibility _currentUserVisibility;
 
   @override
   void initState() {
@@ -54,7 +54,7 @@ class OBUserVisibilityPickerBottomSheetState
       var openbookProvider = OpenbookProvider.of(context);
       _userService = openbookProvider.userService;
       _currentUserVisibility =
-          openbookProvider.userService.getLoggedInUser().visibility;
+          openbookProvider.userService.getLoggedInUser()!.visibility!;
       _selectedUserVisibility = _currentUserVisibility;
       _toastService = openbookProvider.toastService;
       _localizationService = openbookProvider.localizationService;
@@ -79,9 +79,9 @@ class OBUserVisibilityPickerBottomSheetState
       OBCheckboxField(
         leading: OBUserVisibilityIcon(visibility: UserVisibility.public,),
         value: _selectedUserVisibility == UserVisibility.public,
-        title: _userVisibilitiesLocalizationMap[UserVisibility.public]['title'],
-        subtitle: _userVisibilitiesLocalizationMap[UserVisibility.public]
-            ['description'],
+        title: _userVisibilitiesLocalizationMap[UserVisibility.public]!['title']!,
+        subtitle: _userVisibilitiesLocalizationMap[UserVisibility.public]!
+            ['description']!,
         onTap: () {
           _setSelectedVisibility(UserVisibility.public);
         },
@@ -90,9 +90,9 @@ class OBUserVisibilityPickerBottomSheetState
       OBCheckboxField(
         leading: OBUserVisibilityIcon(visibility: UserVisibility.okuna,),
         value: _selectedUserVisibility == UserVisibility.okuna,
-        title: _userVisibilitiesLocalizationMap[UserVisibility.okuna]['title'],
-        subtitle: _userVisibilitiesLocalizationMap[UserVisibility.okuna]
-            ['description'],
+        title: _userVisibilitiesLocalizationMap[UserVisibility.okuna]!['title']!,
+        subtitle: _userVisibilitiesLocalizationMap[UserVisibility.okuna]!
+            ['description']!,
         onTap: () {
           _setSelectedVisibility(UserVisibility.okuna);
         },
@@ -101,10 +101,10 @@ class OBUserVisibilityPickerBottomSheetState
       OBCheckboxField(
         leading: OBUserVisibilityIcon(visibility: UserVisibility.private,),
         value: _selectedUserVisibility == UserVisibility.private,
-        title: _userVisibilitiesLocalizationMap[UserVisibility.private]
-            ['title'],
-        subtitle: _userVisibilitiesLocalizationMap[UserVisibility.private]
-            ['description'],
+        title: _userVisibilitiesLocalizationMap[UserVisibility.private]!
+            ['title']!,
+        subtitle: _userVisibilitiesLocalizationMap[UserVisibility.private]!
+            ['description']!,
         onTap: () {
           _setSelectedVisibility(UserVisibility.private);
         },
@@ -146,7 +146,7 @@ class OBUserVisibilityPickerBottomSheetState
     try {
       _userVisibilityPickerOperation = CancelableOperation.fromFuture(
           _userService.updateUser(visibility: _selectedUserVisibility));
-      await _userVisibilityPickerOperation.value;
+      await _userVisibilityPickerOperation?.value;
       Navigator.pop(context);
     } catch (error) {
       _onError(error);
@@ -166,8 +166,8 @@ class OBUserVisibilityPickerBottomSheetState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);

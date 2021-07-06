@@ -1,7 +1,7 @@
 import 'package:Okuna/models/post_comment.dart';
 
 class PostCommentList {
-  final List<PostComment> comments;
+  final List<PostComment>? comments;
 
   PostCommentList({
     this.comments,

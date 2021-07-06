@@ -8,18 +8,18 @@ import 'package:flutter/material.dart';
 
 class OBPostHeader extends StatelessWidget {
   final Post post;
-  final OnPostDeleted onPostDeleted;
-  final ValueChanged<Post> onPostReported;
+  final OnPostDeleted? onPostDeleted;
+  final ValueChanged<Post>? onPostReported;
   final bool hasActions;
-  final OBPostDisplayContext displayContext;
-  final Function onCommunityExcluded;
-  final Function onUndoCommunityExcluded;
-  final ValueChanged<Community> onPostCommunityExcludedFromProfilePosts;
+  final OBPostDisplayContext? displayContext;
+  final Function? onCommunityExcluded;
+  final Function? onUndoCommunityExcluded;
+  final ValueChanged<Community>? onPostCommunityExcludedFromProfilePosts;
 
   const OBPostHeader({
-    Key key,
+    Key? key,
     this.onPostDeleted,
-    this.post,
+    required this.post,
     this.onPostReported,
     this.onCommunityExcluded,
     this.onUndoCommunityExcluded,
@@ -42,7 +42,7 @@ class OBPostHeader extends StatelessWidget {
                 onPostCommunityExcludedFromProfilePosts,
             displayContext: displayContext)
         : OBUserPostHeader(post,
-            onPostDeleted: onPostDeleted,
+            onPostDeleted: onPostDeleted!,
             onPostReported: onPostReported,
             displayContext: displayContext,
             hasActions: hasActions);

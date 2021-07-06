@@ -6,10 +6,10 @@ import 'package:Okuna/services/localization.dart';
 import 'package:flutter/material.dart';
 
 class OBPostsCount extends StatelessWidget {
-  final int postsCount;
+  final int? postsCount;
   final bool showZero;
-  final Color color;
-  final double fontSize;
+  final Color? color;
+  final double? fontSize;
 
   OBPostsCount(this.postsCount, {this.showZero = false, this.color, this.fontSize});
 
@@ -23,7 +23,7 @@ class OBPostsCount extends StatelessWidget {
     var themeValueParserService = openbookProvider.themeValueParserService;
     LocalizationService _localizationService =
         openbookProvider.localizationService;
-    String count = getPrettyCount(postsCount, _localizationService);
+    String count = getPrettyCount(postsCount!, _localizationService);
 
     return StreamBuilder(
         stream: themeService.themeChange,
@@ -44,7 +44,7 @@ class OBPostsCount extends StatelessWidget {
                         fontSize: fontSize,
                           fontWeight: FontWeight.bold,
                           color: color ?? themeValueParserService
-                              .parseColor(theme.primaryTextColor))),
+                              .parseColor(theme!.primaryTextColor))),
                   TextSpan(
                       text: postsCount == 1
                           ? _localizationService.post__profile_counts_post
@@ -52,7 +52,7 @@ class OBPostsCount extends StatelessWidget {
                       style: TextStyle(
                           fontSize: fontSize,
                           color: color ?? themeValueParserService
-                              .parseColor(theme.secondaryTextColor)))
+                              .parseColor(theme!.secondaryTextColor)))
                 ])),
               ),
               const SizedBox(

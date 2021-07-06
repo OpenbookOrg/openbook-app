@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBOwnProfilePage extends StatefulWidget {
-  final OBOwnProfilePageController controller;
+  final OBOwnProfilePageController? controller;
 
   OBOwnProfilePage({
     this.controller,
@@ -19,14 +19,14 @@ class OBOwnProfilePage extends StatefulWidget {
 }
 
 class OBOwnProfilePageState extends State<OBOwnProfilePage> {
-  OBProfilePageController _profilePageController;
+  late OBProfilePageController _profilePageController;
 
   @override
   void initState() {
     super.initState();
     _profilePageController = OBProfilePageController();
     if (widget.controller != null)
-      widget.controller.attach(context: context, state: this);
+      widget.controller!.attach(context: context, state: this);
   }
 
   @override
@@ -36,7 +36,7 @@ class OBOwnProfilePageState extends State<OBOwnProfilePage> {
 
     return StreamBuilder(
       stream: userService.loggedInUserChange,
-      builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
         var data = snapshot.data;
         if (data == null) return const SizedBox();
         return OBProfilePage(
@@ -53,14 +53,14 @@ class OBOwnProfilePageState extends State<OBOwnProfilePage> {
 }
 
 class OBOwnProfilePageController extends PoppablePageController {
-  OBOwnProfilePageState _state;
+  OBOwnProfilePageState? _state;
 
-  void attach({@required BuildContext context, OBOwnProfilePageState state}) {
+  void attach({required BuildContext context, OBOwnProfilePageState? state}) {
     super.attach(context: context);
     _state = state;
   }
 
   void scrollToTop() {
-    if (_state != null) _state.scrollToTop();
+    if (_state != null) _state!.scrollToTop();
   }
 }

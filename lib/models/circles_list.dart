@@ -1,7 +1,7 @@
 import 'package:Okuna/models/circle.dart';
 
 class CirclesList {
-  final List<Circle> circles;
+  final List<Circle>? circles;
 
   CirclesList({
     this.circles,

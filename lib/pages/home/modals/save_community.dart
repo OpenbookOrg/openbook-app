@@ -29,7 +29,7 @@ import 'package:flutter/material.dart';
 import 'package:pigment/pigment.dart';
 
 class OBSaveCommunityModal extends StatefulWidget {
-  final Community community;
+  final Community? community;
 
   const OBSaveCommunityModal({this.community});
 
@@ -40,38 +40,38 @@ class OBSaveCommunityModal extends StatefulWidget {
 }
 
 class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
-  UserService _userService;
-  ToastService _toastService;
-  ValidationService _validationService;
-  MediaService _imagePickerService;
-  LocalizationService _localizationService;
-  ThemeValueParserService _themeValueParserService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late ValidationService _validationService;
+  late MediaService _imagePickerService;
+  late LocalizationService _localizationService;
+  late ThemeValueParserService _themeValueParserService;
 
-  bool _requestInProgress;
-  bool _formWasSubmitted;
-  bool _formValid;
-  bool _isEditingExistingCommunity;
-  String _takenName;
+  late bool _requestInProgress;
+  late bool _formWasSubmitted;
+  late bool _formValid;
+  late bool _isEditingExistingCommunity;
+  String? _takenName;
 
-  GlobalKey<FormState> _formKey;
+  late GlobalKey<FormState> _formKey;
 
-  TextEditingController _nameController;
-  TextEditingController _titleController;
-  TextEditingController _descriptionController;
-  TextEditingController _userAdjectiveController;
-  TextEditingController _usersAdjectiveController;
-  TextEditingController _rulesController;
-  OBCategoriesFieldController _categoriesFieldController;
+  late TextEditingController _nameController;
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
+  late TextEditingController _userAdjectiveController;
+  late TextEditingController _usersAdjectiveController;
+  late TextEditingController _rulesController;
+  late OBCategoriesFieldController _categoriesFieldController;
 
-  String _color;
-  CommunityType _type;
-  String _avatarUrl;
-  String _coverUrl;
-  File _avatarFile;
-  File _coverFile;
-  bool _invitesEnabled;
+  String? _color;
+  CommunityType? _type;
+  String? _avatarUrl;
+  String? _coverUrl;
+  File? _avatarFile;
+  File? _coverFile;
+  bool? _invitesEnabled;
 
-  List<Category> _categories;
+  late List<Category> _categories;
 
   @override
   void initState() {
@@ -94,18 +94,18 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
     _isEditingExistingCommunity = widget.community != null;
 
     if (_isEditingExistingCommunity) {
-      _nameController.text = widget.community.name;
-      _titleController.text = widget.community.title;
-      _descriptionController.text = widget.community.description;
-      _userAdjectiveController.text = widget.community.userAdjective;
-      _usersAdjectiveController.text = widget.community.usersAdjective;
-      _rulesController.text = widget.community.rules;
-      _color = widget.community.color;
-      _categories = widget.community.categories.categories.toList();
-      _type = widget.community.type;
-      _avatarUrl = widget.community.avatar;
-      _coverUrl = widget.community.cover;
-      _invitesEnabled = widget.community.invitesEnabled;
+      _nameController.text = widget.community!.name ?? '';
+      _titleController.text = widget.community!.title ?? '';
+      _descriptionController.text = widget.community!.description ?? '';
+      _userAdjectiveController.text = widget.community!.userAdjective ?? '';
+      _usersAdjectiveController.text = widget.community!.usersAdjective ?? '';
+      _rulesController.text = widget.community!.rules ?? '';
+      _color = widget.community!.color;
+      _categories = widget.community!.categories?.categories?.toList() ?? [];
+      _type = widget.community!.type;
+      _avatarUrl = widget.community!.avatar;
+      _coverUrl = widget.community!.cover;
+      _invitesEnabled = widget.community!.invitesEnabled;
     }
 
     _nameController.addListener(_updateFormValid);
@@ -177,7 +177,7 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
                                   hintText: _localizationService.community__save_community_label_title_hint_text,
                                   prefixIcon: const OBIcon(OBIcons.communities),
                                 ),
-                                validator: (String communityTitle) {
+                                validator: (String? communityTitle) {
                                   return _validationService
                                       .validateCommunityTitle(communityTitle);
                                 }),
@@ -192,10 +192,10 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
                                     prefixText: 'c/',
                                     hintText:
                                     _localizationService.community__save_community_name_title_hint_text),
-                                validator: (String communityName) {
+                                validator: (String? communityName) {
                                   if (_takenName != null &&
                                       _takenName == communityName) {
-                                    return _localizationService.community__save_community_name_taken(_takenName);
+                                    return _localizationService.community__save_community_name_taken(_takenName!);
                                   }
 
                                   return _validationService
@@ -208,7 +208,7 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
                               hintText: _localizationService.community__save_community_name_label_color_hint_text,
                             ),
                             OBCommunityTypeField(
-                              value: _type,
+                              value: _type!,
                               title: _localizationService.community__save_community_name_label_type,
                               hintText: _localizationService.community__save_community_name_label_type_hint_text,
                               onChanged: (CommunityType type) {
@@ -219,7 +219,7 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
                             ),
                             _type == CommunityType.private
                               ? OBToggleField(
-                                    value: _invitesEnabled,
+                                    value: _invitesEnabled ?? false,
                                     title: _localizationService.community__save_community_name_member_invites,
                                     subtitle: OBText(
                                         _localizationService.community__save_community_name_member_invites_subtitle),
@@ -230,7 +230,7 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
                                     },
                                     onTap: () {
                                       setState(() {
-                                        _invitesEnabled = !_invitesEnabled;
+                                        _invitesEnabled = !(_invitesEnabled ?? false);
                                       });
                                     },
                                   )
@@ -256,7 +256,7 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
                                         OBIcons.communityDescription),
                                     labelText: _localizationService.community__save_community_name_label_desc_optional,
                                     hintText: _localizationService.community__save_community_name_label_desc_optional_hint_text),
-                                validator: (String communityDescription) {
+                                validator: (String? communityDescription) {
                                   return _validationService
                                       .validateCommunityDescription(
                                           communityDescription);
@@ -271,7 +271,7 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
                                   labelText: _localizationService.community__save_community_name_label_rules_optional,
                                   hintText:
                                   _localizationService.community__save_community_name_label_rules_optional_hint_text),
-                              validator: (String communityRules) {
+                              validator: (String? communityRules) {
                                 return _validationService
                                     .validateCommunityRules(communityRules);
                               },
@@ -290,7 +290,7 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
                                     labelText: _localizationService.community__save_community_name_label_member_adjective,
                                     hintText:
                                         _localizationService.community__save_community_name_label_member_adjective_hint_text),
-                                validator: (String communityUserAdjective) {
+                                validator: (String? communityUserAdjective) {
                                   return _validationService
                                       .validateCommunityUserAdjective(
                                           communityUserAdjective);
@@ -306,7 +306,7 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
                                     labelText: _localizationService.community__save_community_name_label_members_adjective,
                                     hintText:
                                         _localizationService.community__save_community_name_label_members_adjective_hint_text),
-                                validator: (String communityUsersAdjective) {
+                                validator: (String? communityUsersAdjective) {
                                   return _validationService
                                       .validateCommunityUserAdjective(
                                           communityUsersAdjective);
@@ -319,8 +319,8 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
         ));
   }
 
-  Widget _buildNavigationBar() {
-    Color color = _themeValueParserService.parseColor(_color);
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
+    Color color = _themeValueParserService.parseColor(_color!);
     bool isDarkColor = _themeValueParserService.isDarkColor(color);
     Color actionsColor = isDarkColor ? Colors.white : Colors.black;
 
@@ -354,7 +354,7 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
 
     bool hasAvatar = hasAvatarFile || hasAvatarUrl;
 
-    Function _onPressed = hasAvatar ? _clearAvatar : _pickNewAvatar;
+    VoidCallback _onPressed = hasAvatar ? _clearAvatar : _pickNewAvatar;
 
     Widget icon = Icon(
       hasAvatar ? Icons.clear : Icons.edit,
@@ -373,7 +373,7 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
     } else {
       avatar = OBLetterAvatar(
           size: OBAvatarSize.large,
-          color: Pigment.fromString(_color),
+          color: Pigment.fromString(_color!),
           letter: _nameController.text.isEmpty ? 'C' : _nameController.text[0]);
     }
 
@@ -400,7 +400,7 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
   }
 
   void _pickNewAvatar() async {
-    File newAvatar =
+    File? newAvatar =
         await _imagePickerService.pickImage(imageType: OBImageType.avatar, context: context);
     if (newAvatar != null) _setAvatarFile(newAvatar);
   }
@@ -410,7 +410,7 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
     bool hasCoverUrl = _coverUrl != null;
     bool hasCover = hasCoverFile || hasCoverUrl;
 
-    Function _onPressed = hasCover ? _clearCover : _pickNewCover;
+    VoidCallback _onPressed = hasCover ? _clearCover : _pickNewCover;
 
     Widget icon = Icon(
       hasCover ? Icons.clear : Icons.edit,
@@ -444,7 +444,7 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
   }
 
   void _pickNewCover() async {
-    File newCover =
+    File? newCover =
         await _imagePickerService.pickImage(imageType: OBImageType.cover, context: context);
     if (newCover != null) _setCoverFile(newCover);
   }
@@ -465,7 +465,7 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
     _setAvatarFile(null);
   }
 
-  void _setAvatarFile(File avatarFile) {
+  void _setAvatarFile(File? avatarFile) {
     setState(() {
       _avatarFile = avatarFile;
     });
@@ -480,14 +480,14 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
     _setCoverFile(null);
   }
 
-  void _setCoverFile(File coverFile) {
+  void _setCoverFile(File? coverFile) {
     setState(() {
       _coverFile = coverFile;
     });
   }
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   bool _updateFormValid() {
@@ -532,8 +532,8 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;
@@ -544,8 +544,8 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
     await _updateCommunityAvatar();
     await _updateCommunityCover();
 
-    return _userService.updateCommunity(widget.community,
-        name: _nameController.text != widget.community.name
+    return _userService.updateCommunity(widget.community!,
+        name: _nameController.text != widget.community!.name
             ? _nameController.text
             : null,
         title: _titleController.text,
@@ -564,22 +564,22 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
     bool hasCoverUrl = _coverUrl != null;
     bool hasCover = hasCoverFile || hasCoverUrl;
 
-    Future<void> updateFuture;
+    Future<void>? updateFuture;
 
     if (!hasCover) {
-      if (widget.community.cover != null) {
+      if (widget.community?.cover != null) {
         // Remove cover!
-        updateFuture = _userService.deleteCoverForCommunity(widget.community);
+        updateFuture = _userService.deleteCoverForCommunity(widget.community!);
       }
     } else if (hasCoverFile) {
       // New cover
-      updateFuture = _userService.updateCoverForCommunity(widget.community,
-          cover: _coverFile);
+      updateFuture = _userService.updateCoverForCommunity(widget.community!,
+          cover: _coverFile!);
     } else {
       updateFuture = Future.value();
     }
 
-    return updateFuture;
+    return updateFuture ?? Future.value();
   }
 
   Future<void> _updateCommunityAvatar() {
@@ -587,27 +587,27 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
     bool hasAvatarUrl = _avatarUrl != null;
     bool hasAvatar = hasAvatarFile || hasAvatarUrl;
 
-    Future<void> updateFuture;
+    Future<void>? updateFuture;
 
     if (!hasAvatar) {
-      if (widget.community.avatar != null) {
+      if (widget.community!.avatar != null) {
         // Remove avatar!
-        updateFuture = _userService.deleteAvatarForCommunity(widget.community);
+        updateFuture = _userService.deleteAvatarForCommunity(widget.community!);
       }
     } else if (hasAvatarFile) {
       // New avatar
-      updateFuture = _userService.updateAvatarForCommunity(widget.community,
-          avatar: _avatarFile);
+      updateFuture = _userService.updateAvatarForCommunity(widget.community!,
+          avatar: _avatarFile!);
     } else {
       updateFuture = Future.value();
     }
 
-    return updateFuture;
+    return updateFuture ?? Future.value();
   }
 
   Future<Community> _createCommunity() {
     return _userService.createCommunity(
-        type: _type,
+        type: _type ?? CommunityType.public,
         name: _nameController.text,
         title: _titleController.text,
         description: _descriptionController.text,
@@ -623,7 +623,7 @@ class OBSaveCommunityModalState extends State<OBSaveCommunityModal> {
 
   Future<bool> _isNameTaken(String communityName) async {
     if (_isEditingExistingCommunity &&
-        widget.community.name == _nameController.text) {
+        widget.community?.name == _nameController.text) {
       return false;
     }
     return _validationService.isCommunityNameTaken(communityName);

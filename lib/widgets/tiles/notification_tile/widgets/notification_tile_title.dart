@@ -5,17 +5,17 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class OBNotificationTileTitle extends StatelessWidget {
-  final User user;
-  final VoidCallback onUsernamePressed;
+  final User? user;
+  final VoidCallback? onUsernamePressed;
   final TextSpan text;
 
   static int postCommentMaxVisibleLength = 500;
 
   OBNotificationTileTitle(
-      {Key key,
+      {Key? key,
       this.onUsernamePressed,
       this.user,
-      @required this.text})
+      required this.text})
       : super(key: key);
 
   @override
@@ -28,20 +28,20 @@ class OBNotificationTileTitle extends StatelessWidget {
         stream: themeService.themeChange,
         initialData: themeService.getActiveTheme(),
         builder: (BuildContext context, AsyncSnapshot<OBTheme> snapshot) {
-          OBTheme theme = snapshot.data;
+          OBTheme theme = snapshot.data!;
 
           Color primaryTextColor =
               themeValueParserService.parseColor(theme.primaryTextColor);
           Color secondaryTextColor =
               themeValueParserService.parseColor(theme.secondaryTextColor);
 
-          String commenterUsername = user?.username;
-          String commenterName = user?.getProfileName();
+          String? commenterUsername = user?.username;
+          String? commenterName = user?.getProfileName();
 
           GestureRecognizer usernameTapGestureRecognizer =
               TapGestureRecognizer()..onTap = onUsernamePressed;
 
-          List<String> plainTextItems = text.text.split(' ');
+          List<String> plainTextItems = text.text!.split(' ');
           List<TextSpan> textItems = [];
 
           plainTextItems.asMap().forEach((index, item) {

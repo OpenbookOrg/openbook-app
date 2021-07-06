@@ -15,9 +15,9 @@ class OBProfileInLists extends StatelessWidget {
       stream: user.updateSubject,
       initialData: user,
       builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
-        var user = snapshot.data;
+        var user = snapshot.data!;
         if (!user.hasFollowLists()) return const SizedBox();
-        var followsLists = user.followLists.lists;
+        var followsLists = user.followLists?.lists ?? [];
 
         List<Widget> connectionItems = [
           const OBText(
@@ -30,14 +30,14 @@ class OBProfileInLists extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               OBEmojiPreview(
-                followsList.emoji,
+                followsList.emoji!,
                 size: OBEmojiPreviewSize.small,
               ),
               const SizedBox(
                 width: 5,
               ),
               OBText(
-                followsList.name,
+                followsList.name!,
               )
             ],
           ));

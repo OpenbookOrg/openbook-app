@@ -18,11 +18,11 @@ import 'package:flutter/widgets.dart';
 class OBCupertinoPageScaffold extends StatelessWidget {
   /// Creates a layout for pages with a navigation bar at the top.
   const OBCupertinoPageScaffold({
-    Key key,
+    Key? key,
     this.navigationBar,
     this.backgroundColor = CupertinoColors.white,
     this.resizeToAvoidBottomInset = true,
-    @required this.child,
+    required this.child,
   })  : assert(child != null),
         assert(resizeToAvoidBottomInset != null),
         super(key: key);
@@ -35,7 +35,7 @@ class OBCupertinoPageScaffold extends StatelessWidget {
   ///
   /// The scaffold assumes the navigation bar will consume the [MediaQuery] top padding.
   // TODO(xster): document its page transition animation when ready
-  final ObstructingPreferredSizeWidget navigationBar;
+  final ObstructingPreferredSizeWidget? navigationBar;
 
   /// Widget to show in the main content area.
   ///
@@ -70,7 +70,7 @@ class OBCupertinoPageScaffold extends StatelessWidget {
       // TODO(xster): Use real size after partial layout instead of preferred size.
       // https://github.com/flutter/flutter/issues/12912
       final double topPadding =
-          navigationBar.preferredSize.height + existingMediaQuery.padding.top;
+          navigationBar!.preferredSize.height + existingMediaQuery.padding.top;
 
       // Propagate bottom padding and include viewInsets if appropriate
 
@@ -87,7 +87,7 @@ class OBCupertinoPageScaffold extends StatelessWidget {
       // If navigation bar is opaquely obstructing, directly shift the main content
       // down. If translucent, let main content draw behind navigation bar but hint the
       // obstructed area.
-      if (navigationBar.shouldFullyObstruct(context)) {
+      if (navigationBar!.shouldFullyObstruct(context)) {
         paddedContent = Padding(
           padding: EdgeInsets.only(top: topPadding, bottom: bottomPadding),
           child: child,
@@ -115,7 +115,7 @@ class OBCupertinoPageScaffold extends StatelessWidget {
         top: 0.0,
         left: 0.0,
         right: 0.0,
-        child: navigationBar,
+        child: navigationBar!,
       ));
     }
 

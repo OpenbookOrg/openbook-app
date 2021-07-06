@@ -11,11 +11,11 @@ import 'package:flutter/material.dart';
 
 class OBCommunityPostsStreamStatusIndicator extends StatelessWidget {
   final VoidCallback streamRefresher;
-  final OBPostsStreamStatus streamStatus;
-  final List<Widget> streamPrependedItems;
+  final OBPostsStreamStatus? streamStatus;
+  final List<Widget>? streamPrependedItems;
 
   OBCommunityPostsStreamStatusIndicator({
-    @required this.streamRefresher,
+    required this.streamRefresher,
     this.streamStatus,
     this.streamPrependedItems,
   });

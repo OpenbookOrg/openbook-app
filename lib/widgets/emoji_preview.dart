@@ -20,11 +20,11 @@ class OBEmojiPreview extends StatelessWidget {
     return CachedNetworkImage(
       height: emojiSize,
       width: emojiSize,
-      imageUrl: emoji.image,
+      imageUrl: emoji.image!,
       placeholder: (BuildContext context, String url) {
         return const CircularProgressIndicator();
       },
-      errorWidget: (BuildContext context, String url, Object error) {
+      errorWidget: (BuildContext context, String url, dynamic error) {
         return const OBIcon(OBIcons.error);
       },
     );

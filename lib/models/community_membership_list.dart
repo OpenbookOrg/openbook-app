@@ -1,7 +1,7 @@
 import 'package:Okuna/models/community_membership.dart';
 
 class CommunityMembershipList {
-  final List<CommunityMembership> communityMemberships;
+  final List<CommunityMembership>? communityMemberships;
 
   CommunityMembershipList({
     this.communityMemberships,

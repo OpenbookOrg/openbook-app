@@ -37,21 +37,21 @@ class OBCommunityPage extends StatefulWidget {
 
 class OBCommunityPageState extends State<OBCommunityPage>
     with TickerProviderStateMixin {
-  Community _community;
-  OBPostsStreamController _obPostsStreamController;
-  ScrollController _obPostsStreamScrollController;
-  UserService _userService;
-  LocalizationService _localizationService;
+  late Community _community;
+  late OBPostsStreamController _obPostsStreamController;
+  late ScrollController _obPostsStreamScrollController;
+  late UserService _userService;
+  late LocalizationService _localizationService;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
-  CancelableOperation _refreshCommunityOperation;
+  CancelableOperation? _refreshCommunityOperation;
 
-  List<OBNewPostData> _newPostsData;
+  late List<OBNewPostData> _newPostsData;
 
   double _hideFloatingButtonTolerance = 10;
-  AnimationController _hideFloatingButtonAnimation;
-  double _previousScrollPixels;
+  late AnimationController _hideFloatingButtonAnimation;
+  late double _previousScrollPixels;
 
   @override
   void initState() {
@@ -97,7 +97,7 @@ class OBCommunityPageState extends State<OBCommunityPage>
   void dispose() {
     _hideFloatingButtonAnimation.dispose();
     super.dispose();
-    if (_refreshCommunityOperation != null) _refreshCommunityOperation.cancel();
+    if (_refreshCommunityOperation != null) _refreshCommunityOperation!.cancel();
   }
 
   @override
@@ -134,7 +134,7 @@ class OBCommunityPageState extends State<OBCommunityPage>
                     initialData: _community,
                     builder: (BuildContext context,
                         AsyncSnapshot<Community> snapshot) {
-                      Community latestCommunity = snapshot.data;
+                      Community latestCommunity = snapshot.data!;
 
                       return _userCanSeeCommunityContent(latestCommunity)
                           ? _buildCommunityContent()
@@ -149,7 +149,7 @@ class OBCommunityPageState extends State<OBCommunityPage>
   bool _userCanSeeCommunityContent(Community community) {
     bool communityIsPrivate = community.isPrivate();
 
-    User loggedInUser = _userService.getLoggedInUser();
+    User loggedInUser = _userService.getLoggedInUser()!;
     bool userIsMember = community.isMember(loggedInUser);
 
     return !communityIsPrivate || userIsMember;
@@ -177,14 +177,14 @@ class OBCommunityPageState extends State<OBCommunityPage>
         controller: _obPostsStreamController,
         prependedItems: prependedItems,
         displayContext: OBPostDisplayContext.communityPosts,
-        streamIdentifier: 'community_' + widget.community.name,
+        streamIdentifier: 'community_' + widget.community.name!,
         secondaryRefresher: _refreshCommunity,
         statusIndicatorBuilder: _buildPostsStreamStatusIndicator,
       ),
     ];
 
     OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
-    User loggedInUser = openbookProvider.userService.getLoggedInUser();
+    User loggedInUser = openbookProvider.userService.getLoggedInUser()!;
     bool isMemberOfCommunity = _community.isMember(loggedInUser);
 
     if (isMemberOfCommunity) {
@@ -206,12 +206,12 @@ class OBCommunityPageState extends State<OBCommunityPage>
   }
 
   Widget _buildPostsStreamStatusIndicator(
-      {BuildContext context,
-      OBPostsStreamStatus streamStatus,
-      List<Widget> streamPrependedItems,
-      Function streamRefresher}) {
+      {required BuildContext context,
+      required OBPostsStreamStatus streamStatus,
+      required List<Widget> streamPrependedItems,
+      required Function streamRefresher}) {
     return OBCommunityPostsStreamStatusIndicator(
-        streamRefresher: streamRefresher,
+        streamRefresher: streamRefresher as VoidCallback,
         streamPrependedItems: streamPrependedItems,
         streamStatus: streamStatus);
   }
@@ -236,7 +236,7 @@ class OBCommunityPageState extends State<OBCommunityPage>
   }
 
   Widget _buildPrivateCommunityContent() {
-    bool communityHasInvitesEnabled = _community.invitesEnabled;
+    bool communityHasInvitesEnabled = _community.invitesEnabled ?? false;
     return ListView(
       padding: EdgeInsets.all(0),
       children: <Widget>[
@@ -274,11 +274,11 @@ class OBCommunityPageState extends State<OBCommunityPage>
   }
 
   Future<void> _refreshCommunity() async {
-    if (_refreshCommunityOperation != null) _refreshCommunityOperation.cancel();
+    if (_refreshCommunityOperation != null) _refreshCommunityOperation!.cancel();
     _refreshCommunityOperation = CancelableOperation.fromFuture(
-        _userService.getCommunityWithName(_community.name));
+        _userService.getCommunityWithName(_community.name!));
     debugPrint(_localizationService.trans('community__refreshing'));
-    var community = await _refreshCommunityOperation.value;
+    var community = await _refreshCommunityOperation?.value;
     _setCommunity(community);
   }
 
@@ -286,7 +286,7 @@ class OBCommunityPageState extends State<OBCommunityPage>
     debugPrint('Refreshing community posts');
     PostsList communityPosts =
         await _userService.getPostsForCommunity(widget.community);
-    return communityPosts.posts;
+    return communityPosts.posts ?? [];
   }
 
   Future<List<Post>> _loadMoreCommunityPosts(
@@ -300,7 +300,7 @@ class OBCommunityPageState extends State<OBCommunityPage>
       count: 10,
     ))
         .posts;
-    return moreCommunityPosts;
+    return moreCommunityPosts ?? [];
   }
 
   void _setCommunity(Community community) {
@@ -329,9 +329,9 @@ class CommunityTabBarDelegate extends SliverPersistentHeaderDelegate {
     this.community,
   });
 
-  final TabController controller;
-  final Community community;
-  final PageStorageKey pageStorageKey;
+  final TabController? controller;
+  final Community? community;
+  final PageStorageKey? pageStorageKey;
 
   @override
   double get minExtent => kToolbarHeight;
@@ -354,7 +354,7 @@ class CommunityTabBarDelegate extends SliverPersistentHeaderDelegate {
           var theme = snapshot.data;
 
           Color themePrimaryTextColor =
-              themeValueParserService.parseColor(theme.primaryTextColor);
+              themeValueParserService.parseColor(theme!.primaryTextColor);
 
           return new SizedBox(
             height: kToolbarHeight,

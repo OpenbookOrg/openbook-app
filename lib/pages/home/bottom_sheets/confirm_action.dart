@@ -11,16 +11,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBConfirmActionBottomSheet extends StatefulWidget {
-  final String title;
-  final String subtitle;
-  final String description;
-  final String confirmText;
-  final String cancelText;
+  final String? title;
+  final String? subtitle;
+  final String? description;
+  final String? confirmText;
+  final String? cancelText;
   final ActionCompleter actionCompleter;
 
   const OBConfirmActionBottomSheet(
       {this.title,
-      @required this.actionCompleter,
+      required this.actionCompleter,
       this.confirmText,
       this.cancelText,
       this.subtitle,
@@ -34,12 +34,12 @@ class OBConfirmActionBottomSheet extends StatefulWidget {
 
 class OBConfirmActionBottomSheetState
     extends State<OBConfirmActionBottomSheet> {
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  bool _needsBootstrap;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late bool _needsBootstrap;
 
-  bool _isConfirmActionInProgress;
-  CancelableOperation _confirmActionOperation;
+  late bool _isConfirmActionInProgress;
+  CancelableOperation? _confirmActionOperation;
 
   @override
   void initState() {
@@ -84,7 +84,7 @@ class OBConfirmActionBottomSheetState
           height: 10,
         ),
         OBText(
-          widget.subtitle,
+          widget.subtitle!,
           size: OBTextSize.large,
           textAlign: TextAlign.left,
         ),
@@ -97,7 +97,7 @@ class OBConfirmActionBottomSheetState
           height: 10,
         ),
         OBText(
-          widget.description,
+          widget.description!,
           size: OBTextSize.medium,
           textAlign: TextAlign.left,
         ),
@@ -165,8 +165,8 @@ class OBConfirmActionBottomSheetState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);

@@ -14,7 +14,7 @@ class OBCommunityTitle extends StatelessWidget {
       initialData: community,
       builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
         var community = snapshot.data;
-        String title = community?.title;
+        String? title = community?.title;
 
         if (title == null)
           return const SizedBox(

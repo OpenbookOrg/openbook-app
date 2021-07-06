@@ -13,15 +13,15 @@ import 'package:flutter/material.dart';
 class OBMutePostCommentTile extends StatefulWidget {
   final Post post;
   final PostComment postComment;
-  final VoidCallback onMutedPostComment;
-  final VoidCallback onUnmutedPostComment;
+  final VoidCallback? onMutedPostComment;
+  final VoidCallback? onUnmutedPostComment;
 
   const OBMutePostCommentTile({
-    Key key,
-    @required this.postComment,
+    Key? key,
+    required this.postComment,
     this.onMutedPostComment,
     this.onUnmutedPostComment,
-    @required this.post,
+    required this.post,
   }) : super(key: key);
 
   @override
@@ -31,10 +31,10 @@ class OBMutePostCommentTile extends StatefulWidget {
 }
 
 class OBMutePostCommentTileState extends State<OBMutePostCommentTile> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  bool _requestInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class OBMutePostCommentTileState extends State<OBMutePostCommentTile> {
       builder: (BuildContext context, AsyncSnapshot<PostComment> snapshot) {
         var postComment = snapshot.data;
 
-        bool isMuted = postComment.isMuted;
+        bool isMuted = postComment?.isMuted ?? false;
 
         return OBLoadingTile(
           isLoading: _requestInProgress,
@@ -76,7 +76,7 @@ class OBMutePostCommentTileState extends State<OBMutePostCommentTile> {
       await _userService.mutePostComment(
           post: widget.post, postComment: widget.postComment);
       widget.postComment.setIsMuted(true);
-      if (widget.onMutedPostComment != null) widget.onMutedPostComment();
+      if (widget.onMutedPostComment != null) widget.onMutedPostComment!();
     } catch (e) {
       _onError(e);
     } finally {
@@ -90,7 +90,7 @@ class OBMutePostCommentTileState extends State<OBMutePostCommentTile> {
       await _userService.unmutePostComment(
           post: widget.post, postComment: widget.postComment);
       widget.postComment.setIsMuted(false);
-      if (widget.onUnmutedPostComment != null) widget.onUnmutedPostComment();
+      if (widget.onUnmutedPostComment != null) widget.onUnmutedPostComment!();
     } catch (e) {
       _onError(e);
     } finally {
@@ -103,8 +103,8 @@ class OBMutePostCommentTileState extends State<OBMutePostCommentTile> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

@@ -5,10 +5,10 @@ import 'package:Okuna/widgets/theming/text.dart';
 import 'package:flutter/material.dart';
 
 class OBStreamLoadMoreButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final String text;
+  final VoidCallback? onPressed;
+  final String? text;
 
-  const OBStreamLoadMoreButton({Key key, this.onPressed, this.text})
+  const OBStreamLoadMoreButton({Key? key, this.onPressed, this.text})
       : super(key: key);
 
   @override

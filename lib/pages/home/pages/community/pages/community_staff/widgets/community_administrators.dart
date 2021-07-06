@@ -20,7 +20,7 @@ class OBCommunityAdministrators extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
         var community = snapshot.data;
 
-        List<User> communityAdministrators = community?.administrators?.users;
+        List<User>? communityAdministrators = community?.administrators?.users;
 
         if (communityAdministrators == null || communityAdministrators.isEmpty)
           return const SizedBox();

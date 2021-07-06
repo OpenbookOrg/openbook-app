@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 class OBModerationPenaltyTile extends StatelessWidget {
   final ModerationPenalty moderationPenalty;
 
-  const OBModerationPenaltyTile({Key key, @required this.moderationPenalty})
+  const OBModerationPenaltyTile({Key? key, required this.moderationPenalty})
       : super(key: key);
 
   @override
@@ -22,13 +22,13 @@ class OBModerationPenaltyTile extends StatelessWidget {
           title: 'Object',
         ),
         OBModeratedObjectPreview(
-          moderatedObject: moderationPenalty.moderatedObject,
+          moderatedObject: moderationPenalty.moderatedObject!,
         ),
         const SizedBox(
           height: 10,
         ),
         OBModeratedObjectCategory(
-          moderatedObject: moderationPenalty.moderatedObject,
+          moderatedObject: moderationPenalty.moderatedObject!,
           isEditable: false,
         ),
         Row(
@@ -42,7 +42,7 @@ class OBModerationPenaltyTile extends StatelessWidget {
                     title: 'Status',
                   ),
                   OBModeratedObjectStatusTile(
-                    moderatedObject: moderationPenalty.moderatedObject,
+                    moderatedObject: moderationPenalty.moderatedObject!,
                   ),
                 ],
               ),
@@ -57,7 +57,7 @@ class OBModerationPenaltyTile extends StatelessWidget {
                   ListTile(
                     title: OBText(ModerationPenalty
                         .convertModerationPenaltyTypeToHumanReadableString(
-                            moderationPenalty.type,
+                            moderationPenalty.type!,
                             capitalize: true)),
                   )
                 ],

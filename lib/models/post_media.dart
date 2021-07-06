@@ -3,16 +3,15 @@ import 'package:Okuna/models/post_video.dart';
 import 'package:flutter/cupertino.dart';
 
 class PostMedia {
-  final int id;
-  final PostMediaType type;
+  final int? id;
+  final PostMediaType? type;
   final dynamic contentObject;
-  final int order;
+  final int? order;
 
   PostMedia({this.id, this.type, this.contentObject, this.order});
 
   factory PostMedia.fromJSON(Map<String, dynamic> json) {
-    if (json == null) return null;
-    PostMediaType type = PostMediaType.parse(json['type']);
+    PostMediaType? type = PostMediaType.parse(json['type']);
 
     return PostMedia(
         id: json['id'],
@@ -25,14 +24,14 @@ class PostMedia {
   Map<String, dynamic> toJson() {
     return {
        'id': id,
-      'type': type.code,
+      'type': type?.code,
       'content_object': contentObject?.toJson(),
       'order': order
     };
   }
 
   static dynamic parseContentObject(
-      {@required Map contentObjectData, @required PostMediaType type}) {
+      {required Map<String, dynamic>? contentObjectData, required PostMediaType? type}) {
     if (contentObjectData == null) return null;
 
     dynamic contentObject;
@@ -67,10 +66,10 @@ class PostMediaType {
 
   static values() => _values;
 
-  static PostMediaType parse(String string) {
+  static PostMediaType? parse(String? string) {
     if (string == null) return null;
 
-    PostMediaType postMediaType;
+    PostMediaType? postMediaType;
     for (var type in _values) {
       if (string == type.code) {
         postMediaType = type;

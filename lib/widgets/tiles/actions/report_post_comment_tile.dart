@@ -9,13 +9,13 @@ import 'package:flutter/material.dart';
 
 class OBReportPostCommentTile extends StatefulWidget {
   final PostComment postComment;
-  final ValueChanged<dynamic> onPostCommentReported;
-  final VoidCallback onWantsToReportPostComment;
+  final ValueChanged<dynamic>? onPostCommentReported;
+  final VoidCallback? onWantsToReportPostComment;
 
   const OBReportPostCommentTile({
-    Key key,
+    Key? key,
     this.onPostCommentReported,
-    @required this.postComment,
+    required this.postComment,
     this.onWantsToReportPostComment,
   }) : super(key: key);
 
@@ -26,8 +26,8 @@ class OBReportPostCommentTile extends StatefulWidget {
 }
 
 class OBReportPostCommentTileState extends State<OBReportPostCommentTile> {
-  NavigationService _navigationService;
-  bool _requestInProgress;
+  late NavigationService _navigationService;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -47,7 +47,7 @@ class OBReportPostCommentTileState extends State<OBReportPostCommentTile> {
       builder: (BuildContext context, AsyncSnapshot<PostComment> snapshot) {
         var postComment = snapshot.data;
 
-        bool isReported = postComment.isReported ?? false;
+        bool isReported = postComment?.isReported ?? false;
 
         return OBLoadingTile(
           isLoading: _requestInProgress || isReported,
@@ -62,7 +62,7 @@ class OBReportPostCommentTileState extends State<OBReportPostCommentTile> {
 
   void _reportPostComment() {
     if (widget.onWantsToReportPostComment != null)
-      widget.onWantsToReportPostComment();
+      widget.onWantsToReportPostComment!();
     _navigationService.navigateToReportObject(
         context: context,
         object: widget.postComment,

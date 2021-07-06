@@ -39,7 +39,7 @@ class BottomSheetService {
   bool hasActiveBottomSheet = false;
 
   Future<PostReaction> showReactToPost(
-      {@required Post post, @required BuildContext context}) async {
+      {required Post post, required BuildContext context}) async {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
@@ -50,9 +50,9 @@ class BottomSheetService {
   }
 
   Future<PostCommentReaction> showReactToPostComment(
-      {@required PostComment postComment,
-      @required Post post,
-      @required BuildContext context}) async {
+      {required PostComment postComment,
+      required Post post,
+      required BuildContext context}) async {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
@@ -64,11 +64,11 @@ class BottomSheetService {
   }
 
   void showConnectionsCirclesPicker(
-      {@required BuildContext context,
-      @required String title,
-      @required String actionLabel,
-      @required OnPickedCircles onPickedCircles,
-      List<Circle> initialPickedCircles}) {
+      {required BuildContext context,
+      required String title,
+      required String actionLabel,
+      required OnPickedCircles onPickedCircles,
+      List<Circle>? initialPickedCircles}) {
     _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
@@ -82,20 +82,20 @@ class BottomSheetService {
   }
 
   Future<void> showCommunityTypePicker(
-      {@required BuildContext context,
-      ValueChanged<CommunityType> onChanged,
-      CommunityType initialType}) {
+      {required BuildContext context,
+      ValueChanged<CommunityType>? onChanged,
+      CommunityType? initialType}) {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
           return OBCommunityTypePickerBottomSheet(
-              onTypeChanged: onChanged, initialType: initialType);
+              onTypeChanged: onChanged ?? (_) {}, initialType: initialType);
         });
   }
 
 
   Future<void> showUserVisibilityPicker(
-      {@required BuildContext context}) {
+      {required BuildContext context}) {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
@@ -104,58 +104,58 @@ class BottomSheetService {
   }
 
   Future<void> showVideosSoundSettingPicker(
-      {@required BuildContext context,
-      ValueChanged<VideosSoundSetting> onChanged,
-      VideosSoundSetting initialValue}) {
+      {required BuildContext context,
+      ValueChanged<VideosSoundSetting>? onChanged,
+      VideosSoundSetting? initialValue}) {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
           return OBVideosSoundSettingPickerBottomSheet(
-              onTypeChanged: onChanged, initialValue: initialValue);
+              onTypeChanged: onChanged ?? (_) {}, initialValue: initialValue);
         });
   }
 
   Future<void> showHashtagsDisplaySettingPicker(
-      {@required BuildContext context,
-      ValueChanged<HashtagsDisplaySetting> onChanged,
-      HashtagsDisplaySetting initialValue}) {
+      {required BuildContext context,
+      ValueChanged<HashtagsDisplaySetting>? onChanged,
+      HashtagsDisplaySetting? initialValue}) {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
           return OBHashtagsDisplaySettingPickerBottomSheet(
-              onTypeChanged: onChanged, initialValue: initialValue);
+              onTypeChanged: onChanged ?? (_) {}, initialValue: initialValue);
         });
   }
 
   Future<void> showVideosAutoPlaySettingPicker(
-      {@required BuildContext context,
-      ValueChanged<VideosAutoPlaySetting> onChanged,
-      VideosAutoPlaySetting initialValue}) {
+      {required BuildContext context,
+      ValueChanged<VideosAutoPlaySetting>? onChanged,
+      VideosAutoPlaySetting? initialValue}) {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
           return OBVideosAutoPlaySettingPickerBottomSheet(
-              onTypeChanged: onChanged, initialValue: initialValue);
+              onTypeChanged: onChanged ?? (_) {}, initialValue: initialValue);
         });
   }
 
   Future<void> showLinkPreviewsSettingPicker(
-      {@required BuildContext context,
-      ValueChanged<LinkPreviewsSetting> onChanged,
-      LinkPreviewsSetting initialValue}) {
+      {required BuildContext context,
+      ValueChanged<LinkPreviewsSetting>? onChanged,
+      LinkPreviewsSetting? initialValue}) {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
           return OBLinkPreviewsSettingPickerBottomSheet(
-              onTypeChanged: onChanged, initialValue: initialValue);
+              onTypeChanged: onChanged ?? (_) {}, initialValue: initialValue);
         });
   }
 
-  Future<List<FollowsList>> showFollowsListsPicker(
-      {@required BuildContext context,
-      @required String title,
-      @required String actionLabel,
-      List<FollowsList> initialPickedFollowsLists}) {
+  Future<List<FollowsList>?> showFollowsListsPicker(
+      {required BuildContext context,
+      required String title,
+      required String actionLabel,
+      List<FollowsList>? initialPickedFollowsLists}) {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
@@ -168,15 +168,15 @@ class BottomSheetService {
   }
 
   Future<void> showPostActions(
-      {@required BuildContext context,
-      @required Post post,
-      @required OBPostDisplayContext displayContext,
-      @required OnPostDeleted onPostDeleted,
-      @required ValueChanged<Post> onPostReported,
-      ValueChanged<Community> onPostCommunityExcludedFromProfilePosts,
-      Function onCommunityExcluded,
-      Function onUndoCommunityExcluded,
-      List<FollowsList> initialPickedFollowsLists}) {
+      {required BuildContext context,
+      required Post post,
+      required OBPostDisplayContext displayContext,
+      required OnPostDeleted? onPostDeleted,
+      required ValueChanged<Post>? onPostReported,
+      ValueChanged<Community>? onPostCommunityExcludedFromProfilePosts,
+      Function? onCommunityExcluded,
+      Function? onUndoCommunityExcluded,
+      List<FollowsList>? initialPickedFollowsLists}) {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
@@ -186,16 +186,16 @@ class BottomSheetService {
             onCommunityExcluded: onCommunityExcluded,
             onUndoCommunityExcluded: onUndoCommunityExcluded,
             onPostCommunityExcludedFromProfilePosts: onPostCommunityExcludedFromProfilePosts,
-            onPostDeleted: onPostDeleted,
-            onPostReported: onPostReported,
+            onPostDeleted: onPostDeleted ?? (_) {},
+            onPostReported: onPostReported ?? (_) {},
           );
         });
   }
 
   Future<void> showHashtagActions(
-      {@required BuildContext context,
-      @required Hashtag hashtag,
-      @required ValueChanged<Hashtag> onHashtagReported}) {
+      {required BuildContext context,
+      required Hashtag hashtag,
+      required ValueChanged<Hashtag> onHashtagReported}) {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
@@ -207,7 +207,7 @@ class BottomSheetService {
   }
 
   Future<void> showUserActions(
-      {@required BuildContext context, @required User user}) {
+      {required BuildContext context, required User user}) {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
@@ -218,38 +218,38 @@ class BottomSheetService {
   }
 
   Future<void> showCommunityActions(
-      {@required BuildContext context,
-      @required Community community,
-      OnCommunityReported onCommunityReported}) {
+      {required BuildContext context,
+      required Community community,
+      OnCommunityReported? onCommunityReported}) {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
           return OBCommunityActionsBottomSheet(
             community: community,
-            onCommunityReported: onCommunityReported,
+            onCommunityReported: onCommunityReported ?? (_) {},
           );
         });
   }
 
   Future<void> showMoreCommentActions({
-    @required BuildContext context,
-    @required Post post,
-    @required PostComment postComment,
-    @required ValueChanged<PostComment> onPostCommentDeleted,
-    @required ValueChanged<PostComment> onPostCommentReported,
+    required BuildContext context,
+    required Post post,
+    required PostComment postComment,
+    required ValueChanged<PostComment>? onPostCommentDeleted,
+    required ValueChanged<PostComment>? onPostCommentReported,
   }) {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
           return OBPostCommentMoreActionsBottomSheet(
-              onPostCommentReported: onPostCommentReported,
-              onPostCommentDeleted: onPostCommentDeleted,
+              onPostCommentReported: onPostCommentReported ?? (_) {},
+              onPostCommentDeleted: onPostCommentDeleted ?? (_) {},
               post: post,
               postComment: postComment);
         });
   }
 
-  Future<MediaFile> showCameraPicker({@required BuildContext context}) {
+  Future<MediaFile> showCameraPicker({required BuildContext context}) {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
@@ -257,7 +257,7 @@ class BottomSheetService {
         });
   }
 
-  Future<File> showVideoPicker({@required BuildContext context}) {
+  Future<File> showVideoPicker({required BuildContext context}) {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
@@ -265,7 +265,7 @@ class BottomSheetService {
         });
   }
 
-  Future<File> showImagePicker({@required BuildContext context}) {
+  Future<File> showImagePicker({required BuildContext context}) {
     return _showModalBottomSheetApp(
         context: context,
         builder: (BuildContext context) {
@@ -274,13 +274,13 @@ class BottomSheetService {
   }
 
   Future<File> showConfirmAction({
-    @required BuildContext context,
-    String title,
-    String subtitle,
-    String description,
-    String confirmText,
-    String cancelText,
-    @required ActionCompleter actionCompleter,
+    required BuildContext context,
+    String? title,
+    String? subtitle,
+    String? description,
+    String? confirmText,
+    String? cancelText,
+    required ActionCompleter actionCompleter,
   }) {
     return _showModalBottomSheetApp(
         context: context,
@@ -296,7 +296,7 @@ class BottomSheetService {
         });
   }
 
-  void dismissActiveBottomSheet({@required BuildContext context}) async {
+  void dismissActiveBottomSheet({required BuildContext context}) async {
     if (this.hasActiveBottomSheet) {
       Navigator.of(context, rootNavigator: true).pop();
       this.hasActiveBottomSheet = true;
@@ -304,7 +304,7 @@ class BottomSheetService {
   }
 
   Future<T> _showModalBottomSheetApp<T>(
-      {BuildContext context, WidgetBuilder builder}) async {
+      {required BuildContext context, required WidgetBuilder builder}) async {
     dismissActiveBottomSheet(context: context);
     hasActiveBottomSheet = true;
     final result =
@@ -353,7 +353,7 @@ class _ModalBottomSheetLayout extends SingleChildLayoutDelegate {
 }
 
 class _ModalBottomSheet<T> extends StatefulWidget {
-  const _ModalBottomSheet({Key key, this.route}) : super(key: key);
+  const _ModalBottomSheet({Key? key, required this.route}) : super(key: key);
 
   final _ModalBottomSheetRoute<T> route;
 
@@ -367,20 +367,20 @@ class _ModalBottomSheetState<T> extends State<_ModalBottomSheet<T>> {
     return new GestureDetector(
         onTap: widget.route.dismissOnTap ? () => Navigator.pop(context) : null,
         child: new AnimatedBuilder(
-            animation: widget.route.animation,
-            builder: (BuildContext context, Widget child) {
+            animation: widget.route.animation!,
+            builder: (BuildContext context, Widget? child) {
               double bottomInset = widget.route.resizeToAvoidBottomPadding
                   ? MediaQuery.of(context).viewInsets.bottom
                   : 0.0;
               return new ClipRect(
                   child: new CustomSingleChildLayout(
                       delegate: new _ModalBottomSheetLayout(
-                          widget.route.animation.value, bottomInset),
+                          widget.route.animation!.value, bottomInset),
                       child: new BottomSheet(
                           animationController:
                               widget.route._animationController,
                           onClosing: () => Navigator.pop(context),
-                          builder: widget.route.builder)));
+                          builder: widget.route.builder!)));
             }));
   }
 }
@@ -390,13 +390,13 @@ class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
     this.builder,
     this.theme,
     this.barrierLabel,
-    RouteSettings settings,
-    this.resizeToAvoidBottomPadding,
-    this.dismissOnTap,
+    RouteSettings? settings,
+    this.resizeToAvoidBottomPadding = false,
+    this.dismissOnTap = false,
   }) : super(settings: settings);
 
-  final WidgetBuilder builder;
-  final ThemeData theme;
+  final WidgetBuilder? builder;
+  final ThemeData? theme;
   final bool resizeToAvoidBottomPadding;
   final bool dismissOnTap;
 
@@ -407,19 +407,19 @@ class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
   bool get barrierDismissible => true;
 
   @override
-  final String barrierLabel;
+  final String? barrierLabel;
 
   @override
   Color get barrierColor => Colors.black54;
 
-  AnimationController _animationController;
+  AnimationController? _animationController;
 
   @override
   AnimationController createAnimationController() {
     assert(_animationController == null);
     _animationController =
-        BottomSheet.createAnimationController(navigator.overlay);
-    return _animationController;
+        BottomSheet.createAnimationController(navigator!.overlay!);
+    return _animationController!;
   }
 
   @override
@@ -432,7 +432,7 @@ class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
       removeTop: true,
       child: new _ModalBottomSheet<T>(route: this),
     );
-    if (theme != null) bottomSheet = new Theme(data: theme, child: bottomSheet);
+    if (theme != null) bottomSheet = new Theme(data: theme!, child: bottomSheet);
     return bottomSheet;
   }
 }
@@ -463,9 +463,9 @@ class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
 ///  * [showBottomSheet] and [ScaffoldState.showBottomSheet], for showing
 ///    non-modal bottom sheets.
 ///  * <https://material.google.com/components/bottom-sheets.html#bottom-sheets-modal-bottom-sheets>
-Future<T> showModalBottomSheetApp<T>({
-  @required BuildContext context,
-  @required WidgetBuilder builder,
+Future<T?> showModalBottomSheetApp<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
   bool dismissOnTap: false,
   bool resizeToAvoidBottomPadding: true,
 }) {

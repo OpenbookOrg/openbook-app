@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 
 class OBPrimaryAccentText extends StatelessWidget {
   final String text;
-  final TextStyle style;
-  final OBTextSize size;
+  final TextStyle? style;
+  final OBTextSize? size;
   final TextOverflow overflow;
-  final int maxLines;
+  final int? maxLines;
 
   OBPrimaryAccentText(this.text,
       {this.style,
@@ -28,11 +28,11 @@ class OBPrimaryAccentText extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<OBTheme> snapshot) {
           var theme = snapshot.data;
 
-          TextStyle finalStyle = style;
+          TextStyle? finalStyle = style;
           TextStyle themedTextStyle = TextStyle(
               foreground: Paint()
                 ..shader = themeValueParserService
-                    .parseGradient(theme.primaryAccentColor).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)));
+                    .parseGradient(theme!.primaryAccentColor).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0)));
 
           if (finalStyle != null) {
             finalStyle = finalStyle.merge(themedTextStyle);
@@ -43,7 +43,7 @@ class OBPrimaryAccentText extends StatelessWidget {
           return OBText(
             text,
             style: finalStyle,
-            size: size,
+            size: size ?? OBTextSize.medium,
             overflow: overflow,
             maxLines: maxLines,
           );

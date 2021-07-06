@@ -19,7 +19,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBSaveConnectionsCircleModal extends StatefulWidget {
-  final Circle connectionsCircle;
+  final Circle? connectionsCircle;
   final bool autofocusNameTextField;
 
   OBSaveConnectionsCircleModal(
@@ -35,22 +35,22 @@ class OBSaveConnectionsCircleModalState
     extends State<OBSaveConnectionsCircleModal> {
   static const double INPUT_COLORS_SIZE = 16;
 
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  ValidationService _validationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late ValidationService _validationService;
 
-  bool _requestInProgress;
-  bool _formWasSubmitted;
-  bool _formValid;
-  bool _hasExistingCircle;
-  String _takenConnectionsCircleName;
-  List<User> _users;
+  late bool _requestInProgress;
+  late bool _formWasSubmitted;
+  late bool _formValid;
+  late bool _hasExistingCircle;
+  String? _takenConnectionsCircleName;
+  late List<User> _users;
 
-  GlobalKey<FormState> _formKey;
+  late GlobalKey<FormState> _formKey;
 
-  TextEditingController _nameController;
-  String _color;
+  late TextEditingController _nameController;
+  String? _color;
 
   @override
   void initState() {
@@ -61,13 +61,13 @@ class OBSaveConnectionsCircleModalState
     _nameController = TextEditingController();
     _formKey = GlobalKey<FormState>();
     _hasExistingCircle = widget.connectionsCircle != null;
-    _users = _hasExistingCircle && widget.connectionsCircle.hasUsers()
-        ? widget.connectionsCircle.users.users.toList()
+    _users = _hasExistingCircle && widget.connectionsCircle!.hasUsers()
+        ? widget.connectionsCircle!.users!.users!.toList()
         : [];
 
     if (_hasExistingCircle) {
-      _nameController.text = widget.connectionsCircle.name;
-      _color = widget.connectionsCircle.color;
+      _nameController.text = widget.connectionsCircle!.name ?? '';
+      _color = widget.connectionsCircle!.color;
     }
 
     _nameController.addListener(_updateFormValid);
@@ -107,13 +107,13 @@ class OBSaveConnectionsCircleModalState
                                 decoration: InputDecoration(
                                     labelText: _localizationService.trans('user__save_connection_circle_name'),
                                     hintText: _localizationService.trans('user__save_connection_circle_hint')),
-                                validator: (String connectionsCircleName) {
+                                validator: (String? connectionsCircleName) {
                                   if (!_formWasSubmitted) return null;
 
                                   if (_takenConnectionsCircleName != null &&
                                       _takenConnectionsCircleName ==
                                           connectionsCircleName) {
-                                    return _localizationService.user__save_connection_circle_name_taken(_takenConnectionsCircleName);
+                                    return _localizationService.user__save_connection_circle_name_taken(_takenConnectionsCircleName!);
                                   }
 
                                   return _validationService
@@ -157,7 +157,7 @@ class OBSaveConnectionsCircleModalState
         ));
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
         leading: GestureDetector(
           child: const OBIcon(OBIcons.close),
@@ -177,7 +177,7 @@ class OBSaveConnectionsCircleModalState
   }
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   bool _updateFormValid() {
@@ -206,8 +206,8 @@ class OBSaveConnectionsCircleModalState
       }
 
       Circle connectionsCircle = await (_hasExistingCircle
-          ? _userService.updateConnectionsCircle(widget.connectionsCircle,
-              name: _nameController.text != widget.connectionsCircle.name
+          ? _userService.updateConnectionsCircle(widget.connectionsCircle!,
+              name: _nameController.text != widget.connectionsCircle!.name
                   ? _nameController.text
                   : null,
               users: _users,
@@ -228,8 +228,8 @@ class OBSaveConnectionsCircleModalState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(message: _localizationService.trans('error__unknown_error'), context: context);
       throw error;
@@ -239,7 +239,7 @@ class OBSaveConnectionsCircleModalState
   Future<bool> _isConnectionsCircleNameTaken(
       String connectionsCircleName) async {
     if (_hasExistingCircle &&
-        widget.connectionsCircle.name == _nameController.text) {
+        widget.connectionsCircle?.name == _nameController.text) {
       return false;
     }
     return _validationService

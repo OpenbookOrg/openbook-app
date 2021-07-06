@@ -14,17 +14,17 @@ import 'package:inview_notifier_list/inview_notifier_list.dart';
 class OBPost extends StatelessWidget {
   final Post post;
   final ValueChanged<Post> onPostDeleted;
-  final ValueChanged<Post> onPostIsInView;
-  final OnTextExpandedChange onTextExpandedChange;
-  final String inViewId;
-  final Function onCommunityExcluded;
-  final Function onUndoCommunityExcluded;
-  final ValueChanged<Community> onPostCommunityExcludedFromProfilePosts;
+  final ValueChanged<Post>? onPostIsInView;
+  final OnTextExpandedChange? onTextExpandedChange;
+  final String? inViewId;
+  final Function? onCommunityExcluded;
+  final Function? onUndoCommunityExcluded;
+  final ValueChanged<Community>? onPostCommunityExcludedFromProfilePosts;
   final OBPostDisplayContext displayContext;
 
   const OBPost(this.post,
-      {Key key,
-      @required this.onPostDeleted,
+      {Key? key,
+      required this.onPostDeleted,
       this.onPostIsInView,
       this.onCommunityExcluded,
       this.onUndoCommunityExcluded,
@@ -36,9 +36,9 @@ class OBPost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String postInViewId;
+    String? postInViewId;
     if (this.displayContext == OBPostDisplayContext.topPosts)
-      postInViewId = inViewId + '_' + post.id.toString();
+      postInViewId = (inViewId ?? '') + '_' + post.id.toString();
 
     _bootstrap(context, postInViewId);
 
@@ -75,15 +75,15 @@ class OBPost extends StatelessWidget {
     );
   }
 
-  void _bootstrap(BuildContext context, String postInViewId) {
-    InViewState _inViewState;
+  void _bootstrap(BuildContext context, String? postInViewId) {
+    InViewState? _inViewState;
     if (postInViewId != null) {
       _inViewState = InViewNotifierList.of(context);
-      _inViewState.addContext(context: context, id: postInViewId);
+      _inViewState!.addContext(context: context, id: postInViewId);
 
       if (this.displayContext == OBPostDisplayContext.topPosts) {
         _inViewState.addListener(
-            () => _onInViewStateChanged(_inViewState, postInViewId));
+            () => _onInViewStateChanged(_inViewState!, postInViewId));
       }
     }
   }
@@ -91,7 +91,7 @@ class OBPost extends StatelessWidget {
   void _onInViewStateChanged(InViewState _inViewState, String postInViewId) {
     final bool isInView = _inViewState.inView(postInViewId);
     if (isInView) {
-      if (onPostIsInView != null) onPostIsInView(post);
+      if (onPostIsInView != null) onPostIsInView!(post);
     }
   }
 }

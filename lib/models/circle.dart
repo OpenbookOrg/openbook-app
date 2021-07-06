@@ -4,12 +4,12 @@ import 'package:Okuna/models/users_list.dart';
 import 'package:dcache/dcache.dart';
 
 class Circle extends UpdatableModel<Circle> {
-  final int id;
-  final User creator;
-  String name;
-  String color;
-  int usersCount;
-  UsersList users;
+  final int? id;
+  final User? creator;
+  String? name;
+  String? color;
+  int? usersCount;
+  UsersList? users;
 
   Circle({
     this.id,
@@ -23,7 +23,6 @@ class Circle extends UpdatableModel<Circle> {
   static final factory = CircleFactory();
 
   factory Circle.fromJSON(Map<String, dynamic> json) {
-    if (json == null) return null;
     return factory.fromJson(json);
   }
 
@@ -34,7 +33,7 @@ class Circle extends UpdatableModel<Circle> {
         'name': name,
         'color': color,
         'users_count': usersCount,
-        'users': users?.users?.map((User user) => user.toJson())?.toList()
+        'users': users?.users?.map((User user) => user.toJson()).toList()
     };
   }
 
@@ -55,13 +54,13 @@ class Circle extends UpdatableModel<Circle> {
   }
 
   bool hasUsers() {
-    return users != null && users.users.length > 0;
+    return users != null && users!.users!.length > 0;
   }
 }
 
 class CircleFactory extends UpdatableModelFactory<Circle> {
   @override
-  SimpleCache<int, Circle> cache =
+  SimpleCache<int, Circle>? cache =
       SimpleCache(storage: UpdatableModelSimpleStorage(size: 20));
 
   @override
@@ -76,12 +75,12 @@ class CircleFactory extends UpdatableModelFactory<Circle> {
     );
   }
 
-  User parseUser(Map userData) {
+  User? parseUser(Map<String, dynamic>? userData) {
     if (userData == null) return null;
     return User.fromJson(userData);
   }
 
-  UsersList parseUsers(List usersData) {
+  UsersList? parseUsers(List? usersData) {
     if (usersData == null) return null;
     return UsersList.fromJson(usersData);
   }

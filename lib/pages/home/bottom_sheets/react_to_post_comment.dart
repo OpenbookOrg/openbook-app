@@ -17,7 +17,7 @@ class OBReactToPostCommentBottomSheet extends StatefulWidget {
   final PostComment postComment;
   final Post post;
 
-  const OBReactToPostCommentBottomSheet({this.post, this.postComment});
+  const OBReactToPostCommentBottomSheet({required this.post, required this.postComment});
 
   @override
   State<StatefulWidget> createState() {
@@ -27,11 +27,11 @@ class OBReactToPostCommentBottomSheet extends StatefulWidget {
 
 class OBReactToPostCommentBottomSheetState
     extends State<OBReactToPostCommentBottomSheet> {
-  UserService _userService;
-  ToastService _toastService;
+  late UserService _userService;
+  late ToastService _toastService;
 
-  bool _isReactToPostCommentInProgress;
-  CancelableOperation _reactOperation;
+  late bool _isReactToPostCommentInProgress;
+  CancelableOperation? _reactOperation;
 
   @override
   void initState() {
@@ -42,7 +42,7 @@ class OBReactToPostCommentBottomSheetState
   @override
   void dispose() {
     super.dispose();
-    if (_reactOperation != null) _reactOperation.cancel();
+    if (_reactOperation != null) _reactOperation!.cancel();
   }
 
   @override
@@ -76,7 +76,7 @@ class OBReactToPostCommentBottomSheetState
     );
   }
 
-  Future<void> _reactToPostComment(Emoji emoji, EmojiGroup emojiGroup) async {
+  Future<void> _reactToPostComment(Emoji emoji, EmojiGroup? emojiGroup) async {
     if (_isReactToPostCommentInProgress) return null;
     _setReactToPostCommentInProgress(true);
 
@@ -87,7 +87,7 @@ class OBReactToPostCommentBottomSheetState
               postComment: widget.postComment,
               emoji: emoji));
 
-      PostCommentReaction postCommentReaction = await _reactOperation.value;
+      PostCommentReaction postCommentReaction = await _reactOperation!.value;
       widget.postComment.setReaction(postCommentReaction);
       // Remove modal
       Navigator.pop(context);
@@ -105,8 +105,8 @@ class OBReactToPostCommentBottomSheetState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;

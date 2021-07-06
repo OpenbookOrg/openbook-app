@@ -20,32 +20,32 @@ import 'checkbox.dart';
 
 class OBHttpList<T> extends StatefulWidget {
   final OBHttpListItemBuilder<T> listItemBuilder;
-  final OBHttpListItemBuilder<T> selectedListItemBuilder;
-  final OBHttpListItemBuilder<T> searchResultListItemBuilder;
-  final OBHttpListSearcher<T> listSearcher;
+  final OBHttpListItemBuilder<T>? selectedListItemBuilder;
+  final OBHttpListItemBuilder<T>? searchResultListItemBuilder;
+  final OBHttpListSearcher<T>? listSearcher;
   final OBHttpListRefresher<T> listRefresher;
   final OBHttpListOnScrollLoader<T> listOnScrollLoader;
-  final OBHttpListController controller;
+  final OBHttpListController? controller;
   final String resourceSingularName;
   final String resourcePluralName;
   final EdgeInsets padding;
-  final IndexedWidgetBuilder separatorBuilder;
+  final IndexedWidgetBuilder? separatorBuilder;
   final ScrollPhysics physics;
-  final List<Widget> prependedItems;
-  final OBHttpListSecondaryRefresher secondaryRefresher;
-  final OBHttpListSelectionChangedListener<T> onSelectionChanged;
-  final OBHttpListSelectionChangedListener<T> onSelectionSubmitted;
-  final OBHttpListSelectionSubmitter<T> selectionSubmitter;
+  final List<Widget>? prependedItems;
+  final OBHttpListSecondaryRefresher? secondaryRefresher;
+  final OBHttpListSelectionChangedListener<T>? onSelectionChanged;
+  final OBHttpListSelectionChangedListener<T>? onSelectionSubmitted;
+  final OBHttpListSelectionSubmitter<T>? selectionSubmitter;
   final bool hasSearchBar;
   final bool isSelectable;
 
   const OBHttpList(
-      {Key key,
-      @required this.listItemBuilder,
-      @required this.listRefresher,
-      @required this.listOnScrollLoader,
-      @required this.resourceSingularName,
-      @required this.resourcePluralName,
+      {Key? key,
+      required this.listItemBuilder,
+      required this.listRefresher,
+      required this.listOnScrollLoader,
+      required this.resourceSingularName,
+      required this.resourcePluralName,
       this.physics = const ClampingScrollPhysics(),
       this.padding = const EdgeInsets.all(0),
       this.listSearcher,
@@ -69,37 +69,37 @@ class OBHttpList<T> extends StatefulWidget {
 }
 
 class OBHttpListState<T> extends State<OBHttpList<T>> {
-  ToastService _toastService;
-  LocalizationService _localizationService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
 
   GlobalKey<RefreshIndicatorState> _listRefreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-  ScrollController _listScrollController;
+  late ScrollController _listScrollController;
   List<T> _list = [];
   List<T> _listSearchResults = [];
   List<T> _listSelection = [];
-  List<Widget> _prependedItems;
+  late List<Widget> _prependedItems;
 
-  bool _hasSearch;
-  String _searchQuery;
-  bool _needsBootstrap;
-  bool _refreshInProgress;
-  bool _searchRequestInProgress;
-  bool _selectionSubmissionInProgress;
-  bool _loadingFinished;
-  bool _wasBootstrapped;
+  late bool _hasSearch;
+  late String _searchQuery;
+  late bool _needsBootstrap;
+  late bool _refreshInProgress;
+  late bool _searchRequestInProgress;
+  late bool _selectionSubmissionInProgress;
+  late bool _loadingFinished;
+  late bool _wasBootstrapped;
 
-  CancelableOperation _searchOperation;
-  CancelableOperation _refreshOperation;
-  CancelableOperation _loadMoreOperation;
-  CancelableOperation _submitSelectionOperation;
+  CancelableOperation? _searchOperation;
+  CancelableOperation? _refreshOperation;
+  CancelableOperation? _loadMoreOperation;
+  CancelableOperation? _submitSelectionOperation;
 
   ScrollPhysics noItemsPhysics = const AlwaysScrollableScrollPhysics();
 
   @override
   void initState() {
     super.initState();
-    if (widget.controller != null) widget.controller.attach(this);
+    if (widget.controller != null) widget.controller!.attach(this);
     _listScrollController = ScrollController();
     _loadingFinished = false;
     _needsBootstrap = true;
@@ -111,7 +111,7 @@ class OBHttpListState<T> extends State<OBHttpList<T>> {
     _list = [];
     _searchQuery = '';
     _prependedItems =
-        widget.prependedItems != null ? widget.prependedItems.toList() : [];
+        widget.prependedItems != null ? widget.prependedItems!.toList() : [];
   }
 
   void insertListItem(T listItem,
@@ -144,9 +144,9 @@ class OBHttpListState<T> extends State<OBHttpList<T>> {
 
   void dispose() {
     super.dispose();
-    if (_searchOperation != null) _searchOperation.cancel();
-    if (_loadMoreOperation != null) _loadMoreOperation.cancel();
-    if (_refreshOperation != null) _refreshOperation.cancel();
+    if (_searchOperation != null) _searchOperation!.cancel();
+    if (_loadMoreOperation != null) _loadMoreOperation!.cancel();
+    if (_refreshOperation != null) _refreshOperation!.cancel();
     _submitSelectionOperation?.cancel();
   }
 
@@ -246,7 +246,7 @@ class OBHttpListState<T> extends State<OBHttpList<T>> {
       },
       child: widget.separatorBuilder != null
           ? ListView.separated(
-              separatorBuilder: widget.separatorBuilder,
+              separatorBuilder: widget.separatorBuilder!,
               padding: widget.padding,
               physics: physics,
               itemCount: listItemCount,
@@ -283,7 +283,7 @@ class OBHttpListState<T> extends State<OBHttpList<T>> {
     T listItem = _listSearchResults[index];
 
     Widget listItemWidget =
-        widget.searchResultListItemBuilder(context, listItem);
+        widget.searchResultListItemBuilder!(context, listItem);
 
     if (!widget.isSelectable) return listItemWidget;
 
@@ -301,7 +301,7 @@ class OBHttpListState<T> extends State<OBHttpList<T>> {
                 delegate: OBHttpListLoadMoreDelegate(_localizationService),
                 child: widget.separatorBuilder != null
                     ? ListView.separated(
-                        separatorBuilder: widget.separatorBuilder,
+                        separatorBuilder: widget.separatorBuilder!,
                         controller: _listScrollController,
                         physics: widget.physics,
                         padding: widget.padding,
@@ -320,8 +320,8 @@ class OBHttpListState<T> extends State<OBHttpList<T>> {
   Widget _buildNoList() {
     List<Widget> items = [];
 
-    if (widget.prependedItems != null && widget.prependedItems.isNotEmpty) {
-      items.addAll(widget.prependedItems);
+    if (widget.prependedItems != null && widget.prependedItems!.isNotEmpty) {
+      items.addAll(widget.prependedItems!);
     }
 
     items.add(Column(
@@ -395,7 +395,7 @@ class OBHttpListState<T> extends State<OBHttpList<T>> {
 
   void _bootstrap() async {
     Future.delayed(Duration(milliseconds: 0), () async {
-      await _refreshWithRefreshIndicator();
+      _refreshWithRefreshIndicator();
       setState(() {
         _wasBootstrapped = true;
       });
@@ -403,18 +403,18 @@ class OBHttpListState<T> extends State<OBHttpList<T>> {
   }
 
   Future<void> _refreshList() async {
-    if (_refreshOperation != null) _refreshOperation.cancel();
+    if (_refreshOperation != null) _refreshOperation!.cancel();
     _setLoadingFinished(false);
     _setRefreshInProgress(true);
     try {
       List<Future<dynamic>> refreshFutures = [widget.listRefresher()];
 
       if (widget.secondaryRefresher != null)
-        refreshFutures.add(widget.secondaryRefresher());
+        refreshFutures.add(widget.secondaryRefresher!());
 
       _refreshOperation =
           CancelableOperation.fromFuture(Future.wait(refreshFutures));
-      List<dynamic> results = await _refreshOperation.value;
+      List<dynamic> results = await _refreshOperation?.value;
       List<T> list = results[0];
 
       _setList(list);
@@ -429,9 +429,12 @@ class OBHttpListState<T> extends State<OBHttpList<T>> {
   Future refreshList(
       {bool shouldScrollToTop = false,
       bool shouldUseRefreshIndicator = false}) async {
-    await (shouldUseRefreshIndicator
-        ? _refreshWithRefreshIndicator()
-        : _refreshList());
+    if (shouldUseRefreshIndicator) {
+      _refreshWithRefreshIndicator();
+    } else {
+      _refreshList();
+    }
+
     if (shouldScrollToTop &&
         _listScrollController.hasClients &&
         _listScrollController.offset != 0) {
@@ -441,10 +444,10 @@ class OBHttpListState<T> extends State<OBHttpList<T>> {
 
   void _refreshWithRefreshIndicator(){
     // Deactivate if active
-    _listRefreshIndicatorKey.currentState.deactivate();
+    _listRefreshIndicatorKey.currentState?.deactivate();
 
     // Activate
-    _listRefreshIndicatorKey.currentState.show();
+    _listRefreshIndicatorKey.currentState?.show();
   }
 
   Future<bool> _loadMoreListItems() async {
@@ -456,7 +459,7 @@ class OBHttpListState<T> extends State<OBHttpList<T>> {
     try {
       _loadMoreOperation =
           CancelableOperation.fromFuture(widget.listOnScrollLoader(_list));
-      List<T> moreListItems = await _loadMoreOperation.value;
+      List<T> moreListItems = await _loadMoreOperation?.value;
 
       if (moreListItems.length == 0) {
         _setLoadingFinished(true);
@@ -485,15 +488,15 @@ class OBHttpListState<T> extends State<OBHttpList<T>> {
   }
 
   Future _searchWithQuery(String query) async {
-    if (_searchOperation != null) _searchOperation.cancel();
+    if (_searchOperation != null) _searchOperation!.cancel();
 
     _setSearchRequestInProgress(true);
 
     try {
       _searchOperation =
-          CancelableOperation.fromFuture(widget.listSearcher(_searchQuery));
+          CancelableOperation.fromFuture(widget.listSearcher!(_searchQuery));
 
-      List<T> listSearchResults = await _searchOperation.value;
+      List<T> listSearchResults = await _searchOperation?.value;
       _setListSearchResults(listSearchResults);
     } catch (error) {
       _onError(error);
@@ -508,14 +511,14 @@ class OBHttpListState<T> extends State<OBHttpList<T>> {
   }
 
   void _onSubmitSelection() async {
-    if (_submitSelectionOperation != null) _submitSelectionOperation.cancel();
+    if (_submitSelectionOperation != null) _submitSelectionOperation!.cancel();
 
     _setSelectionSubmissionInProgress(true);
 
     try {
       _submitSelectionOperation = CancelableOperation.fromFuture(
-          widget.selectionSubmitter(_listSelection));
-      widget.onSelectionSubmitted(_listSelection);
+          widget.selectionSubmitter!(_listSelection));
+      widget.onSelectionSubmitted!(_listSelection);
     } catch (error) {
       _onError(error);
     } finally {
@@ -532,7 +535,7 @@ class OBHttpListState<T> extends State<OBHttpList<T>> {
     }
 
     if (widget.onSelectionChanged != null)
-      widget.onSelectionChanged(_listSelection.toList());
+      widget.onSelectionChanged!(_listSelection.toList());
   }
 
   void _resetListSearchResults() {
@@ -617,8 +620,8 @@ class OBHttpListState<T> extends State<OBHttpList<T>> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(
           message: _localizationService.trans('error__unknown_error'),
@@ -629,7 +632,7 @@ class OBHttpListState<T> extends State<OBHttpList<T>> {
 }
 
 class OBHttpListController<T> {
-  OBHttpListState _state;
+  OBHttpListState? _state;
 
   void attach(OBHttpListState state) {
     _state = state;
@@ -637,47 +640,47 @@ class OBHttpListController<T> {
 
   void insertListItem(T listItem,
       {bool shouldScrollToTop = true, bool shouldRefresh = false}) {
-    if (!_isAttached() || !_state.mounted) {
+    if (!_isAttached() || !_state!.mounted) {
       debugPrint('Tried to insertListItem in unattached OBHttpList');
       return;
     }
-    _state.insertListItem(listItem,
+    _state!.insertListItem(listItem,
         shouldScrollToTop: shouldScrollToTop, shouldRefresh: shouldRefresh);
   }
 
   void removeListItem(T listItem) {
-    if (!_isAttached() || !_state.mounted) return;
-    _state.removeListItem(listItem);
+    if (!_isAttached() || !_state!.mounted) return;
+    _state!.removeListItem(listItem);
   }
 
   void scrollToTop() {
-    if (!_isAttached() || !_state.mounted) return;
-    _state.scrollToTop();
+    if (!_isAttached() || !_state!.mounted) return;
+    _state!.scrollToTop();
   }
 
   Future refresh(
       {bool shouldScrollToTop = false,
       bool shouldUseRefreshIndicator = false}) async {
-    if (_state == null || !_state.mounted) return;
-    _state.refreshList(
+    if (_state == null || !_state!.mounted) return;
+    _state!.refreshList(
         shouldScrollToTop: shouldScrollToTop,
         shouldUseRefreshIndicator: shouldUseRefreshIndicator);
   }
 
   Future search(String query) {
-    return _state._onSearch(query);
+    return _state!._onSearch(query);
   }
 
   Future clearSearch() {
-    return _state._onSearch('');
+    return _state!._onSearch('');
   }
 
   bool hasItems() {
-    return _state._list.isNotEmpty;
+    return _state!._list.isNotEmpty;
   }
 
   T firstItem() {
-    return _state._list.first;
+    return _state!._list.first;
   }
 
   bool _isAttached() {

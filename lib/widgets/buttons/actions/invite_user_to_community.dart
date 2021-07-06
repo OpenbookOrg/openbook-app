@@ -13,7 +13,7 @@ class OBInviteUserToCommunityButton extends StatefulWidget {
   final Community community;
 
   OBInviteUserToCommunityButton(
-      {@required this.user, @required this.community});
+      {required this.user, required this.community});
 
   @override
   OBInviteUserToCommunityButtonState createState() {
@@ -23,10 +23,10 @@ class OBInviteUserToCommunityButton extends StatefulWidget {
 
 class OBInviteUserToCommunityButtonState
     extends State<OBInviteUserToCommunityButton> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  bool _requestInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -41,21 +41,19 @@ class OBInviteUserToCommunityButtonState
     _toastService = openbookProvider.toastService;
     _localizationService = openbookProvider.localizationService;
 
-    User loggedInUser = _userService.getLoggedInUser();
+    User loggedInUser = _userService.getLoggedInUser()!;
 
     return StreamBuilder(
       stream: loggedInUser.updateSubject,
       initialData: loggedInUser,
       builder:
           (BuildContext context, AsyncSnapshot<User> loggedInUserSnapshot) {
-        User latestLoggedInUser = loggedInUserSnapshot.data;
-
         return StreamBuilder(
           stream: widget.user.updateSubject,
           initialData: widget.user,
           builder:
               (BuildContext context, AsyncSnapshot<User> latestUserSnapshot) {
-            User latestUser = latestUserSnapshot.data;
+            User? latestUser = latestUserSnapshot.data;
             if (latestUser == null) return const SizedBox();
 
             bool isCommunityMember =
@@ -136,8 +134,8 @@ class OBInviteUserToCommunityButtonState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(message: _localizationService.trans('error__unknown_error'), context: context);
       throw error;

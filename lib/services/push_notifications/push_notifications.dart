@@ -14,7 +14,7 @@ import 'package:rxdart/rxdart.dart';
 class PushNotificationsService {
   static const String oneSignalAppId = '66074bf4-9943-4504-a011-531c2635698b';
 
-  UserService _userService;
+  late UserService _userService;
 
   Stream<PushNotification> get pushNotification =>
       _pushNotificationSubject.stream;
@@ -25,7 +25,7 @@ class PushNotificationsService {
   final _pushNotificationOpenedSubject =
       PublishSubject<PushNotificationOpenedResult>();
 
-  OBStorage _pushNotificationsStorage;
+  late OBStorage _pushNotificationsStorage;
   static const String promptedUserForPermissionsStorageKey = 'promptedUser';
 
   void setStorageService(StorageService storageService) {
@@ -34,26 +34,24 @@ class PushNotificationsService {
   }
 
   void bootstrap() async {
-    await OneSignal.shared.init(oneSignalAppId, iOSSettings: {
-      OSiOSSettings.autoPrompt: false,
-      OSiOSSettings.inAppLaunchUrl: true
-    });
-    await OneSignal.shared
-        .setInFocusDisplayType(OSNotificationDisplayType.notification);
+    await OneSignal.shared.setAppId(oneSignalAppId);
+    // Deprecated, not sure if we need it.
+    // await OneSignal.shared
+    //     .setInFocusDisplayType(OSNotificationDisplayType.notification);
     await OneSignal.shared.setLocationShared(false);
-    OneSignal.shared.setNotificationReceivedHandler(_onNotificationReceived);
+    OneSignal.shared.setNotificationWillShowInForegroundHandler(_onNotificationReceived);
     OneSignal.shared.setNotificationOpenedHandler(_onNotificationOpened);
     OneSignal.shared.setSubscriptionObserver(_onSubscriptionChanged);
 
-    OSPermissionState permissionState = await this._getPermissionsState();
+    bool permissionGranted = await this._getPermissionsState();
     bool promptedBefore = await this.hasPromptedUserForPermission();
 
     if (!promptedBefore) {
       // Prompt
-      permissionState = await this.promptUserForPushNotificationPermission();
+      permissionGranted = await this.promptUserForPushNotificationPermission();
     }
 
-    if (permissionState.status == OSNotificationPermission.authorized) {
+    if (permissionGranted) {
       // Subscribe
       bool isSubscribed = await this.isSubscribedToPushNotifications();
       if (isSubscribed) {
@@ -79,26 +77,23 @@ class PushNotificationsService {
   }
 
   Future<bool> isSubscribedToPushNotifications() async {
-    OSPermissionSubscriptionState osPermissionSubscriptionState =
-        await OneSignal.shared.getPermissionSubscriptionState();
+    OSDeviceState? osDeviceState =
+        await OneSignal.shared.getDeviceState();
 
-    OSSubscriptionState subscriptionState =
-        osPermissionSubscriptionState.subscriptionStatus;
-
-    return subscriptionState.subscribed;
+    return osDeviceState?.subscribed ?? false;
   }
 
   Future subscribeToPushNotifications() async {
-    OSPermissionState permissionState = await this._getPermissionsState();
+    bool permissionGranted = await this._getPermissionsState();
 
-    if (permissionState.status != OSNotificationPermission.authorized) {
+    if (permissionGranted) {
       throw new Exception(
           'Tried to subscribe to push notifications without push notification permission');
     }
 
-    OSSubscriptionState subscriptionState = await this._getSubscriptionState();
+    bool subscribed = await this._getSubscriptionState();
 
-    if (subscriptionState.subscribed) {
+    if (subscribed) {
       debugLog(
           'Already subscribed to push notifications, not subscribing again');
       _onSubscribedToPushNotifications();
@@ -106,16 +101,16 @@ class PushNotificationsService {
     }
 
     debugLog('Subscribing to push notifications');
-    return OneSignal.shared.setSubscription(true);
+    return OneSignal.shared.disablePush(false);
   }
 
   Future unsubscribeFromPushNotifications() async {
     // This will trigger the _onUnsubscribedFromPushNotifications
     debugLog('Unsubscribing from push notifications');
-    return OneSignal.shared.setSubscription(false);
+    return OneSignal.shared.disablePush(true);
   }
 
-  Future<OSPermissionState> promptUserForPushNotificationPermission() async {
+  Future<bool> promptUserForPushNotificationPermission() async {
     if (Platform.isAndroid) {
       await this._setPromptedUserForPermission();
       return this._getPermissionsState();
@@ -129,29 +124,31 @@ class PushNotificationsService {
     _userService = userService;
   }
 
-  Future<OSPermissionState> _getPermissionsState() async {
-    OSPermissionSubscriptionState subscriptionState =
+  Future<bool> _getPermissionsState() async {
+    OSDeviceState? subscriptionState =
         await this._getOneSignalState();
-    return subscriptionState.permissionStatus;
+    return subscriptionState?.hasNotificationPermission ?? false;
   }
 
-  Future<OSSubscriptionState> _getSubscriptionState() async {
-    OSPermissionSubscriptionState subscriptionState =
+  Future<bool> _getSubscriptionState() async {
+    OSDeviceState? subscriptionState =
         await this._getOneSignalState();
-    return subscriptionState.subscriptionStatus;
+    return subscriptionState?.subscribed ?? false;
   }
 
-  Future<OSPermissionSubscriptionState> _getOneSignalState() {
-    return OneSignal.shared.getPermissionSubscriptionState();
+  Future<OSDeviceState?> _getOneSignalState() {
+    return OneSignal.shared.getDeviceState();
   }
 
-  void _onNotificationReceived(OSNotification notification) {
+  void _onNotificationReceived(OSNotificationReceivedEvent event) {
     debugLog('Notification received');
+    OSNotification notification = event.notification;
     Map<String, dynamic> notificationData =
-        _parseAdditionalData(notification.payload.additionalData);
+        _parseAdditionalData(notification.additionalData);
     PushNotification pushNotification =
         PushNotification.fromJson(notificationData);
     _pushNotificationSubject.add(pushNotification);
+    event.complete(notification);
   }
 
   void _onNotificationOpened(OSNotificationOpenedResult result) {
@@ -183,7 +180,7 @@ class PushNotificationsService {
   }
 
   Future _tagDeviceForPushNotifications() async {
-    User loggedInUser = _userService.getLoggedInUser();
+    User loggedInUser = _userService.getLoggedInUser()!;
     Device currentDevice = await _userService.getOrCreateCurrentDevice();
 
     String userId = _makeUserId(loggedInUser);
@@ -202,7 +199,7 @@ class PushNotificationsService {
   }
 
   String _makeUserId(User user) {
-    var bytes = utf8.encode(user.uuid + user.id.toString());
+    var bytes = utf8.encode(user.uuid! + user.id.toString());
     var digest = sha256.convert(bytes);
     return digest.toString();
   }
@@ -214,18 +211,18 @@ class PushNotificationsService {
 
   PushNotification _makePushNotification(OSNotification notification) {
     Map<String, dynamic> notificationData =
-        _parseAdditionalData(notification.payload.additionalData);
+        _parseAdditionalData(notification.additionalData);
     return PushNotification.fromJson(notificationData);
   }
 
   Map<String, dynamic> _parseAdditionalData(
-      Map<dynamic, dynamic> additionalData) {
+      Map<dynamic, dynamic>? additionalData) {
     String jsonAdditionalData = json.encode(additionalData);
     return json.decode(jsonAdditionalData);
   }
 
   Future<bool> hasPromptedUserForPermission() async {
-    if (Platform.isIOS) return (await this._getPermissionsState()).hasPrompted;
+    if (Platform.isIOS) return (await this._getPermissionsState());
 
     return _getPromptedUserForPermission();
   }
@@ -256,8 +253,8 @@ class PushNotificationsService {
 }
 
 class PushNotificationOpenedResult {
-  final PushNotification pushNotification;
-  final OSNotificationAction action;
+  final PushNotification? pushNotification;
+  final OSNotificationAction? action;
 
   const PushNotificationOpenedResult({this.pushNotification, this.action});
 }

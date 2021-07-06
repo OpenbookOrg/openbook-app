@@ -131,17 +131,17 @@ List<SmartTextElement> _smartify(String text) {
   List<SmartMatch> matches = [];
   matches.addAll(_usernameRegex.allMatches(text).map((m) {
     return SmartMatch(
-        UsernameElement(m.group(1)), m.start + m.group(0).indexOf("@"), m.end);
+        UsernameElement(m.group(1)!), m.start + m.group(0)!.indexOf("@"), m.end);
   }));
   matches.addAll(_communityNameRegex.allMatches(text).map((m) {
-    return SmartMatch(CommunityNameElement(m.group(0)), m.start, m.end);
+    return SmartMatch(CommunityNameElement(m.group(0)!), m.start, m.end);
   }));
   matches.addAll(linkRegex.allMatches(text).map((m) {
-    return SmartMatch(LinkElement(m.group(0)), m.start, m.end);
+    return SmartMatch(LinkElement(m.group(0)!), m.start, m.end);
   }));
 
   matches.addAll(_tagRegex.allMatches(text).map((m) {
-    return SmartMatch(HashtagElement(m.group(0)), m.start, m.end);
+    return SmartMatch(HashtagElement(m.group(0)!), m.start, m.end);
   }));
   // matches.addAll(_tagRegex.allMatches(text).map((m) { return SmartMatch(HashTagElement(m.group(0)), m.start, m.end); }));
   matches.sort((a, b) {
@@ -155,7 +155,7 @@ List<SmartTextElement> _smartify(String text) {
   List<SmartTextElement> span = [];
   int currentTextIndex = 0;
   int matchIndex = 0;
-  var currentMatch = matches[matchIndex];
+  SmartMatch? currentMatch = matches[matchIndex];
   while (currentTextIndex < text.length) {
     if (currentMatch == null) {
       // no more match found, add entire remaining text
@@ -196,34 +196,34 @@ typedef StringCallback(String url);
 /// Turns URLs into links
 class OBSmartText extends StatelessWidget {
   /// Text to be linkified
-  final String text;
+  final String? text;
 
   /// Maximum text length
-  final int maxlength;
+  final int? maxlength;
 
   /// Style for non-link text
-  final TextStyle style;
+  final TextStyle? style;
 
   /// Style of link text
-  final TextStyle linkStyle;
+  final TextStyle? linkStyle;
 
   /// Style of HashTag text
-  final TextStyle tagStyle;
+  final TextStyle? tagStyle;
 
   /// Callback for tapping a link
-  final StringCallback onLinkTapped;
+  final StringCallback? onLinkTapped;
 
   /// Callback for tapping a link
-  final OnHashtagTapped onHashtagTapped;
+  final OnHashtagTapped? onHashtagTapped;
 
   /// Callback for tapping a link
-  final StringCallback onUsernameTapped;
+  final StringCallback? onUsernameTapped;
 
   /// Callback for tapping a link
-  final StringCallback onCommunityNameTapped;
+  final StringCallback? onCommunityNameTapped;
 
   /// SmartTextElement element to add at the end of smart text
-  final SmartTextElement trailingSmartTextElement;
+  final SmartTextElement? trailingSmartTextElement;
 
   final OBTextSize size;
 
@@ -231,10 +231,10 @@ class OBSmartText extends StatelessWidget {
 
   final TextOverflow lengthOverflow;
 
-  final Map<String, Hashtag> hashtagsMap;
+  final Map<String, Hashtag>? hashtagsMap;
 
   const OBSmartText({
-    Key key,
+    Key? key,
     this.text,
     this.maxlength,
     this.overflow = TextOverflow.clip,
@@ -253,17 +253,17 @@ class OBSmartText extends StatelessWidget {
 
   /// Raw TextSpan builder for more control on the RichText
   TextSpan _buildSpan({
-    String text,
-    TextStyle style,
-    TextStyle secondaryTextStyle,
-    TextStyle linkStyle,
-    TextStyle tagStyle,
-    TextStyle usernameStyle,
-    TextStyle communityNameStyle,
-    StringCallback onLinkTapped,
-    StringCallback onTagTapped,
-    StringCallback onUsernameTapped,
-    StringCallback onCommunityNameTapped,
+    String? text,
+    TextStyle? style,
+    TextStyle? secondaryTextStyle,
+    TextStyle? linkStyle,
+    TextStyle? tagStyle,
+    TextStyle? usernameStyle,
+    TextStyle? communityNameStyle,
+    StringCallback? onLinkTapped,
+    StringCallback? onTagTapped,
+    StringCallback? onUsernameTapped,
+    StringCallback? onCommunityNameTapped,
   }) {
     void _onOpen(String url) {
       if (onLinkTapped != null) {
@@ -298,19 +298,19 @@ class OBSmartText extends StatelessWidget {
       }
     }
 
-    List<SmartTextElement> elements = _smartify(text);
+    List<SmartTextElement> elements = _smartify(text!);
 
-    if (this.maxlength != null && text.length > maxlength) {
-      _enforceMaxLength(elements, maxlength);
+    if (this.maxlength != null && text.length > maxlength!) {
+      _enforceMaxLength(elements, maxlength!);
     }
 
     if (this.trailingSmartTextElement != null) {
-      elements.add(this.trailingSmartTextElement);
+      elements.add(this.trailingSmartTextElement!);
     }
 
     return TextSpan(
         children: elements.map<InlineSpan>((element) {
-          InlineSpan textSpan;
+          late InlineSpan textSpan;
           if (element is TextElement) {
             textSpan = TextSpan(
               text: element.text,
@@ -332,8 +332,8 @@ class OBSmartText extends StatelessWidget {
             element.text.substring(1, element.text.length);
             String hashtagName = rawHashtagName.toLowerCase();
             if (this.hashtagsMap != null &&
-                this.hashtagsMap.containsKey(hashtagName)) {
-              Hashtag hashtag = this.hashtagsMap[hashtagName];
+                this.hashtagsMap!.containsKey(hashtagName)) {
+              Hashtag hashtag = this.hashtagsMap![hashtagName]!;
               textSpan = WidgetSpan(
                   baseline: TextBaseline.alphabetic,
                   alignment: ui.PlaceholderAlignment.baseline,
@@ -342,7 +342,7 @@ class OBSmartText extends StatelessWidget {
                     hashtag: hashtag,
                     rawHashtagName: rawHashtagName,
                     onPressed: (Hashtag hashtag) {
-                      if (onHashtagTapped != null) onHashtagTapped(
+                      if (onHashtagTapped != null) onHashtagTapped!(
                           hashtag: hashtag, rawHashtagName: rawHashtagName);
                     },
                     textStyle: linkStyle,
@@ -351,7 +351,7 @@ class OBSmartText extends StatelessWidget {
               textSpan = LinkTextSpan(
                 text: element.text,
                 style: linkStyle,
-                onPressed: () => onHashtagTapped(rawHashtagName: rawHashtagName),
+                onPressed: () => onHashtagTapped!(rawHashtagName: rawHashtagName),
               );
             }
           } else if (element is UsernameElement) {
@@ -372,7 +372,7 @@ class OBSmartText extends StatelessWidget {
         }).toList());
   }
 
-  String runeSubstring({String input, int start, int end}) {
+  String runeSubstring({required String input, required int start, required int end}) {
     return String.fromCharCodes(input.runes.toList().sublist(start, end));
   }
 
@@ -418,7 +418,7 @@ class OBSmartText extends StatelessWidget {
       initialData: themeService.getActiveTheme(),
       stream: themeService.themeChange,
       builder: (BuildContext context, AsyncSnapshot<OBTheme> snapshot) {
-        OBTheme theme = snapshot.data;
+        OBTheme theme = snapshot.data!;
 
         Color primaryTextColor =
         themeValueParserService.parseColor(theme.primaryTextColor);
@@ -428,7 +428,7 @@ class OBSmartText extends StatelessWidget {
             fontSize: fontSize,
             fontFamilyFallback: ['NunitoSans']);
 
-        TextStyle secondaryTextStyle;
+        TextStyle? secondaryTextStyle;
 
         if (trailingSmartTextElement != null) {
           // This is ugly af, why do we even need this.
@@ -474,7 +474,7 @@ class OBSmartText extends StatelessWidget {
 }
 
 class LinkTextSpan extends TextSpan {
-  LinkTextSpan({TextStyle style, VoidCallback onPressed, String text})
+  LinkTextSpan({TextStyle? style, VoidCallback? onPressed, String? text})
       : super(
     style: style,
     text: text,

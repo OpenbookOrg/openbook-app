@@ -3,12 +3,12 @@ import 'package:Okuna/provider.dart';
 import 'package:flutter/material.dart';
 
 class OBPrimaryColorContainer extends StatelessWidget {
-  final Widget child;
-  final BoxDecoration decoration;
+  final Widget? child;
+  final BoxDecoration? decoration;
   final MainAxisSize mainAxisSize;
 
   const OBPrimaryColorContainer(
-      {Key key,
+      {Key? key,
       this.child,
       this.decoration,
       this.mainAxisSize = MainAxisSize.max})
@@ -28,7 +28,7 @@ class OBPrimaryColorContainer extends StatelessWidget {
 
           Widget container = DecoratedBox(
             decoration: BoxDecoration(
-                color: themeValueParserService.parseColor(theme.primaryColor),
+                color: themeValueParserService.parseColor(theme!.primaryColor),
                 borderRadius: decoration?.borderRadius),
             child: child,
           );

@@ -20,7 +20,7 @@ class OBUserInviteDetailHeader extends StatelessWidget {
         stream: this.userInvite.updateSubject,
         initialData: this.userInvite,
         builder: (BuildContext context, AsyncSnapshot<UserInvite> snapshot) {
-          var userInvite = snapshot.data;
+          var userInvite = snapshot.data!;
 
           List<Widget> columnItems = [_buildUserInviteNickname(userInvite)];
 
@@ -51,9 +51,9 @@ class OBUserInviteDetailHeader extends StatelessWidget {
   Widget _buildUserDescription(UserInvite userInvite, LocalizationService localizationService) {
     Widget _description;
     if (userInvite.createdUser != null) {
-      _description = OBActionableSmartText(text:localizationService.user__invites_joined_with(userInvite.createdUser.username));
-    } else if (userInvite.isInviteEmailSent) {
-      _description = OBText(localizationService.user__invites_pending_email(userInvite.email));
+      _description = OBActionableSmartText(text:localizationService.user__invites_joined_with(userInvite.createdUser!.username!));
+    } else if (userInvite.isInviteEmailSent == true) {
+      _description = OBText(localizationService.user__invites_pending_email(userInvite.email!));
     } else {
       _description = OBText(localizationService.user__invites_pending);
     }

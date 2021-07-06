@@ -1,7 +1,7 @@
 import 'package:Okuna/models/reactions_emoji_count.dart';
 
 class ReactionsEmojiCountList {
-  final List<ReactionsEmojiCount> counts;
+  final List<ReactionsEmojiCount?>? counts;
 
   ReactionsEmojiCountList({
     this.counts,

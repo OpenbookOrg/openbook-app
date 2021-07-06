@@ -13,13 +13,13 @@ import 'package:flutter/material.dart';
 class OBFollowsListsPickerBottomSheet extends StatefulWidget {
   final String title;
   final String actionLabel;
-  final List<FollowsList> initialPickedFollowsLists;
+  final List<FollowsList>? initialPickedFollowsLists;
 
   const OBFollowsListsPickerBottomSheet(
-      {Key key,
+      {Key? key,
       this.initialPickedFollowsLists,
-      @required this.title,
-      @required this.actionLabel})
+      required this.title,
+      required this.actionLabel})
       : super(key: key);
 
   @override
@@ -30,14 +30,14 @@ class OBFollowsListsPickerBottomSheet extends StatefulWidget {
 
 class OBFollowsListsPickerBottomSheetState
     extends State<OBFollowsListsPickerBottomSheet> {
-  UserService _userService;
-  ModalService _modalService;
+  late UserService _userService;
+  late ModalService _modalService;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
-  List<FollowsList> _followsLists;
-  List<FollowsList> _followsListSearchResults;
-  List<FollowsList> _pickedFollowsLists;
+  late List<FollowsList> _followsLists;
+  late List<FollowsList> _followsListSearchResults;
+  late List<FollowsList> _pickedFollowsLists;
 
   @override
   void initState() {
@@ -45,7 +45,7 @@ class OBFollowsListsPickerBottomSheetState
     _followsLists = [];
     _followsListSearchResults = [];
     _pickedFollowsLists = widget.initialPickedFollowsLists != null
-        ? widget.initialPickedFollowsLists.toList()
+        ? widget.initialPickedFollowsLists!.toList()
         : [];
     _needsBootstrap = true;
   }
@@ -113,7 +113,7 @@ class OBFollowsListsPickerBottomSheetState
     String standarisedSearchStr = searchString.toLowerCase();
 
     List<FollowsList> results = _followsLists.where((FollowsList followsList) {
-      return followsList.name.toLowerCase().contains(standarisedSearchStr);
+      return followsList.name!.toLowerCase().contains(standarisedSearchStr);
     }).toList();
 
     _setFollowsListSearchResults(results);
@@ -127,7 +127,7 @@ class OBFollowsListsPickerBottomSheetState
   }
 
   void _onWantsToCreateANewFollowsList() async {
-    FollowsList createdFollowsList =
+    FollowsList? createdFollowsList =
         await _modalService.openCreateFollowsList(context: context);
 
     if (createdFollowsList != null) {
@@ -154,7 +154,7 @@ class OBFollowsListsPickerBottomSheetState
 
   void _bootstrap() async {
     FollowsListsList followsListList = await _userService.getFollowsLists();
-    var connectionsFollowsLists = followsListList.lists;
+    var connectionsFollowsLists = followsListList.lists!;
     this._setFollowsLists(connectionsFollowsLists);
   }
 

@@ -7,7 +7,7 @@ import 'package:Okuna/services/bottom_sheet.dart';
 class OBHashtagMoreButton extends StatelessWidget {
   final Hashtag hashtag;
 
-  const OBHashtagMoreButton({Key key, @required this.hashtag})
+  const OBHashtagMoreButton({Key? key, required this.hashtag})
       : super(key: key);
 
   @override
@@ -16,7 +16,7 @@ class OBHashtagMoreButton extends StatelessWidget {
       stream: hashtag.updateSubject,
       initialData: hashtag,
       builder: (BuildContext context, AsyncSnapshot<Hashtag> snapshot) {
-        var hashtag = snapshot.data;
+        var hashtag = snapshot.data!;
 
         return IconButton(
           icon: const OBIcon(

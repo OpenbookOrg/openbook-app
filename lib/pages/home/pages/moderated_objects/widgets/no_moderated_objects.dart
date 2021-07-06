@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class OBNoModeratedObjects extends StatelessWidget {
   final VoidCallback onWantsToRefreshModeratedObjects;
 
-  OBNoModeratedObjects({@required this.onWantsToRefreshModeratedObjects});
+  OBNoModeratedObjects({required this.onWantsToRefreshModeratedObjects});
 
   @override
   Widget build(BuildContext context) {

@@ -3,14 +3,14 @@ import 'package:Okuna/models/updatable_model.dart';
 import 'package:dcache/dcache.dart';
 
 class Hashtag extends UpdatableModel<Hashtag> {
-  final int id;
-  String name;
-  String image;
-  Emoji emoji;
-  String color;
-  String textColor;
-  int postsCount;
-  bool isReported;
+  final int? id;
+  String? name;
+  String? image;
+  Emoji? emoji;
+  String? color;
+  String? textColor;
+  int? postsCount;
+  bool? isReported;
 
   Hashtag({
     this.id,
@@ -26,7 +26,6 @@ class Hashtag extends UpdatableModel<Hashtag> {
   static final factory = HashtagFactory();
 
   factory Hashtag.fromJSON(Map<String, dynamic> json) {
-    if (json == null) return null;
     return factory.fromJson(json);
   }
 
@@ -89,7 +88,7 @@ class Hashtag extends UpdatableModel<Hashtag> {
 
 class HashtagFactory extends UpdatableModelFactory<Hashtag> {
   @override
-  SimpleCache<int, Hashtag> cache =
+  SimpleCache<int, Hashtag>? cache =
       SimpleCache(storage: UpdatableModelSimpleStorage(size: 20));
 
   @override
@@ -105,7 +104,7 @@ class HashtagFactory extends UpdatableModelFactory<Hashtag> {
     );
   }
 
-  Emoji parseEmoji(emojiRawData) {
+  Emoji? parseEmoji(emojiRawData) {
     if (emojiRawData == null) return null;
     return Emoji.fromJson(emojiRawData);
   }

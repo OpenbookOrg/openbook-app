@@ -17,14 +17,14 @@ class OBAuthEmailStepPage extends StatefulWidget {
 }
 
 class OBAuthEmailStepPageState extends State<OBAuthEmailStepPage> {
-  bool _emailCheckInProgress;
-  bool _emailTaken;
+  late bool _emailCheckInProgress;
+  bool? _emailTaken;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  CreateAccountBloc _createAccountBloc;
-  LocalizationService _localizationService;
-  ValidationService _validationService;
-  ToastService _toastService;
+  late CreateAccountBloc _createAccountBloc;
+  late LocalizationService _localizationService;
+  late ValidationService _validationService;
+  late ToastService _toastService;
 
   TextEditingController _emailController = TextEditingController();
 
@@ -80,7 +80,7 @@ class OBAuthEmailStepPageState extends State<OBAuthEmailStepPage> {
 
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   void _setEmailTaken(bool isEmailTaken) {
@@ -107,7 +107,7 @@ class OBAuthEmailStepPageState extends State<OBAuthEmailStepPage> {
   void onPressedNextStep(BuildContext context) async {
     await _checkEmailAvailable(_emailController.text.trim(), context);
     bool isEmailValid = _validateForm();
-    if (isEmailValid && !_emailTaken) {
+    if (isEmailValid && !(_emailTaken ?? true)) {
       setState(() {
         _createAccountBloc.setEmail(_emailController.text.trim());
         Navigator.pushNamed(context, '/auth/username_step');
@@ -129,7 +129,7 @@ class OBAuthEmailStepPageState extends State<OBAuthEmailStepPage> {
     );
   }
 
-  Widget _buildPreviousButton({@required BuildContext context}) {
+  Widget _buildPreviousButton({required BuildContext context}) {
     String buttonText = _localizationService.trans('auth__create_acc__previous');
 
     return OBSecondaryButton(
@@ -156,7 +156,7 @@ class OBAuthEmailStepPageState extends State<OBAuthEmailStepPage> {
     );
   }
 
-  Widget _buildWhatYourEmail({@required BuildContext context}) {
+  Widget _buildWhatYourEmail({required BuildContext context}) {
     String whatEmailText =
         _localizationService.trans('auth__create_acc__what_email');
 
@@ -195,10 +195,10 @@ class OBAuthEmailStepPageState extends State<OBAuthEmailStepPage> {
               child: OBAuthTextField(
                 autocorrect: false,
                 hintText: emailInputPlaceholder,
-                validator: (String email) {
-                  String validateEMail = _validationService.validateUserEmail(email.trim());
+                validator: (String? email) {
+                  String? validateEMail = _validationService.validateUserEmail(email?.trim());
                   if (validateEMail != null) return validateEMail;
-                  if (_emailTaken != null && _emailTaken) {
+                  if (_emailTaken != null && _emailTaken!) {
                     return errorEmailTaken;
                   }
                 },

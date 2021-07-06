@@ -20,13 +20,13 @@ class OBPostCommentsHeaderBar extends StatelessWidget {
   VoidCallback onWantsToRefreshComments;
 
   OBPostCommentsHeaderBar({
-    @required this.pageType,
-    @required this.noMoreTopItemsToLoad,
-    @required this.postComments,
-    @required this.currentSort,
-    @required this.onWantsToToggleSortComments,
-    @required this.loadMoreTopComments,
-    @required this.onWantsToRefreshComments,
+    required this.pageType,
+    required this.noMoreTopItemsToLoad,
+    required this.postComments,
+    required this.currentSort,
+    required this.onWantsToToggleSortComments,
+    required this.loadMoreTopComments,
+    required this.onWantsToRefreshComments,
   });
 
   @override
@@ -36,7 +36,7 @@ class OBPostCommentsHeaderBar extends StatelessWidget {
     LocalizationService _localizationService = provider.localizationService;
     ThemeValueParserService _themeValueParserService = provider.themeValueParserService;
     var theme = _themeService.getActiveTheme();
-    Map<String, String> _pageTextMap;
+    late Map<String, String> _pageTextMap;
     if (this.pageType == PostCommentsPageType.comments) {
       _pageTextMap = this.getPageCommentsMap(_localizationService);
     } else {
@@ -56,9 +56,9 @@ class OBPostCommentsHeaderBar extends StatelessWidget {
                 child: OBSecondaryText(
                   this.postComments.length > 0
                       ? this.currentSort == PostCommentsSortType.dec
-                      ? _pageTextMap['NEWEST']
-                      : _pageTextMap['OLDEST']
-                      : _pageTextMap['BE_THE_FIRST'],
+                      ? _pageTextMap['NEWEST']!
+                      : _pageTextMap['OLDEST']!
+                      : _pageTextMap['BE_THE_FIRST']!,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
                 ),
               ),
@@ -68,8 +68,8 @@ class OBPostCommentsHeaderBar extends StatelessWidget {
                   child: OBText(
                     this.postComments.length > 0
                         ? this.currentSort == PostCommentsSortType.dec
-                        ?  _pageTextMap['SEE_OLDEST']
-                        :  _pageTextMap['SEE_NEWEST']
+                        ?  _pageTextMap['SEE_OLDEST']!
+                        :  _pageTextMap['SEE_NEWEST']!
                         : '',
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -98,8 +98,8 @@ class OBPostCommentsHeaderBar extends StatelessWidget {
                       const SizedBox(width: 10.0),
                       OBText(
                         this.currentSort == PostCommentsSortType.dec
-                            ?  _pageTextMap['NEWER']
-                            :  _pageTextMap['OLDER'],
+                            ?  _pageTextMap['NEWER']!
+                            :  _pageTextMap['OLDER']!,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -111,8 +111,8 @@ class OBPostCommentsHeaderBar extends StatelessWidget {
               child: FlatButton(
                   child: OBText(
                     this.currentSort == PostCommentsSortType.dec
-                        ? _pageTextMap['VIEW_NEWEST']
-                        :  _pageTextMap['VIEW_OLDEST'],
+                        ? _pageTextMap['VIEW_NEWEST']!
+                        :  _pageTextMap['VIEW_OLDEST']!,
                     style: TextStyle(
                         color: _themeValueParserService
                             .parseGradient(theme.primaryAccentColor)

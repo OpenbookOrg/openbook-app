@@ -25,10 +25,10 @@ class OBNewPostDataUploader extends StatefulWidget {
   final ValueChanged<OBNewPostData> onCancelled;
 
   const OBNewPostDataUploader(
-      {Key key,
-      @required this.data,
-      @required this.onPostPublished,
-      @required this.onCancelled})
+      {Key? key,
+      required this.data,
+      required this.onPostPublished,
+      required this.onCancelled})
       : super(key: key);
 
   @override
@@ -39,22 +39,22 @@ class OBNewPostDataUploader extends StatefulWidget {
 
 class OBNewPostDataUploaderState extends State<OBNewPostDataUploader>
     with AutomaticKeepAliveClientMixin {
-  UserService _userService;
-  LocalizationService _localizationService;
-  MediaService _mediaPickerService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
+  late MediaService _mediaPickerService;
 
-  bool _needsBootstrap;
-  OBPostUploaderStatus _status;
+  late bool _needsBootstrap;
+  late OBPostUploaderStatus _status;
 
   String _statusMessage = '';
 
   static double mediaPreviewSize = 40;
 
-  Timer _checkPostStatusTimer;
+  Timer? _checkPostStatusTimer;
 
-  CancelableOperation _getPostStatusOperation;
-  CancelableOperation _uploadPostOperation;
-  OBNewPostData _data;
+  CancelableOperation? _getPostStatusOperation;
+  CancelableOperation? _uploadPostOperation;
+  late OBNewPostData _data;
 
   @override
   void initState() {
@@ -146,7 +146,7 @@ class OBNewPostDataUploaderState extends State<OBNewPostDataUploader>
         _data.createdDraftPost = await _createPost();
       }
 
-      if (_data.remainingMediaToCompress.isNotEmpty) {
+      if (_data.remainingMediaToCompress != null && _data.remainingMediaToCompress!.isNotEmpty) {
         _setStatusMessage(
             _localizationService.post_uploader__compressing_media);
         _setStatus(OBPostUploaderStatus.compressingPostMedia);
@@ -176,14 +176,14 @@ class OBNewPostDataUploaderState extends State<OBNewPostDataUploader>
             Timer.periodic(new Duration(seconds: 1), (timer) async {
           if (_getPostStatusOperation != null) return;
           _getPostStatusOperation = CancelableOperation.fromFuture(
-              _userService.getPostStatus(post: _data.createdDraftPost));
-          OBPostStatus status = await _getPostStatusOperation.value;
+              _userService.getPostStatus(post: _data.createdDraftPost!));
+          OBPostStatus status = await _getPostStatusOperation?.value;
           debugLog(
               'Polling for post published status, got status: ${status.toString()}');
           _data.createdDraftPostStatus = status;
           if (_data.createdDraftPostStatus == OBPostStatus.published) {
             debugLog('Received post status is published');
-            _checkPostStatusTimer.cancel();
+            _checkPostStatusTimer?.cancel();
             _getPublishedPost();
           }
           _getPostStatusOperation = null;
@@ -195,8 +195,8 @@ class OBNewPostDataUploaderState extends State<OBNewPostDataUploader>
       if (error is HttpieConnectionRefusedError) {
         _setStatusMessage(error.toHumanReadableMessage());
       } else if (error is HttpieRequestError) {
-        String errorMessage = await error.toHumanReadableMessage();
-        _setStatusMessage(errorMessage);
+        String? errorMessage = await error.toHumanReadableMessage();
+        _setStatusMessage(errorMessage ?? _localizationService.error__unknown_error);
       } else {
         _setStatusMessage(
             _localizationService.post_uploader__generic_upload_failed);
@@ -213,7 +213,7 @@ class OBNewPostDataUploaderState extends State<OBNewPostDataUploader>
     if (_data.community != null) {
       debugLog('Creating community post');
 
-      draftPost = await _userService.createPostForCommunity(_data.community,
+      draftPost = await _userService.createPostForCommunity(_data.community!,
           text: _data.text, isDraft: true);
     } else {
       debugLog('Creating circles post');
@@ -231,7 +231,7 @@ class OBNewPostDataUploaderState extends State<OBNewPostDataUploader>
     debugLog('Retrieving the published post');
 
     Post publishedPost =
-        await _userService.getPostWithUuid(_data.createdDraftPost.uuid);
+        await _userService.getPostWithUuid(_data.createdDraftPost!.uuid!);
     widget.onPostPublished(publishedPost, widget.data);
     _removeMediaFromCache();
   }
@@ -240,12 +240,12 @@ class OBNewPostDataUploaderState extends State<OBNewPostDataUploader>
     debugLog('Compressing post media');
 
     return Future.wait(
-        _data.remainingMediaToCompress.map(_compressPostMediaItem).toList());
+        _data.remainingMediaToCompress!.map(_compressPostMediaItem).toList());
   }
 
   Future _compressPostMediaItem(File postMediaItem) async {
-    String mediaMime = lookupMimeType(postMediaItem.path);
-    String mediaMimeType = mediaMime.split('/')[0];
+    String? mediaMime = lookupMimeType(postMediaItem.path);
+    String? mediaMimeType = mediaMime?.split('/')[0];
 
     if (mediaMimeType == 'image') {
       File compressedImage =
@@ -268,7 +268,7 @@ class OBNewPostDataUploaderState extends State<OBNewPostDataUploader>
     } else {
       debugLog('Unsupported media type for compression');
     }
-    _data.remainingMediaToCompress.remove(postMediaItem);
+    _data.remainingMediaToCompress!.remove(postMediaItem);
   }
 
   Future _addPostMedia() {
@@ -280,7 +280,7 @@ class OBNewPostDataUploaderState extends State<OBNewPostDataUploader>
   }
 
   Future _uploadPostMediaItem(File file) async {
-    await _userService.addMediaToPost(file: file, post: _data.createdDraftPost);
+    await _userService.addMediaToPost(file: file, post: _data.createdDraftPost!);
     _data.remainingCompressedMediaToUpload.remove(file);
   }
 
@@ -294,7 +294,7 @@ class OBNewPostDataUploaderState extends State<OBNewPostDataUploader>
       builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
         if (snapshot.data == null) return const SizedBox();
 
-        File mediaThumbnail = snapshot.data;
+        File mediaThumbnail = snapshot.data!;
         return ClipRRect(
           borderRadius: BorderRadius.circular(8.0),
           child: Image(
@@ -309,13 +309,13 @@ class OBNewPostDataUploaderState extends State<OBNewPostDataUploader>
   }
 
   Future<File> _getMediaThumbnail() async {
-    if (_data.mediaThumbnail != null) return _data.mediaThumbnail;
+    if (_data.mediaThumbnail != null) return _data.mediaThumbnail!;
 
-    File mediaToPreview = _data.media.first;
-    File mediaThumbnail;
+    File mediaToPreview = _data.media!.first;
+    late File mediaThumbnail;
 
-    String mediaMime = lookupMimeType(mediaToPreview.path);
-    String mediaMimeType = mediaMime.split('/')[0];
+    String? mediaMime = lookupMimeType(mediaToPreview.path);
+    String? mediaMimeType = mediaMime?.split('/')[0];
 
     if (mediaMimeType == 'image') {
       mediaThumbnail = mediaToPreview;
@@ -406,7 +406,7 @@ class OBNewPostDataUploaderState extends State<OBNewPostDataUploader>
     if (_data.createdDraftPost != null) {
       debugLog('Deleting post');
       try {
-        await _userService.deletePost(_data.createdDraftPost);
+        await _userService.deletePost(_data.createdDraftPost!);
         debugLog('Successfully deleted post');
       } catch (error) {
         // If it doesnt work, will get cleaned up by a scheduled job
@@ -424,15 +424,15 @@ class OBNewPostDataUploaderState extends State<OBNewPostDataUploader>
     _data.media?.forEach((File mediaObject) {
       if (mediaObject.existsSync()) mediaObject.delete();
     });
-    _data.compressedMedia?.forEach((File mediaObject) => mediaObject.delete());
-    if (_data.mediaThumbnail != _data.media.first) {
+    _data.compressedMedia.forEach((File mediaObject) => mediaObject.delete());
+    if (_data.mediaThumbnail != _data.media?.first) {
       _data.mediaThumbnail?.delete();
     }
   }
 
   Future _publishPost() async {
     debugLog('Publishing post');
-    return _userService.publishPost(post: _data.createdDraftPost);
+    return _userService.publishPost(post: _data.createdDraftPost!);
   }
 
   void _setStatus(OBPostUploaderStatus status) {
@@ -452,8 +452,8 @@ class OBNewPostDataUploaderState extends State<OBNewPostDataUploader>
   }
 
   void _ensurePostStatusTimerIsCancelled() {
-    if (_checkPostStatusTimer != null && _checkPostStatusTimer.isActive)
-      _checkPostStatusTimer.cancel();
+    if (_checkPostStatusTimer != null && _checkPostStatusTimer!.isActive)
+      _checkPostStatusTimer?.cancel();
   }
 
   void debugLog(String log) {
@@ -465,32 +465,32 @@ class OBNewPostDataUploaderState extends State<OBNewPostDataUploader>
 }
 
 class OBNewPostData {
-  String text;
-  List<File> media;
-  Community community;
-  List<Circle> circles;
+  String? text;
+  List<File>? media;
+  Community? community;
+  List<Circle>? circles;
 
   // State persistence variables
-  Post createdDraftPost;
-  OBPostStatus createdDraftPostStatus;
-  List<File> remainingMediaToCompress;
+  Post? createdDraftPost;
+  OBPostStatus? createdDraftPostStatus;
+  List<File>? remainingMediaToCompress;
   List<File> compressedMedia = [];
   List<File> remainingCompressedMediaToUpload = [];
   bool postPublishRequested = false;
-  File mediaThumbnail;
+  File? mediaThumbnail;
 
-  String _cachedKey;
+  String? _cachedKey;
 
   OBNewPostData({this.text, this.media, this.community, this.circles}) {
-    remainingMediaToCompress = media.toList();
+    remainingMediaToCompress = media?.toList();
   }
 
   bool hasMedia() {
-    return media != null && media.isNotEmpty;
+    return media != null && media!.isNotEmpty;
   }
 
   List<File> getMedia() {
-    return hasMedia() ? media.toList() : [];
+    return hasMedia() ? media!.toList() : [];
   }
 
   void setCircles(List<Circle> circles) {
@@ -502,16 +502,16 @@ class OBNewPostData {
   }
 
   List<Circle> getCircles() {
-    return circles.toList();
+    return circles!.toList();
   }
 
   String getUniqueKey() {
-    if (_cachedKey != null) return _cachedKey;
+    if (_cachedKey != null) return _cachedKey!;
 
     String key = '';
-    if (text != null) key += text;
+    if (text != null) key += text!;
     if (hasMedia()) {
-      media.forEach((File mediaItem) {
+      media!.forEach((File mediaItem) {
         key += mediaItem.path;
       });
     }
@@ -521,7 +521,7 @@ class OBNewPostData {
 
     _cachedKey = digest.toString();
 
-    return _cachedKey;
+    return _cachedKey!;
   }
 }
 

@@ -6,7 +6,7 @@ class TextAutocompletionService {
   static const String _hashtagPrefix = '#';
   static const String _communityPrefix = 'c/';
 
-  ValidationService _validationService;
+  late ValidationService _validationService;
 
   void setValidationService(validationService) {
     _validationService = validationService;
@@ -94,11 +94,11 @@ class TextAutocompletionService {
 
 class TextAutocompletionResult {
   final bool isAutocompleting;
-  final String autocompleteQuery;
-  final TextAutocompletionType type;
+  final String? autocompleteQuery;
+  final TextAutocompletionType? type;
 
   TextAutocompletionResult(
-      {@required this.isAutocompleting, this.type, this.autocompleteQuery});
+      {required this.isAutocompleting, this.type, this.autocompleteQuery});
 }
 
 enum TextAutocompletionType { account, community, hashtag }

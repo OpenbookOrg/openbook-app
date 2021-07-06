@@ -1,7 +1,7 @@
 import 'package:Okuna/models/moderation/moderated_object.dart';
 
 class ModeratedObjectsList {
-  final List<ModeratedObject> moderatedObjects;
+  final List<ModeratedObject>? moderatedObjects;
 
   ModeratedObjectsList({
     this.moderatedObjects,

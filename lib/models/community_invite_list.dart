@@ -1,7 +1,7 @@
 import 'package:Okuna/models/community_invite.dart';
 
 class CommunityInviteList {
-  final List<CommunityInvite> communityInvites;
+  final List<CommunityInvite>? communityInvites;
 
   CommunityInviteList({
     this.communityInvites,

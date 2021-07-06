@@ -18,40 +18,40 @@ import 'package:dcache/dcache.dart';
 import 'follows_list.dart';
 
 class User extends UpdatableModel<User> {
-  int id;
-  String uuid;
-  int connectionsCircleId;
-  String email;
-  String username;
-  Language language;
-  UserVisibility visibility;
-  UserProfile profile;
-  DateTime dateJoined;
-  UserNotificationsSettings notificationsSettings;
-  int followersCount;
-  int followingCount;
-  int unreadNotificationsCount;
-  int postsCount;
-  int inviteCount;
-  int pendingCommunitiesModeratedObjectsCount;
-  int activeModerationPenaltiesCount;
-  bool areGuidelinesAccepted;
-  bool areNewPostNotificationsEnabled;
-  bool isFollowing;
-  bool isFollowed;
-  bool isFollowRequested;
-  bool isConnected;
-  bool isReported;
-  bool isBlocked;
-  bool isGlobalModerator;
-  bool isFullyConnected;
-  bool isPendingConnectionConfirmation;
-  bool isPendingFollowRequestApproval;
-  bool isMemberOfCommunities;
-  CirclesList connectedCircles;
-  FollowsListsList followLists;
-  CommunityMembershipList communitiesMemberships;
-  CommunityInviteList communitiesInvites;
+  int? id;
+  String? uuid;
+  int? connectionsCircleId;
+  String? email;
+  String? username;
+  Language? language;
+  UserVisibility? visibility;
+  UserProfile? profile;
+  DateTime? dateJoined;
+  UserNotificationsSettings? notificationsSettings;
+  int? followersCount;
+  int? followingCount;
+  int? unreadNotificationsCount;
+  int? postsCount;
+  int? inviteCount;
+  int? pendingCommunitiesModeratedObjectsCount;
+  int? activeModerationPenaltiesCount;
+  bool? areGuidelinesAccepted;
+  bool? areNewPostNotificationsEnabled;
+  bool? isFollowing;
+  bool? isFollowed;
+  bool? isFollowRequested;
+  bool? isConnected;
+  bool? isReported;
+  bool? isBlocked;
+  bool? isGlobalModerator;
+  bool? isFullyConnected;
+  bool? isPendingConnectionConfirmation;
+  bool? isPendingFollowRequestApproval;
+  bool? isMemberOfCommunities;
+  CirclesList? connectedCircles;
+  FollowsListsList? followLists;
+  CommunityMembershipList? communitiesMemberships;
+  CommunityInviteList? communitiesInvites;
 
   static final navigationUsersFactory = UserFactory(
       cache:
@@ -67,11 +67,9 @@ class User extends UpdatableModel<User> {
 
   factory User.fromJson(Map<String, dynamic> json,
       {bool storeInSessionCache = false, bool storeInMaxSessionCache = false}) {
-    if (json == null) return null;
-
     int userId = json['id'];
 
-    User user = maxSessionUsersFactory.getItemWithIdFromCache(userId) ??
+    User? user = maxSessionUsersFactory.getItemWithIdFromCache(userId) ??
         navigationUsersFactory.getItemWithIdFromCache(userId) ??
         sessionUsersFactory.getItemWithIdFromCache(userId);
     if (user != null) {
@@ -120,16 +118,16 @@ class User extends UpdatableModel<User> {
       'is_member_of_communities': isMemberOfCommunities,
       'connected_circles': connectedCircles?.circles
           ?.map((Circle circle) => circle.toJson())
-          ?.toList(),
+          .toList(),
       'follow_lists': followLists?.lists
           ?.map((FollowsList followList) => followList.toJson())
-          ?.toList(),
+          .toList(),
       'communities_memberships': communitiesMemberships?.communityMemberships
           ?.map((CommunityMembership membership) => membership.toJson())
-          ?.toList(),
+          .toList(),
       'communities_invites': communitiesInvites?.communityInvites
           ?.map((CommunityInvite invite) => invite.toJson())
-          ?.toList(),
+          .toList(),
     };
   }
 
@@ -191,7 +189,7 @@ class User extends UpdatableModel<User> {
     if (json.containsKey('email')) email = json['email'];
     if (json.containsKey('profile')) {
       if (profile != null) {
-        profile.updateFromJson(json['profile']);
+        profile!.updateFromJson(json['profile']);
       } else {
         profile = navigationUsersFactory.parseUserProfile(json['profile']);
       }
@@ -201,7 +199,7 @@ class User extends UpdatableModel<User> {
     }
     if (json.containsKey('notifications_settings')) {
       if (notificationsSettings != null) {
-        notificationsSettings.updateFromJson(json['notifications_settings']);
+        notificationsSettings!.updateFromJson(json['notifications_settings']);
       } else {
         notificationsSettings = navigationUsersFactory
             .parseUserNotificationsSettings(json['notifications_settings']);
@@ -268,16 +266,16 @@ class User extends UpdatableModel<User> {
     }
   }
 
-  String getEmail() {
+  String? getEmail() {
     return this.email;
   }
 
   bool hasProfileLocation() {
-    return profile.hasLocation();
+    return profile?.hasLocation() ?? false;
   }
 
   bool hasProfileUrl() {
-    return profile.hasUrl();
+    return profile?.hasUrl() ?? false;
   }
 
   bool hasAge() {
@@ -285,57 +283,57 @@ class User extends UpdatableModel<User> {
   }
 
   bool hasProfileAvatar() {
-    return this.profile.avatar != null;
+    return this.profile?.avatar != null;
   }
 
   bool hasProfileCover() {
-    return this.profile.cover != null;
+    return this.profile?.cover != null;
   }
 
-  String getProfileAvatar() {
+  String? getProfileAvatar() {
     return this.profile?.avatar;
   }
 
-  String getProfileName() {
-    return this.profile.name;
+  String? getProfileName() {
+    return this.profile?.name;
   }
 
-  String getProfileCover() {
-    return this.profile.cover;
+  String? getProfileCover() {
+    return this.profile?.cover;
   }
 
-  String getProfileBio() {
-    return this.profile.bio;
+  String? getProfileBio() {
+    return this.profile?.bio;
   }
 
   bool getProfileFollowersCountVisible() {
-    return this.profile.followersCountVisible;
+    return this.profile?.followersCountVisible ?? false;
   }
 
   bool getProfileCommunityPostsVisible() {
-    return this.profile.communityPostsVisible;
+    return this.profile?.communityPostsVisible ?? false;
   }
 
-  String getProfileUrl() {
-    return this.profile.url;
+  String? getProfileUrl() {
+    return this.profile?.url;
   }
 
-  String getProfileLocation() {
-    return this.profile.location;
+  String? getProfileLocation() {
+    return this.profile?.location;
   }
 
-  List<Badge> getProfileBadges() {
-    return this.profile.badges;
+  List<Badge>? getProfileBadges() {
+    return this.profile?.badges;
   }
 
-  Badge getDisplayedProfileBadge() {
-    return getProfileBadges().first;
+  Badge? getDisplayedProfileBadge() {
+    return getProfileBadges()?.first;
   }
 
   bool hasProfileBadges() {
     return this.profile != null &&
-        this.profile.badges != null &&
-        this.profile.badges.length > 0;
+        this.profile!.badges != null &&
+        this.profile!.badges!.length > 0;
   }
 
   bool hasLanguage() {
@@ -347,59 +345,57 @@ class User extends UpdatableModel<User> {
   }
 
   bool hasFollowLists() {
-    return followLists != null && followLists.lists.length > 0;
+    return followLists != null && followLists!.lists!.length > 0;
   }
 
   bool isAdministratorOfCommunity(Community community) {
-    CommunityMembership membership = getMembershipForCommunity(community);
-    if (membership == null) return false;
-    return membership.isAdministrator;
+    CommunityMembership? membership = getMembershipForCommunity(community);
+    return membership?.isAdministrator ?? false;
   }
 
   bool isModeratorOfCommunity(Community community) {
-    CommunityMembership membership = getMembershipForCommunity(community);
-    if (membership == null) return false;
-    return membership.isModerator;
+    CommunityMembership? membership = getMembershipForCommunity(community);
+    return membership?.isModerator ?? false;
   }
 
   bool isMemberOfCommunity(Community community) {
     return getMembershipForCommunity(community) != null;
   }
 
-  CommunityMembership getMembershipForCommunity(Community community) {
+  CommunityMembership? getMembershipForCommunity(Community community) {
     if (communitiesMemberships == null) return null;
 
-    int membershipIndex = communitiesMemberships.communityMemberships
-        .indexWhere((CommunityMembership communityMembership) {
+    int? membershipIndex = communitiesMemberships?.communityMemberships
+        ?.indexWhere((CommunityMembership communityMembership) {
       return communityMembership.userId == this.id &&
           communityMembership.communityId == community.id;
     });
 
-    if (membershipIndex < 0) return null;
+    if (membershipIndex == null || membershipIndex < 0) return null;
 
-    return communitiesMemberships.communityMemberships[membershipIndex];
+    return communitiesMemberships?.communityMemberships?[membershipIndex];
   }
 
   bool isInvitedToCommunity(Community community) {
-    CommunityInvite invite = getInviteForCommunity(community);
+    CommunityInvite? invite = getInviteForCommunity(community);
     return invite != null;
   }
 
-  CommunityInvite getInviteForCommunity(Community community) {
+  CommunityInvite? getInviteForCommunity(Community community) {
     if (communitiesInvites == null) return null;
 
-    int inviteIndex = communitiesInvites.communityInvites
-        .indexWhere((CommunityInvite communityInvite) {
+    int? inviteIndex = communitiesInvites?.communityInvites
+        ?.indexWhere((CommunityInvite communityInvite) {
       return communityInvite.communityId == community.id;
     });
 
-    if (inviteIndex < 0) return null;
+    if (inviteIndex == null || inviteIndex < 0) return null;
 
-    return communitiesInvites.communityInvites[inviteIndex];
+    return communitiesInvites?.communityInvites?[inviteIndex];
   }
 
   bool hasUnreadNotifications() {
-    return unreadNotificationsCount != null && unreadNotificationsCount > 0;
+    return unreadNotificationsCount != null && unreadNotificationsCount! > 0;
   }
 
   void resetUnreadNotificationsCount() {
@@ -409,33 +405,33 @@ class User extends UpdatableModel<User> {
 
   void incrementUnreadNotificationsCount() {
     if (this.unreadNotificationsCount != null) {
-      this.unreadNotificationsCount += 1;
+      this.unreadNotificationsCount = this.unreadNotificationsCount! + 1;
       notifyUpdate();
     }
   }
 
   void incrementFollowersCount() {
     if (this.followersCount != null) {
-      this.followersCount += 1;
+      this.followersCount = this.followersCount! + 1;
       notifyUpdate();
     }
   }
 
   void decrementFollowersCount() {
-    if (this.followersCount != null && this.followersCount > 0) {
-      this.followersCount -= 1;
+    if (this.followersCount != null && this.followersCount! > 0) {
+      this.followersCount = this.followersCount! + 1;
       notifyUpdate();
     }
   }
 
   bool hasPendingCommunitiesModeratedObjects() {
     return pendingCommunitiesModeratedObjectsCount != null &&
-        pendingCommunitiesModeratedObjectsCount > 0;
+        pendingCommunitiesModeratedObjectsCount! > 0;
   }
 
   bool hasActiveModerationPenaltiesCount() {
     return activeModerationPenaltiesCount != null &&
-        activeModerationPenaltiesCount > 0;
+        activeModerationPenaltiesCount! > 0;
   }
 
   void setIsReported(isReported) {
@@ -468,9 +464,10 @@ class User extends UpdatableModel<User> {
     bool _canDisableOrEnableComments = false;
 
     if (post.hasCommunity()) {
-      Community postCommunity = post.community;
+      Community? postCommunity = post.community;
 
-      if (postCommunity.isAdministrator(loggedInUser) ||
+      if (postCommunity == null ||
+          postCommunity.isAdministrator(loggedInUser) ||
           postCommunity.isModerator(loggedInUser)) {
         _canDisableOrEnableComments = true;
       }
@@ -483,9 +480,10 @@ class User extends UpdatableModel<User> {
     bool _canCloseOrOpenPost = false;
 
     if (post.hasCommunity()) {
-      Community postCommunity = post.community;
+      Community? postCommunity = post.community;
 
-      if (postCommunity.isAdministrator(loggedInUser) ||
+      if (postCommunity == null ||
+          postCommunity.isAdministrator(loggedInUser) ||
           postCommunity.isModerator(loggedInUser)) {
         _canCloseOrOpenPost = true;
       }
@@ -518,7 +516,7 @@ class User extends UpdatableModel<User> {
   }
 
   bool isCreatorOfCommunity(Community community) {
-    return community.isCreator;
+    return community.isCreator ?? false;
   }
 
   bool canChangeDetailsOfCommunity(Community community) {
@@ -544,7 +542,7 @@ class User extends UpdatableModel<User> {
   }
 
   bool canAddOrRemoveAdministratorsInCommunity(Community community) {
-    return community.isCreator;
+    return community.isCreator ?? false;
   }
 
   bool canCommentOnPostWithDisabledComments(Post post) {
@@ -552,9 +550,10 @@ class User extends UpdatableModel<User> {
     bool _canComment = false;
 
     if (post.hasCommunity()) {
-      Community postCommunity = post.community;
+      Community? postCommunity = post.community;
 
-      if (postCommunity.isAdministrator(loggedInUser) ||
+      if (postCommunity == null ||
+          postCommunity.isAdministrator(loggedInUser) ||
           postCommunity.isModerator(loggedInUser)) {
         _canComment = true;
       }
@@ -562,15 +561,15 @@ class User extends UpdatableModel<User> {
     return _canComment;
   }
 
-  bool isStaffForCommunity(Community community) {
+  bool isStaffForCommunity(Community? community) {
     User loggedInUser = this;
     bool loggedInUserIsCommunityAdministrator = false;
     bool loggedInUserIsCommunityModerator = false;
 
     loggedInUserIsCommunityAdministrator =
-        community.isAdministrator(loggedInUser);
+        community?.isAdministrator(loggedInUser) ?? false;
 
-    loggedInUserIsCommunityModerator = community.isModerator(loggedInUser);
+    loggedInUserIsCommunityModerator = community?.isModerator(loggedInUser) ?? false;
 
     return loggedInUserIsCommunityModerator ||
         loggedInUserIsCommunityAdministrator;
@@ -598,7 +597,7 @@ class User extends UpdatableModel<User> {
     User loggedInUser = this;
     bool loggedInUserIsPostCreator = loggedInUser.id == post.getCreatorId();
 
-    return loggedInUserIsPostCreator && !post.isClosed;
+    return loggedInUserIsPostCreator && !(post.isClosed ?? false);
   }
 
   bool canTranslatePostComment(PostComment postComment, Post post) {
@@ -606,23 +605,23 @@ class User extends UpdatableModel<User> {
         language?.code == null) return false;
 
     return postComment.hasLanguage() &&
-        postComment.getLanguage().code != language.code;
+        postComment.getLanguage()?.code != language!.code;
   }
 
   bool canTranslatePost(Post post) {
     if ((!post.hasCommunity() && post.isEncircledPost()) ||
         language?.code == null) return false;
 
-    return post.hasLanguage() && post.getLanguage().code != language.code;
+    return post.hasLanguage() && post.getLanguage()?.code != language!.code;
   }
 
   bool canEditPostComment(PostComment postComment, Post post) {
     User loggedInUser = this;
-    User postCommenter = postComment.commenter;
+    User? postCommenter = postComment.commenter;
     bool loggedInUserIsStaffForCommunity = false;
-    bool loggedInUserIsCommenter = loggedInUser.id == postCommenter.id;
+    bool loggedInUserIsCommenter = loggedInUser.id == postCommenter?.id;
     bool loggedInUserIsCommenterForOpenPost =
-        loggedInUserIsCommenter && !post.isClosed && post.areCommentsEnabled;
+        loggedInUserIsCommenter && !(post.isClosed ?? false) && (post.areCommentsEnabled ?? false);
 
     if (post.hasCommunity()) {
       loggedInUserIsStaffForCommunity = isStaffForCommunity(post.community);
@@ -634,9 +633,9 @@ class User extends UpdatableModel<User> {
 
   bool canReportPostComment(PostComment postComment) {
     User loggedInUser = this;
-    User postCommenter = postComment.commenter;
+    User? postCommenter = postComment.commenter;
 
-    return loggedInUser.id != postCommenter.id;
+    return loggedInUser.id != postCommenter?.id;
   }
 
   bool canReplyPostComment(PostComment postComment) {
@@ -645,13 +644,13 @@ class User extends UpdatableModel<User> {
 
   bool canDeletePostComment(Post post, PostComment postComment) {
     User loggedInUser = this;
-    User postCommenter = postComment.commenter;
+    User? postCommenter = postComment.commenter;
     bool loggedInUserIsPostCreator = loggedInUser.id == post.getCreatorId();
     bool userIsCreatorOfNonCommunityPost =
         loggedInUserIsPostCreator && !post.hasCommunity();
     bool loggedInUserIsStaffForCommunity = false;
     bool loggedInUserIsCommenterForOpenPost =
-        (loggedInUser.id == postCommenter.id) && !post.isClosed;
+        (loggedInUser.id == postCommenter?.id) && !(post.isClosed ?? false);
 
     if (post.hasCommunity()) {
       loggedInUserIsStaffForCommunity =
@@ -715,43 +714,43 @@ class UserFactory extends UpdatableModelFactory<User> {
         followLists: parseFollowsLists(json['follow_lists']));
   }
 
-  CommunityMembershipList parseMemberships(List membershipsData) {
+  CommunityMembershipList? parseMemberships(List? membershipsData) {
     if (membershipsData == null) return null;
     return CommunityMembershipList.fromJson(membershipsData);
   }
 
-  CommunityInviteList parseInvites(List invitesData) {
+  CommunityInviteList? parseInvites(List? invitesData) {
     if (invitesData == null) return null;
     return CommunityInviteList.fromJson(invitesData);
   }
 
-  UserProfile parseUserProfile(Map profile) {
+  UserProfile? parseUserProfile(Map<String, dynamic>? profile) {
     if (profile == null) return null;
     return UserProfile.fromJSON(profile);
   }
 
-  UserNotificationsSettings parseUserNotificationsSettings(
-      Map notificationsSettings) {
+  UserNotificationsSettings? parseUserNotificationsSettings(
+      Map<String, dynamic>? notificationsSettings) {
     if (notificationsSettings == null) return null;
     return UserNotificationsSettings.fromJSON(notificationsSettings);
   }
 
-  CirclesList parseCircles(List circlesData) {
+  CirclesList? parseCircles(List? circlesData) {
     if (circlesData == null) return null;
     return CirclesList.fromJson(circlesData);
   }
 
-  FollowsListsList parseFollowsLists(List followsListsData) {
+  FollowsListsList? parseFollowsLists(List? followsListsData) {
     if (followsListsData == null) return null;
     return FollowsListsList.fromJson(followsListsData);
   }
 
-  Language parseLanguage(Map languageData) {
+  Language? parseLanguage(Map<String, dynamic>? languageData) {
     if (languageData == null) return null;
     return Language.fromJson(languageData);
   }
 
-  DateTime parseDateJoined(String dateJoined) {
+  DateTime? parseDateJoined(String? dateJoined) {
     if (dateJoined == null) return null;
     return DateTime.parse(dateJoined).toLocal();
   }
@@ -776,10 +775,10 @@ class UserVisibility {
 
   static values() => _values;
 
-  static UserVisibility parse(String string) {
+  static UserVisibility? parse(String? string) {
     if (string == null) return null;
 
-    UserVisibility userVisibility;
+    UserVisibility? userVisibility;
     for (var type in _values) {
       if (string == type.code) {
         userVisibility = type;

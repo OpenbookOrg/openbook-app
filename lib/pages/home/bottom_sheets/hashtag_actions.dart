@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 
 class OBHashtagActionsBottomSheet extends StatelessWidget {
   final Hashtag hashtag;
-  final ValueChanged<Hashtag> onHashtagReported;
+  final ValueChanged<Hashtag>? onHashtagReported;
 
   const OBHashtagActionsBottomSheet({
-    Key key,
-    @required this.hashtag,
+    Key? key,
+    required this.hashtag,
     this.onHashtagReported,
   }) : super(key: key);
 

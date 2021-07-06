@@ -16,11 +16,11 @@ class OBCommunityNewPostButton extends StatelessWidget {
   final bool isLoading;
   final Color textColor;
   final OBButtonSize size;
-  final double minWidth;
-  final EdgeInsets padding;
+  final double? minWidth;
+  final EdgeInsets? padding;
   final OBButtonType type;
   final Community community;
-  final ValueChanged<OBNewPostData> onWantsToUploadNewPostData;
+  final ValueChanged<OBNewPostData>? onWantsToUploadNewPostData;
 
   const OBCommunityNewPostButton({
     this.type = OBButtonType.primary,
@@ -30,7 +30,7 @@ class OBCommunityNewPostButton extends StatelessWidget {
     this.isLoading = false,
     this.padding,
     this.minWidth,
-    this.community,
+    required this.community,
     this.onWantsToUploadNewPostData,
   });
 
@@ -41,9 +41,9 @@ class OBCommunityNewPostButton extends StatelessWidget {
       stream: community.updateSubject,
       initialData: community,
       builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
-        Community community = snapshot.data;
+        Community community = snapshot.data!;
 
-        String communityHexColor = community.color;
+        String communityHexColor = community.color!;
         OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
         ThemeValueParserService themeValueParserService =
             openbookProvider.themeValueParserService;
@@ -80,12 +80,12 @@ class OBCommunityNewPostButton extends StatelessWidget {
                 onPressed: () async {
                   OpenbookProviderState openbookProvider =
                       OpenbookProvider.of(context);
-                  OBNewPostData createPostData = await openbookProvider
+                  OBNewPostData? createPostData = await openbookProvider
                       .modalService
                       .openCreatePost(context: context, community: community);
                   if (createPostData != null &&
                       onWantsToUploadNewPostData != null)
-                    onWantsToUploadNewPostData(createPostData);
+                    onWantsToUploadNewPostData!(createPostData);
                 },
                 child: OBIcon(OBIcons.createPost,
                     size: OBIconSize.large, color: textColor)));

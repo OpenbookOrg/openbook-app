@@ -18,20 +18,20 @@ import 'package:flutter/material.dart';
 
 class OBCommunityPostHeader extends StatelessWidget {
   final Post _post;
-  final OnPostDeleted onPostDeleted;
-  final ValueChanged<Post> onPostReported;
+  final OnPostDeleted? onPostDeleted;
+  final ValueChanged<Post>? onPostReported;
   final bool hasActions;
-  final OBPostDisplayContext displayContext;
+  final OBPostDisplayContext? displayContext;
 
   // What are we using these 2 for?
-  final Function onCommunityExcluded;
-  final Function onUndoCommunityExcluded;
+  final Function? onCommunityExcluded;
+  final Function? onUndoCommunityExcluded;
 
-  final ValueChanged<Community> onPostCommunityExcludedFromProfilePosts;
+  final ValueChanged<Community>? onPostCommunityExcludedFromProfilePosts;
 
   const OBCommunityPostHeader(this._post,
-      {Key key,
-      @required this.onPostDeleted,
+      {Key? key,
+      required this.onPostDeleted,
       this.onPostReported,
       this.hasActions = true,
       this.onCommunityExcluded,
@@ -49,10 +49,10 @@ class OBCommunityPostHeader extends StatelessWidget {
     var utilsService = openbookProvider.utilsService;
 
     return StreamBuilder(
-        stream: _post.community.updateSubject,
+        stream: _post.community?.updateSubject,
         initialData: _post.community,
         builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
-          Community community = snapshot.data;
+          Community community = snapshot.data!;
 
           return displayContext == OBPostDisplayContext.ownProfilePosts ||
                   displayContext == OBPostDisplayContext.foreignProfilePosts
@@ -72,31 +72,31 @@ class OBCommunityPostHeader extends StatelessWidget {
   }
 
   Widget _buildCommunityHighlightHeader(
-      {BuildContext context,
-      Community community,
-      NavigationService navigationService,
-      BottomSheetService bottomSheetService,
-      UtilsService utilsService,
-      LocalizationService localizationService}) {
-    String created = utilsService.timeAgo(_post.created, localizationService);
+      {BuildContext? context,
+      Community? community,
+      NavigationService? navigationService,
+      BottomSheetService? bottomSheetService,
+      UtilsService? utilsService,
+      LocalizationService? localizationService}) {
+    String created = utilsService!.timeAgo(_post.created!, localizationService!);
 
     return ListTile(
         leading: OBCommunityAvatar(
-          community: community,
+          community: community!,
           size: OBAvatarSize.medium,
           onPressed: () {
-            navigationService.navigateToCommunity(
-                community: community, context: context);
+            navigationService!.navigateToCommunity(
+                community: community, context: context!);
           },
         ),
         trailing: hasActions
             ? IconButton(
                 icon: const OBIcon(OBIcons.moreVertical),
                 onPressed: () {
-                  bottomSheetService.showPostActions(
-                      context: context,
+                  bottomSheetService!.showPostActions(
+                      context: context!,
                       post: _post,
-                      displayContext: displayContext,
+                      displayContext: displayContext ?? OBPostDisplayContext.timelinePosts,
                       onCommunityExcluded: onCommunityExcluded,
                       onUndoCommunityExcluded: onUndoCommunityExcluded,
                       onPostCommunityExcludedFromProfilePosts:
@@ -107,25 +107,25 @@ class OBCommunityPostHeader extends StatelessWidget {
             : null,
         title: GestureDetector(
           onTap: () {
-            navigationService.navigateToCommunity(
-                community: community, context: context);
+            navigationService!.navigateToCommunity(
+                community: community, context: context!);
           },
           child: OBText(
-            community.title,
+            community.title!,
             style: TextStyle(fontWeight: FontWeight.bold),
             overflow: TextOverflow.ellipsis,
           ),
         ),
         subtitle: GestureDetector(
           onTap: () {
-            navigationService.navigateToCommunity(
-                community: community, context: context);
+            navigationService!.navigateToCommunity(
+                community: community, context: context!);
           },
           child: Row(
             children: <Widget>[
               Expanded(
                 child: OBSecondaryText(
-                  'c/' + community.name + ' · $created',
+                  'c/' + community.name! + ' · $created',
                   style: TextStyle(fontSize: 12),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -136,27 +136,27 @@ class OBCommunityPostHeader extends StatelessWidget {
   }
 
   Widget _buildUserHighlightHeader(
-      {BuildContext context,
-      Community community,
-      NavigationService navigationService,
-      BottomSheetService bottomSheetService}) {
+      {BuildContext? context,
+      Community? community,
+      NavigationService? navigationService,
+      BottomSheetService? bottomSheetService}) {
     return ListTile(
       leading: OBAvatar(
-        avatarUrl: _post.creator.getProfileAvatar(),
+        avatarUrl: _post.creator!.getProfileAvatar(),
         size: OBAvatarSize.medium,
         onPressed: () {
-          navigationService.navigateToUserProfile(
-              user: _post.creator, context: context);
+          navigationService!.navigateToUserProfile(
+              user: _post.creator!, context: context!);
         },
       ),
       trailing: hasActions
           ? IconButton(
               icon: const OBIcon(OBIcons.moreVertical),
               onPressed: () {
-                bottomSheetService.showPostActions(
-                    context: context,
+                bottomSheetService!.showPostActions(
+                    context: context!,
                     post: _post,
-                    displayContext: displayContext,
+                    displayContext: displayContext ?? OBPostDisplayContext.timelinePosts,
                     onCommunityExcluded: onCommunityExcluded,
                     onUndoCommunityExcluded: onUndoCommunityExcluded,
                     onPostCommunityExcludedFromProfilePosts:
@@ -167,18 +167,18 @@ class OBCommunityPostHeader extends StatelessWidget {
           : null,
       title: GestureDetector(
         onTap: () {
-          navigationService.navigateToCommunity(
-              community: community, context: context);
+          navigationService!.navigateToCommunity(
+              community: community!, context: context!);
         },
         child: Row(
           children: <Widget>[
             OBCommunityAvatar(
               borderRadius: 4,
               customSize: 16,
-              community: community,
+              community: community!,
               onPressed: () {
-                navigationService.navigateToCommunity(
-                    community: community, context: context);
+                navigationService!.navigateToCommunity(
+                    community: community, context: context!);
               },
               size: OBAvatarSize.extraSmall,
             ),
@@ -187,7 +187,7 @@ class OBCommunityPostHeader extends StatelessWidget {
             ),
             Expanded(
               child: OBText(
-                'c/' + community.name,
+                'c/' + community.name!,
                 style: TextStyle(fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -198,8 +198,8 @@ class OBCommunityPostHeader extends StatelessWidget {
       subtitle: OBCommunityPostCreatorIdentifier(
         post: _post,
         onUsernamePressed: () {
-          navigationService.navigateToUserProfile(
-              user: _post.creator, context: context);
+          navigationService!.navigateToUserProfile(
+              user: _post.creator!, context: context!);
         },
       ),
     );

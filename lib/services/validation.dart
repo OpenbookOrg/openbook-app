@@ -11,12 +11,12 @@ import 'package:validators/validators.dart' as validators;
 import 'localization.dart';
 
 class ValidationService {
-  AuthApiService _authApiService;
-  CommunitiesApiService _communitiesApiService;
-  FollowsListsApiService _followsListsApiService;
-  ConnectionsCirclesApiService _connectionsCirclesApiService;
-  LocalizationService _localizationService;
-  UtilsService _utilsService;
+  late AuthApiService _authApiService;
+  late CommunitiesApiService _communitiesApiService;
+  late FollowsListsApiService _followsListsApiService;
+  late ConnectionsCirclesApiService _connectionsCirclesApiService;
+  late LocalizationService _localizationService;
+  late UtilsService _utilsService;
 
   static const int USERNAME_MAX_LENGTH = 30;
   static const int COMMUNITY_NAME_MAX_LENGTH = 32;
@@ -110,13 +110,13 @@ class ValidationService {
   }
 
   bool isPostTextContainingValidHashtags(String postText) {
-    List<String> hashtags = _utilsService.extractHashtagsInString(postText);
+    List<String?> hashtags = _utilsService.extractHashtagsInString(postText);
     bool hashtagsHaveAllowedMaxCharacters = true;
 
     hashtags
         .takeWhile((hashtag) => hashtagsHaveAllowedMaxCharacters)
         .forEach((hashtag) {
-      if (hashtag.length > HASHTAG_MAX_LENGTH) {
+      if (hashtag != null && hashtag.length > HASHTAG_MAX_LENGTH) {
         hashtagsHaveAllowedMaxCharacters = false;
       }
     });
@@ -297,12 +297,12 @@ class ValidationService {
     }
   }
 
-  String validateUserUsername(String username) {
+  String? validateUserUsername(String? username) {
     assert(username != null);
 
-    String errorMsg;
+    String? errorMsg;
 
-    if (username.length == 0) {
+    if (username!.length == 0) {
       errorMsg = _localizationService.auth__username_empty_error;
     } else if (!isUsernameAllowedLength(username)) {
       errorMsg = _localizationService
@@ -314,12 +314,12 @@ class ValidationService {
     return errorMsg;
   }
 
-  String validatePostComment(String postComment) {
+  String? validatePostComment(String? postComment) {
     assert(postComment != null);
 
-    String errorMsg;
+    String? errorMsg;
 
-    if (postComment.length == 0) {
+    if (postComment!.length == 0) {
       errorMsg = _localizationService.post__comment_required_error;
     } else if (!isPostCommentAllowedLength(postComment)) {
       errorMsg = _localizationService
@@ -329,12 +329,12 @@ class ValidationService {
     return errorMsg;
   }
 
-  String validateUserEmail(String email) {
+  String? validateUserEmail(String? email) {
     assert(email != null);
 
-    String errorMsg;
+    String? errorMsg;
 
-    if (email.length == 0) {
+    if (email!.length == 0) {
       errorMsg = _localizationService.auth__email_empty_error;
     } else if (!isQualifiedEmail(email)) {
       errorMsg = _localizationService.auth__email_invalid_error;
@@ -343,12 +343,12 @@ class ValidationService {
     return errorMsg;
   }
 
-  String validateUserRegistrationLink(String link) {
+  String? validateUserRegistrationLink(String? link) {
     assert(link != null);
 
-    String errorMsg;
+    String? errorMsg;
 
-    if (link.length == 0) {
+    if (link!.length == 0) {
       errorMsg = _localizationService.auth__create_acc__link_empty_error;
     } else if (!isQualifiedLink(link)) {
       errorMsg = _localizationService.auth__create_acc__link_invalid_error;
@@ -357,12 +357,12 @@ class ValidationService {
     return errorMsg;
   }
 
-  String validateUserPassword(String password) {
+  String? validateUserPassword(String? password) {
     assert(password != null);
 
-    String errorMsg;
+    String? errorMsg;
 
-    if (password.length == 0) {
+    if (password!.length == 0) {
       errorMsg = _localizationService.auth__password_empty_error;
     } else if (!isPasswordAllowedLength(password)) {
       errorMsg = _localizationService.auth__password_range_error(
@@ -372,12 +372,12 @@ class ValidationService {
     return errorMsg;
   }
 
-  String validateUserProfileName(String name) {
+  String? validateUserProfileName(String? name) {
     assert(name != null);
 
-    String errorMsg;
+    String? errorMsg;
 
-    if (name.isEmpty) {
+    if (name!.isEmpty) {
       errorMsg = _localizationService.auth__name_empty_error;
     } else if (!isNameAllowedLength(name)) {
       errorMsg = _localizationService.auth__name_range_error(
@@ -386,12 +386,12 @@ class ValidationService {
     return errorMsg;
   }
 
-  String validateModeratedObjectDescription(String description) {
+  String? validateModeratedObjectDescription(String? description) {
     assert(description != null);
 
-    String errorMsg;
+    String? errorMsg;
 
-    if (description.isEmpty) {
+    if (description!.isEmpty) {
       errorMsg = _localizationService.auth__description_empty_error;
     } else if (!isModeratedObjectDescriptionAllowedLength(description)) {
       errorMsg = _localizationService.auth__description_range_error(
@@ -401,12 +401,12 @@ class ValidationService {
     return errorMsg;
   }
 
-  String validateUserProfileUrl(String url) {
+  String? validateUserProfileUrl(String? url) {
     assert(url != null);
 
-    if (url.isEmpty) return null;
+    if (url!.isEmpty) return null;
 
-    String errorMsg;
+    String? errorMsg;
 
     if (!isUrl(url)) {
       errorMsg = _localizationService.user__profile_url_invalid_error;
@@ -415,12 +415,12 @@ class ValidationService {
     return errorMsg;
   }
 
-  String validateUserProfileLocation(String location) {
+  String? validateUserProfileLocation(String? location) {
     assert(location != null);
 
-    if (location.isEmpty) return null;
+    if (location!.isEmpty) return null;
 
-    String errorMsg;
+    String? errorMsg;
 
     if (!isLocationAllowedLength(location)) {
       errorMsg = _localizationService
@@ -430,12 +430,12 @@ class ValidationService {
     return errorMsg;
   }
 
-  String validateUserProfileBio(String bio) {
+  String? validateUserProfileBio(String? bio) {
     assert(bio != null);
 
-    if (bio.isEmpty) return null;
+    if (bio!.isEmpty) return null;
 
-    String errorMsg;
+    String? errorMsg;
 
     if (!isBioAllowedLength(bio)) {
       errorMsg = _localizationService
@@ -445,12 +445,12 @@ class ValidationService {
     return errorMsg;
   }
 
-  String validateFollowsListName(String name) {
+  String? validateFollowsListName(String? name) {
     assert(name != null);
 
-    String errorMsg;
+    String? errorMsg;
 
-    if (name.length == 0) {
+    if (name!.length == 0) {
       errorMsg = _localizationService.user__list_name_empty_error;
     } else if (!isFollowsListNameAllowedLength(name)) {
       errorMsg =
@@ -460,12 +460,12 @@ class ValidationService {
     return errorMsg;
   }
 
-  String validateConnectionsCircleName(String name) {
+  String? validateConnectionsCircleName(String? name) {
     assert(name != null);
 
-    String errorMsg;
+    String? errorMsg;
 
-    if (name.length == 0) {
+    if (name!.length == 0) {
       errorMsg = _localizationService.user__circle_name_empty_error;
     } else if (!isConnectionsCircleNameAllowedLength(name)) {
       errorMsg =
@@ -475,12 +475,12 @@ class ValidationService {
     return errorMsg;
   }
 
-  String validateCommunityName(String name) {
+  String? validateCommunityName(String? name) {
     assert(name != null);
 
-    String errorMsg;
+    String? errorMsg;
 
-    if (name.length == 0) {
+    if (name!.length == 0) {
       errorMsg = _localizationService.community__name_empty_error;
     } else if (!isCommunityNameAllowedLength(name)) {
       errorMsg = _localizationService
@@ -492,12 +492,12 @@ class ValidationService {
     return errorMsg;
   }
 
-  String validateCommunityTitle(String title) {
+  String? validateCommunityTitle(String? title) {
     assert(title != null);
 
-    String errorMsg;
+    String? errorMsg;
 
-    if (title.length == 0) {
+    if (title!.length == 0) {
       errorMsg = _localizationService.community__title_empty_error;
     } else if (!isCommunityTitleAllowedLength(title)) {
       errorMsg = _localizationService
@@ -506,14 +506,14 @@ class ValidationService {
     return errorMsg;
   }
 
-  String validateCommunityRules(String rules) {
+  String? validateCommunityRules(String? rules) {
     assert(rules != null);
 
-    if (rules.isEmpty) return null;
+    if (rules?.isEmpty ?? false) return null;
 
-    String errorMsg;
+    String? errorMsg;
 
-    if (rules.length == 0) {
+    if (rules!.length == 0) {
       errorMsg = _localizationService.community__rules_empty_error;
     } else if (!isCommunityRulesAllowedLength(rules)) {
       errorMsg = _localizationService
@@ -522,12 +522,12 @@ class ValidationService {
     return errorMsg;
   }
 
-  String validateCommunityDescription(String description) {
+  String? validateCommunityDescription(String? description) {
     assert(description != null);
 
-    if (description.isEmpty) return null;
+    if (description!.isEmpty) return null;
 
-    String errorMsg;
+    String? errorMsg;
 
     if (!isCommunityDescriptionAllowedLength(description)) {
       errorMsg = _localizationService
@@ -536,12 +536,12 @@ class ValidationService {
     return errorMsg;
   }
 
-  String validateCommunityUserAdjective(String userAdjective) {
+  String? validateCommunityUserAdjective(String? userAdjective) {
     assert(userAdjective != null);
 
-    if (userAdjective.isEmpty) return null;
+    if (userAdjective!.isEmpty) return null;
 
-    String errorMsg;
+    String? errorMsg;
 
     if (!isCommunityUserAdjectiveAllowedLength(userAdjective)) {
       errorMsg = _localizationService.community__adjectives_range_error(

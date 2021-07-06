@@ -23,9 +23,9 @@ class OBPostActionReact extends StatefulWidget {
 }
 
 class OBPostActionReactState extends State<OBPostActionReact> {
-  CancelableOperation _clearPostReactionOperation;
-  bool _clearPostReactionInProgress;
-  LocalizationService _localizationService;
+  CancelableOperation? _clearPostReactionOperation;
+  late bool _clearPostReactionInProgress;
+  late LocalizationService _localizationService;
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class OBPostActionReactState extends State<OBPostActionReact> {
   void dispose() {
     super.dispose();
     if (_clearPostReactionOperation != null)
-      _clearPostReactionOperation.cancel();
+      _clearPostReactionOperation!.cancel();
   }
 
   @override
@@ -49,8 +49,8 @@ class OBPostActionReactState extends State<OBPostActionReact> {
       stream: widget.post.updateSubject,
       initialData: widget.post,
       builder: (BuildContext context, AsyncSnapshot<Post> snapshot) {
-        Post post = snapshot.data;
-        PostReaction reaction = post.reaction;
+        Post post = snapshot.data!;
+        PostReaction? reaction = post.reaction;
         bool hasReaction = reaction != null;
 
         Widget buttonChild = Row(
@@ -59,9 +59,9 @@ class OBPostActionReactState extends State<OBPostActionReact> {
             hasReaction
                 ? CachedNetworkImage(
                     height: 18.0,
-                    imageUrl: reaction.getEmojiImage(),
+                    imageUrl: reaction.getEmojiImage()!,
                     errorWidget:
-                        (BuildContext context, String url, Object error) {
+                        (BuildContext context, String url, dynamic error) {
                       return SizedBox(
                         child: Center(child: Text('?')),
                       );
@@ -75,7 +75,7 @@ class OBPostActionReactState extends State<OBPostActionReact> {
               width: 10.0,
             ),
             OBText(
-              hasReaction ? reaction.getEmojiKeyword() : _localizationService.post__action_react,
+              hasReaction ? reaction.getEmojiKeyword()! : _localizationService.post__action_react,
               style: TextStyle(
                 color: hasReaction ? Colors.white : null,
                 fontWeight: hasReaction ? FontWeight.bold : FontWeight.normal,
@@ -112,9 +112,9 @@ class OBPostActionReactState extends State<OBPostActionReact> {
     try {
       _clearPostReactionOperation = CancelableOperation.fromFuture(
           openbookProvider.userService.deletePostReaction(
-              postReaction: widget.post.reaction, post: widget.post));
+              postReaction: widget.post.reaction!, post: widget.post));
 
-      await _clearPostReactionOperation.value;
+      await _clearPostReactionOperation?.value;
       widget.post.clearReaction();
     } catch (error) {
       _onError(error: error, openbookProvider: openbookProvider);
@@ -131,16 +131,16 @@ class OBPostActionReactState extends State<OBPostActionReact> {
   }
 
   void _onError(
-      {@required error,
-      @required OpenbookProviderState openbookProvider}) async {
+      {required error,
+      required OpenbookProviderState openbookProvider}) async {
     ToastService toastService = openbookProvider.toastService;
 
     if (error is HttpieConnectionRefusedError) {
       toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

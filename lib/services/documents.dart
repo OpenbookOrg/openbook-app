@@ -1,7 +1,7 @@
 import 'package:Okuna/services/httpie.dart';
 
 class DocumentsService {
-  HttpieService _httpService;
+  late HttpieService _httpService;
 
   static const guidelinesUrl =
       'https://about.okuna.io/docs/COMMUNITY_GUIDELINES.md';

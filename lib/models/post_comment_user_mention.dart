@@ -2,9 +2,9 @@ import 'package:Okuna/models/post_comment.dart';
 import 'package:Okuna/models/user.dart';
 
 class PostCommentUserMention {
-  final int id;
-  final User user;
-  final PostComment postComment;
+  final int? id;
+  final User? user;
+  final PostComment? postComment;
 
   PostCommentUserMention({
     this.id,
@@ -20,12 +20,12 @@ class PostCommentUserMention {
     );
   }
 
-  static User parseUser(Map userData) {
+  static User? parseUser(Map<String, dynamic>? userData) {
     if (userData == null) return null;
     return User.fromJson(userData);
   }
 
-  static PostComment parsePostComment(Map postCommentData) {
+  static PostComment? parsePostComment(Map<String, dynamic> postCommentData) {
     if (postCommentData == null) return null;
     return PostComment.fromJSON(postCommentData);
   }

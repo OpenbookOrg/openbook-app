@@ -9,12 +9,12 @@ class ModeratedObjectLog {
   static String verifiedChangedLogType = 'VC';
   static String categoryChangedLogType = 'CC';
 
-  final int id;
-  final String description;
-  final bool verified;
-  final User actor;
-  final DateTime created;
-  ModeratedObjectLogType logType;
+  final int? id;
+  final String? description;
+  final bool? verified;
+  final User? actor;
+  final DateTime? created;
+  ModeratedObjectLogType? logType;
 
   dynamic contentObject;
 
@@ -28,7 +28,7 @@ class ModeratedObjectLog {
       this.logType});
 
   factory ModeratedObjectLog.fromJson(Map<String, dynamic> parsedJson) {
-    ModeratedObjectLogType logType = parseType(parsedJson['log_type']);
+    ModeratedObjectLogType? logType = parseType(parsedJson['log_type']);
 
     return ModeratedObjectLog(
         verified: parsedJson['verified'],
@@ -43,19 +43,19 @@ class ModeratedObjectLog {
             contentObjectData: parsedJson['content_object'], logType: logType));
   }
 
-  static User parseActor(Map rawActor) {
+  static User? parseActor(Map<String, dynamic>? rawActor) {
     if (rawActor == null) return null;
     return User.fromJson(rawActor);
   }
 
-  static DateTime parseCreated(String created) {
+  static DateTime? parseCreated(String? created) {
     if (created == null) return null;
     return DateTime.parse(created).toLocal();
   }
 
   static dynamic parseContentObject(
-      {@required Map contentObjectData,
-      @required ModeratedObjectLogType logType}) {
+      {required Map<String, dynamic>? contentObjectData,
+      required ModeratedObjectLogType? logType}) {
     if (contentObjectData == null) return null;
 
     dynamic contentObject;
@@ -82,10 +82,10 @@ class ModeratedObjectLog {
     return contentObject;
   }
 
-  static ModeratedObjectLogType parseType(String moderatedObjectTypeStr) {
+  static ModeratedObjectLogType? parseType(String? moderatedObjectTypeStr) {
     if (moderatedObjectTypeStr == null) return null;
 
-    ModeratedObjectLogType moderatedObjectLogType;
+    ModeratedObjectLogType? moderatedObjectLogType;
     if (moderatedObjectTypeStr ==
         ModeratedObjectLog.descriptionChangedLogType) {
       moderatedObjectLogType = ModeratedObjectLogType.descriptionChanged;
@@ -114,8 +114,8 @@ enum ModeratedObjectLogType {
 }
 
 class ModeratedObjectCategoryChangedLog {
-  final ModerationCategory changedFrom;
-  final ModerationCategory changedTo;
+  final ModerationCategory? changedFrom;
+  final ModerationCategory? changedTo;
 
   ModeratedObjectCategoryChangedLog({this.changedFrom, this.changedTo});
 
@@ -127,15 +127,15 @@ class ModeratedObjectCategoryChangedLog {
     );
   }
 
-  static ModerationCategory parseCategory(Map rawModerationCategory) {
+  static ModerationCategory? parseCategory(Map<String, dynamic>? rawModerationCategory) {
     if (rawModerationCategory == null) return null;
     return ModerationCategory.fromJson(rawModerationCategory);
   }
 }
 
 class ModeratedObjectDescriptionChangedLog {
-  final String changedFrom;
-  final String changedTo;
+  final String? changedFrom;
+  final String? changedTo;
 
   ModeratedObjectDescriptionChangedLog({this.changedFrom, this.changedTo});
 
@@ -149,8 +149,8 @@ class ModeratedObjectDescriptionChangedLog {
 }
 
 class ModeratedObjectVerifiedChangedLog {
-  final bool changedFrom;
-  final bool changedTo;
+  final bool? changedFrom;
+  final bool? changedTo;
 
   ModeratedObjectVerifiedChangedLog({this.changedFrom, this.changedTo});
 
@@ -164,8 +164,8 @@ class ModeratedObjectVerifiedChangedLog {
 }
 
 class ModeratedObjectStatusChangedLog {
-  final ModeratedObjectStatus changedFrom;
-  final ModeratedObjectStatus changedTo;
+  final ModeratedObjectStatus? changedFrom;
+  final ModeratedObjectStatus? changedTo;
 
   ModeratedObjectStatusChangedLog({this.changedFrom, this.changedTo});
 
@@ -177,7 +177,7 @@ class ModeratedObjectStatusChangedLog {
     );
   }
 
-  static ModeratedObjectStatus parseStatus(String rawModerationStatus) {
+  static ModeratedObjectStatus? parseStatus(String? rawModerationStatus) {
     if (rawModerationStatus == null) return null;
     return ModeratedObject.factory.parseStatus(rawModerationStatus);
   }

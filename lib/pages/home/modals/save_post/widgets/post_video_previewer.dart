@@ -7,15 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_networkimage/provider.dart';
 
 class OBPostVideoPreview extends StatelessWidget {
-  final File postVideoFile;
-  final PostVideo postVideo;
-  final VoidCallback onRemove;
+  final File? postVideoFile;
+  final PostVideo? postVideo;
+  final VoidCallback? onRemove;
   final double buttonSize = 30.0;
-  final double playIconSize;
+  final double? playIconSize;
   static double avatarBorderRadius = 10.0;
 
   const OBPostVideoPreview(
-      {Key key,
+      {Key? key,
       this.postVideoFile,
       this.postVideo,
       this.onRemove,
@@ -31,18 +31,18 @@ class OBPostVideoPreview extends StatelessWidget {
     Widget videoPreview = isFileVideo
         ? FutureBuilder<File>(
             future:
-                openbookProvider.mediaService.getVideoThumbnail(postVideoFile),
+                openbookProvider.mediaService.getVideoThumbnail(postVideoFile!),
             builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
               if (snapshot.data == null) return const SizedBox();
 
               return _wrapImageWidgetForThumbnail(Image.file(
-                snapshot.data,
+                snapshot.data!,
                 fit: BoxFit.cover,
               ));
             })
         : _wrapImageWidgetForThumbnail(Image(
             fit: BoxFit.cover,
-            image: AdvancedNetworkImage(postVideo.thumbnail,
+            image: AdvancedNetworkImage(postVideo!.thumbnail ?? '',
                 useDiskCache: true,
                 fallbackAssetImage: 'assets/images/fallbacks/post-fallback.png',
                 retryLimit: 0),
@@ -121,11 +121,11 @@ class OBPostVideoPreview extends StatelessWidget {
   void _onWantsToPlay(BuildContext context) {
     OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
 
-    String postVideoUrl;
+    String? postVideoUrl;
 
     if (postVideo != null)
       postVideoUrl =
-          postVideo.getVideoFormatOfType(OBVideoFormatType.mp4SD).file;
+          postVideo!.getVideoFormatOfType(OBVideoFormatType.mp4SD)?.file;
 
     openbookProvider.dialogService.showVideo(
         context: context,

@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 class OBPillButton extends StatelessWidget {
   final String text;
   final Widget icon;
-  final Color color;
-  final Color textColor;
+  final Color? color;
+  final Color? textColor;
 
   final VoidCallback onPressed;
 
   const OBPillButton(
-      {@required this.text,
-      @required this.icon,
-      @required this.onPressed,
+      {required this.text,
+      required this.icon,
+      required this.onPressed,
       this.color,
       this.textColor});
 

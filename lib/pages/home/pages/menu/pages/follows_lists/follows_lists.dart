@@ -24,19 +24,19 @@ class OBFollowsListsPage extends StatefulWidget {
 }
 
 class OBFollowsListsPageState extends State<OBFollowsListsPage> {
-  UserService _userService;
-  ToastService _toastService;
-  ModalService _modalService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late ModalService _modalService;
+  late LocalizationService _localizationService;
 
-  GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
-  ScrollController _followsListsScrollController;
+  late GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
+  late ScrollController _followsListsScrollController;
   List<FollowsList> _followsLists = [];
   List<FollowsList> _followsListsSearchResults = [];
 
-  String _searchQuery;
+  String? _searchQuery;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -94,7 +94,7 @@ class OBFollowsListsPageState extends State<OBFollowsListsPage> {
                                 if(_searchQuery != null){
                                   return ListTile(
                                       leading: OBIcon(OBIcons.sad),
-                                      title: OBText(_localizationService.user__follow_lists_no_list_found_for(_searchQuery)));
+                                      title: OBText(_localizationService.user__follow_lists_no_list_found_for(_searchQuery ?? '')));
                                 }else{
                                   return ListTile(
                                       leading: OBIcon(OBIcons.sad),
@@ -132,7 +132,7 @@ class OBFollowsListsPageState extends State<OBFollowsListsPage> {
 
   Future<void> _refreshComments() async {
     try {
-      _followsLists = (await _userService.getFollowsLists()).lists;
+      _followsLists = (await _userService.getFollowsLists()).lists!;
       _setFollowsLists(_followsLists);
       _scrollToTop();
     } catch (error) {
@@ -145,8 +145,8 @@ class OBFollowsListsPageState extends State<OBFollowsListsPage> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;
@@ -154,7 +154,7 @@ class OBFollowsListsPageState extends State<OBFollowsListsPage> {
   }
 
   void _onWantsToCreateList() async {
-    FollowsList createdFollowsList =
+    FollowsList? createdFollowsList =
         await _modalService.openCreateFollowsList(context: context);
     if (createdFollowsList != null) {
       _onFollowsListCreated(createdFollowsList);
@@ -171,7 +171,7 @@ class OBFollowsListsPageState extends State<OBFollowsListsPage> {
     _setSearchQuery(query);
     String uppercaseQuery = query.toUpperCase();
     var searchResults = _followsLists.where((followsList) {
-      return followsList.name.toUpperCase().contains(uppercaseQuery);
+      return followsList.name!.toUpperCase().contains(uppercaseQuery);
     }).toList();
 
     _setFollowsListsSearchResults(searchResults);
@@ -216,7 +216,7 @@ class OBFollowsListsPageState extends State<OBFollowsListsPage> {
     });
   }
 
-  void _setSearchQuery(String searchQuery) {
+  void _setSearchQuery(String? searchQuery) {
     setState(() {
       _searchQuery = searchQuery;
     });

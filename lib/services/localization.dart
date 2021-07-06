@@ -38,12 +38,12 @@ class LocalizationService {
   }
 
   static LocalizationService of(BuildContext context) {
-    StreamSubscription _onLoggedInUserChangeSubscription;
+    late StreamSubscription _onLoggedInUserChangeSubscription;
     var openbookProvider = OpenbookProvider.of(context);
     _onLoggedInUserChangeSubscription =
-        openbookProvider.userService.loggedInUserChange.listen((User newUser) {
-      String _userLanguageCode = newUser != null && newUser.hasLanguage()
-          ? newUser.language.code
+        openbookProvider.userService.loggedInUserChange.listen((User? newUser) {
+      String? _userLanguageCode = newUser != null && newUser.hasLanguage()
+          ? newUser.language?.code
           : null;
       Locale _currentLocale = Localizations.localeOf(context);
       if (_userLanguageCode != null &&
@@ -58,7 +58,7 @@ class LocalizationService {
       _onLoggedInUserChangeSubscription.cancel();
     });
 
-    return Localizations.of<LocalizationService>(context, LocalizationService);
+    return Localizations.of<LocalizationService>(context, LocalizationService)!;
   }
 
   String trans(String key) {

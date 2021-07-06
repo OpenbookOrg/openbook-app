@@ -13,9 +13,9 @@ class OBCommunityPostCreatorIdentifier extends StatelessWidget {
   static int postCommentMaxVisibleLength = 500;
 
   OBCommunityPostCreatorIdentifier({
-    Key key,
-    @required this.onUsernamePressed,
-    @required this.post,
+    Key? key,
+    required this.onUsernamePressed,
+    required this.post,
   }) : super(key: key);
 
   @override
@@ -30,14 +30,14 @@ class OBCommunityPostCreatorIdentifier extends StatelessWidget {
         stream: themeService.themeChange,
         initialData: themeService.getActiveTheme(),
         builder: (BuildContext context, AsyncSnapshot<OBTheme> snapshot) {
-          OBTheme theme = snapshot.data;
+          OBTheme theme = snapshot.data!;
 
           Color secondaryTextColor =
               themeValueParserService.parseColor(theme.secondaryTextColor);
 
-          String commenterUsername = post.creator.username;
-          String commenterName = post.creator.getProfileName();
-          String created = utilsService.timeAgo(post.created, localizationService);
+          String commenterUsername = post.creator!.username!;
+          String commenterName = post.creator!.getProfileName()!;
+          String created = utilsService.timeAgo(post.created!, localizationService);
 
           return GestureDetector(
             onTap: onUsernamePressed,

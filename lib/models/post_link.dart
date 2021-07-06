@@ -1,8 +1,8 @@
 
 class PostLink {
-  final int id;
-  String link;
-  bool hasPreview;
+  final int? id;
+  String? link;
+  bool? hasPreview;
 
   PostLink({
     this.id,
@@ -11,7 +11,6 @@ class PostLink {
   });
 
   factory PostLink.fromJSON(Map<String, dynamic> json) {
-    if (json == null) return null;
     return PostLink(
       id: json['id'],
       link: json['link'],

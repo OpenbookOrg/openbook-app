@@ -15,20 +15,20 @@ import 'package:flutter/services.dart';
 class ShareService {
   static const _stream = const EventChannel('okuna.io/receive_share');
 
-  ToastService _toastService;
-  MediaService _mediaService;
-  ValidationService _validationService;
-  LocalizationService _localizationService;
+  late ToastService _toastService;
+  late MediaService _mediaService;
+  late ValidationService _validationService;
+  late LocalizationService _localizationService;
 
-  StreamSubscription _shareReceiveSubscription;
-  List<Future<dynamic> Function({String text, File image, File video})>
+  StreamSubscription? _shareReceiveSubscription;
+  late List<Future<dynamic> Function({String? text, File? image, File? video})>
       _subscribers;
 
-  Share _queuedShare;
+  Share? _queuedShare;
   bool _isProcessingShare = false;
-  Map<Share, ShareOperation> _activeShares;
+  late Map<Share, ShareOperation> _activeShares;
 
-  BuildContext _context;
+  late BuildContext _context;
 
   ShareService() {
     _subscribers = [];
@@ -72,7 +72,7 @@ class ShareService {
   /// If a [CancelableOperation] is returned, it _must_ handle cancellation
   /// properly.
   void subscribe(
-      Future<dynamic> Function({String text, File image, File video}) onShare) {
+      Future<dynamic> Function({String? text, File? image, File? video}) onShare) {
     _subscribers.add(onShare);
 
     if (_subscribers.length == 1) {
@@ -101,13 +101,13 @@ class ShareService {
       _activeShares
           .forEach((key, value) => Future.delayed(Duration(), value.cancel));
 
-      var share = _queuedShare;
+      var share = _queuedShare!;
       _queuedShare = null;
 
       _isProcessingShare = true;
       _activeShares[share] = ShareOperation(share, _onShare);
-      _activeShares[share].then(() => _activeShares.remove(share));
-      _activeShares[share].start();
+      _activeShares[share]?.then(() => _activeShares.remove(share));
+      _activeShares[share]?.start();
       _isProcessingShare = false;
 
       // Recurse since a new share might have came in while the last was being processed.
@@ -116,42 +116,42 @@ class ShareService {
   }
 
   Future<void> _onShare(Share share) async {
-    String text;
-    File image;
-    File video;
+    String? text;
+    File? image;
+    File? video;
 
     if (share.error != null) {
       _toastService.error(
-          message: _localizationService.trans(share.error), context: _context);
-      if (share.error.contains('uri_scheme')) {
-        throw share.error;
+          message: _localizationService.trans(share.error!), context: _context);
+      if (share.error!.contains('uri_scheme')) {
+        throw share.error!;
       }
       return;
     }
 
     if (share.image != null) {
-      image = File.fromUri(Uri.parse(share.image));
+      image = File.fromUri(Uri.parse(share.image!));
       var processedFile = await _mediaService.processMedia(
         media: MediaFile(image, FileType.image),
         context: _context,
       );
-      image = processedFile.file;
+      image = processedFile?.file;
     }
 
     if (share.video != null) {
-      video = File.fromUri(Uri.parse(share.video));
+      video = File.fromUri(Uri.parse(share.video!));
 
       var processedFile = await _mediaService.processMedia(
         media: MediaFile(video, FileType.video),
         context: _context,
       );
 
-      video = processedFile.file;
+      video = processedFile?.file;
     }
 
     if (share.text != null) {
       text = share.text;
-      if (!_validationService.isPostTextAllowedLength(text)) {
+      if (!_validationService.isPostTextAllowedLength(text!)) {
         String errorMessage =
             _localizationService.error__receive_share_text_too_long(
                 ValidationService.POST_MAX_LENGTH);
@@ -161,7 +161,7 @@ class ShareService {
     }
 
     for (var sub in _subscribers.reversed) {
-      if (_activeShares[share].isCancelled) {
+      if (_activeShares[share] != null && _activeShares[share]!.isCancelled) {
         break;
       }
 
@@ -170,7 +170,7 @@ class ShareService {
       // Stop event propagation if we have a sub-result that is either true or
       // a CancelableOperation.
       if (subResult is CancelableOperation) {
-        _activeShares[share].setSubOperation(subResult);
+        _activeShares[share]?.setSubOperation(subResult);
         break;
       } else if (subResult == true) {
         break;
@@ -183,20 +183,20 @@ class ShareOperation {
   final Future<void> Function(Share) _shareFunction;
 
   Share share;
-  CancelableOperation shareOperation;
-  CancelableOperation subOperation;
+  CancelableOperation? shareOperation;
+  CancelableOperation? subOperation;
   bool isCancelled = false;
 
   bool _shareComplete = false;
   bool _subComplete = false;
-  FutureOr Function() _callback;
+  late FutureOr Function() _callback;
 
   ShareOperation(this.share, Future<void> Function(Share) shareFunction)
       : _shareFunction = shareFunction;
 
   void start() {
     shareOperation = CancelableOperation.fromFuture(_shareFunction(share));
-    shareOperation.then((_) {
+    shareOperation!.then((_) {
       _shareComplete = true;
       _complete();
     });
@@ -204,14 +204,14 @@ class ShareOperation {
 
   void setSubOperation(CancelableOperation operation) {
     subOperation = operation;
-    subOperation.then((_) {
+    subOperation!.then((_) {
       _subComplete = true;
       _complete();
     });
 
-    shareOperation.then((_) {
-      if (shareOperation.isCanceled) {
-        subOperation.cancel();
+    shareOperation!.then((_) {
+      if (shareOperation!.isCanceled) {
+        subOperation!.cancel();
       }
     });
   }

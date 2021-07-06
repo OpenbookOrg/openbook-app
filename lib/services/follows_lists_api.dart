@@ -4,10 +4,10 @@ import 'package:Okuna/services/string_template.dart';
 import 'package:meta/meta.dart';
 
 class FollowsListsApiService {
-  HttpieService _httpService;
-  StringTemplateService _stringTemplateService;
+  late HttpieService _httpService;
+  late StringTemplateService _stringTemplateService;
 
-  String apiURL;
+  late String apiURL;
 
   static const GET_LISTS_PATH = 'api/lists/';
   static const CREATE_LIST_PATH = 'api/lists/';
@@ -33,7 +33,7 @@ class FollowsListsApiService {
     return _httpService.get(url, appendAuthorizationToken: true);
   }
 
-  Future<HttpieResponse> createList({@required String name, int emojiId}) {
+  Future<HttpieResponse> createList({required String name, int? emojiId}) {
     String url = _makeApiUrl(CREATE_LIST_PATH);
     Map<String, dynamic> body = {'name': name};
 
@@ -44,7 +44,7 @@ class FollowsListsApiService {
   }
 
   Future<HttpieResponse> updateListWithId(int listId,
-      {String name, int emojiId, List<String> usernames}) {
+      {String? name, int? emojiId, List<String>? usernames}) {
     Map<String, dynamic> body = {};
 
     if (emojiId != null) body['emoji_id'] = emojiId;
@@ -68,7 +68,7 @@ class FollowsListsApiService {
     return _httpService.get(url, appendAuthorizationToken: true);
   }
 
-  Future<HttpieResponse> checkNameIsAvailable({@required String name}) {
+  Future<HttpieResponse> checkNameIsAvailable({required String name}) {
     return _httpService.postJSON('$apiURL$CHECK_NAME_PATH',
         body: {'name': name}, appendAuthorizationToken: true);
   }

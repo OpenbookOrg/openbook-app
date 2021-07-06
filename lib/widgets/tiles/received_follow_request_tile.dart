@@ -10,11 +10,11 @@ import '../../provider.dart';
 
 class OBReceivedFollowRequestTile extends StatelessWidget {
   final FollowRequest followRequest;
-  final ValueChanged<FollowRequest> onFollowRequestApproved;
-  final ValueChanged<FollowRequest> onFollowRequestRejected;
+  final ValueChanged<FollowRequest>? onFollowRequestApproved;
+  final ValueChanged<FollowRequest>? onFollowRequestRejected;
 
   const OBReceivedFollowRequestTile(this.followRequest,
-      {Key key, this.onFollowRequestApproved, this.onFollowRequestRejected})
+      {Key? key, this.onFollowRequestApproved, this.onFollowRequestRejected})
       : super(key: key);
 
   @override
@@ -23,7 +23,7 @@ class OBReceivedFollowRequestTile extends StatelessWidget {
     var navigationService = openbookProvider.navigationService;
 
     return OBUserTile(
-      followRequest.creator,
+      followRequest.creator!,
       onUserTilePressed: (User user) {
         navigationService.navigateToUserProfile(user: user, context: context);
       },
@@ -31,9 +31,9 @@ class OBReceivedFollowRequestTile extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           OBRejectFollowRequestButton(
-            followRequest.creator,
+            followRequest.creator!,
             onFollowRequestRejected: () {
-              if(onFollowRequestRejected != null)  onFollowRequestRejected(followRequest);
+              if(onFollowRequestRejected != null)  onFollowRequestRejected!(followRequest);
             },
             size: OBButtonSize.small,
           ),
@@ -41,9 +41,9 @@ class OBReceivedFollowRequestTile extends StatelessWidget {
             width: 10,
           ),
           OBApproveFollowRequestButton(
-            followRequest.creator,
+            followRequest.creator!,
             onFollowRequestApproved: () {
-              if(onFollowRequestApproved != null) onFollowRequestApproved(followRequest);
+              if(onFollowRequestApproved != null) onFollowRequestApproved!(followRequest);
             },
             size: OBButtonSize.small,
           ),

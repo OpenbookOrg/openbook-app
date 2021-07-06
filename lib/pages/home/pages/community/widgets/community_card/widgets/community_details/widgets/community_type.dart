@@ -13,7 +13,7 @@ class OBCommunityType extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CommunityType type = community.type;
+    CommunityType? type = community.type;
     LocalizationService localizationService = OpenbookProvider.of(context).localizationService;
 
     if (type == null) {

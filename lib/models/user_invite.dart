@@ -3,13 +3,13 @@ import 'package:Okuna/models/user.dart';
 import 'package:dcache/dcache.dart';
 
 class UserInvite extends UpdatableModel<UserInvite> {
-  final int id;
-  String email;
-  final DateTime created;
-  User createdUser;
-  String nickname;
-  final String token;
-  bool isInviteEmailSent;
+  final int? id;
+  String? email;
+  final DateTime? created;
+  User? createdUser;
+  String? nickname;
+  final String? token;
+  bool? isInviteEmailSent;
 
   static const String IOS_DOWNLOAD_LINK = 'https://testflight.apple.com/join/XniAjdyF';
   static const String TESTFLIGHT_DOWNLOAD_LINK = 'https://itunes.apple.com/us/app/testflight/id899247664';
@@ -17,7 +17,7 @@ class UserInvite extends UpdatableModel<UserInvite> {
   static const  INVITE_LINK = '{apiURL}api/auth/invite?token={token}';
 
   static convertUserInviteStatusToBool(UserInviteFilterByStatus value) {
-    bool isPending;
+    bool? isPending;
     switch (value) {
       case UserInviteFilterByStatus.all:
         isPending = null;
@@ -68,12 +68,12 @@ class UserInvite extends UpdatableModel<UserInvite> {
 
 class UserInviteFactory extends UpdatableModelFactory<UserInvite> {
   @override
-  SimpleCache<int, UserInvite> cache =
+  SimpleCache<int, UserInvite>? cache =
   LruCache(storage: UpdatableModelSimpleStorage(size: 10));
 
   @override
   UserInvite makeFromJson(Map json) {
-    DateTime created;
+    DateTime? created;
     var createdData = json['created'];
     if (createdData != null) created = DateTime.parse(createdData).toLocal();
 
@@ -87,7 +87,7 @@ class UserInviteFactory extends UpdatableModelFactory<UserInvite> {
         isInviteEmailSent: json['is_invite_email_sent']);
   }
 
-  User parseUser(Map userData) {
+  User? parseUser(Map<String, dynamic>? userData) {
     if (userData == null) return null;
     return User.fromJson(userData);
   }

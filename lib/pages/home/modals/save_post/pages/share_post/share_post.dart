@@ -10,12 +10,13 @@ import 'package:Okuna/widgets/new_post_data_uploader.dart';
 import 'package:Okuna/widgets/progress_indicator.dart';
 import 'package:Okuna/widgets/theming/primary_color_container.dart';
 import 'package:Okuna/widgets/theming/text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBSharePostPage extends StatefulWidget {
   final OBNewPostData createPostData;
 
-  const OBSharePostPage({Key key, @required this.createPostData})
+  const OBSharePostPage({Key? key, required this.createPostData})
       : super(key: key);
 
   @override
@@ -25,11 +26,11 @@ class OBSharePostPage extends StatefulWidget {
 }
 
 class OBSharePostPageState extends State<OBSharePostPage> {
-  bool _loggedInUserRefreshInProgress;
-  bool _needsBootstrap;
-  UserService _userService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
+  late bool _loggedInUserRefreshInProgress;
+  late bool _needsBootstrap;
+  late UserService _userService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
 
   @override
   void initState() {
@@ -49,7 +50,7 @@ class OBSharePostPageState extends State<OBSharePostPage> {
       _needsBootstrap = false;
     }
 
-    User loggedInUser = _userService.getLoggedInUser();
+    User loggedInUser = _userService.getLoggedInUser()!;
 
     return OBCupertinoPageScaffold(
         navigationBar: _buildNavigationBar(),
@@ -58,7 +59,7 @@ class OBSharePostPageState extends State<OBSharePostPage> {
             initialData: loggedInUser,
             stream: loggedInUser.updateSubject,
             builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
-              User latestUser = snapshot.data;
+              User latestUser = snapshot.data!;
 
               if (_loggedInUserRefreshInProgress)
                 return const Center(
@@ -83,7 +84,7 @@ class OBSharePostPageState extends State<OBSharePostPage> {
                 )
               ];
 
-              if (latestUser.isMemberOfCommunities) {
+              if (latestUser.isMemberOfCommunities ?? false) {
                 shareToTiles.add(ListTile(
                   leading: const OBIcon(OBIcons.communities),
                   title: OBText(_localizationService
@@ -109,7 +110,7 @@ class OBSharePostPageState extends State<OBSharePostPage> {
         ));
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
       title: _localizationService.trans('post__share_to'),
     );
@@ -121,21 +122,21 @@ class OBSharePostPageState extends State<OBSharePostPage> {
 
   Future<void> _refreshLoggedInUser() async {
     User refreshedUser = await _userService.refreshUser();
-    if (!refreshedUser.isMemberOfCommunities) {
+    if (!(refreshedUser.isMemberOfCommunities ?? false)) {
       // Only possibility
       _onWantsToSharePostToCircles();
     }
   }
 
   void _onWantsToSharePostToCircles() async {
-    OBNewPostData createPostData =
+    OBNewPostData? createPostData =
         await _navigationService.navigateToSharePostWithCircles(
             context: context, createPostData: widget.createPostData);
     if (createPostData != null) Navigator.pop(context, createPostData);
   }
 
   void _onWantsToSharePostToCommunity() async {
-    OBNewPostData createPostData =
+    OBNewPostData? createPostData =
         await _navigationService.navigateToSharePostWithCommunity(
             context: context, createPostData: widget.createPostData);
     if (createPostData != null) Navigator.pop(context, createPostData);

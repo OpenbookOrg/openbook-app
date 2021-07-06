@@ -10,16 +10,16 @@ import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'package:async/async.dart';
 
 class OBPostBodyVideo extends StatefulWidget {
-  final double height;
-  final double width;
-  final Post post;
-  final PostVideo postVideo;
-  final String inViewId;
-  final bool hasExpandButton;
+  final double? height;
+  final double? width;
+  final Post? post;
+  final PostVideo? postVideo;
+  final String? inViewId;
+  final bool? hasExpandButton;
   final bool isConstrained;
 
   const OBPostBodyVideo(
-      {Key key,
+      {Key? key,
       this.post,
       this.postVideo,
       this.inViewId,
@@ -36,20 +36,20 @@ class OBPostBodyVideo extends StatefulWidget {
 }
 
 class OBPostVideoState extends State<OBPostBodyVideo> {
-  OBVideoPlayerController _obVideoPlayerController;
-  bool _needsBootstrap;
-  StreamSubscription _videosSoundSettingsChangeSubscription;
-  Navigator _navigator;
-  NavigatorObserver _navigatorObserver;
-  ModalRoute _route;
-  bool _wasPlaying;
+  late OBVideoPlayerController _obVideoPlayerController;
+  late bool _needsBootstrap;
+  StreamSubscription? _videosSoundSettingsChangeSubscription;
+  Navigator? _navigator;
+  NavigatorObserver? _navigatorObserver;
+  ModalRoute? _route;
+  bool? _wasPlaying;
 
-  bool _videosAutoPlayAreEnabled;
-  StreamSubscription _videosAutoPlayAreEnabledChangeSubscription;
+  late bool _videosAutoPlayAreEnabled;
+  StreamSubscription? _videosAutoPlayAreEnabledChangeSubscription;
 
-  CancelableOperation _digestInViewStateChangeOperation;
+  CancelableOperation? _digestInViewStateChangeOperation;
 
-  InViewState _inViewState;
+  InViewState? _inViewState;
 
   @override
   void initState() {
@@ -66,21 +66,21 @@ class OBPostVideoState extends State<OBPostBodyVideo> {
     _videosSoundSettingsChangeSubscription?.cancel();
     _digestInViewStateChangeOperation?.cancel();
     _inViewState?.removeListener(_onInViewStateChanged);
-    _navigator.observers.remove(_navigatorObserver);
+    _navigator?.observers.remove(_navigatorObserver);
   }
 
   void _bootstrap(BuildContext context) async {
     if (widget.inViewId != null) {
       // Subscribe for visibility changes
       _inViewState = InViewNotifierList.of(context);
-      _inViewState.addContext(context: context, id: widget.inViewId);
-      _inViewState.addListener(_onInViewStateChanged);
+      _inViewState!.addContext(context: context, id: widget.inViewId!);
+      _inViewState!.addListener(_onInViewStateChanged);
     }
 
     _route = ModalRoute.of(context);
     _navigatorObserver = PostVideoNavigatorObserver(this);
     _navigator = Navigator.of(context).widget;
-    _navigator.observers.add(_navigatorObserver);
+    _navigator!.observers.add(_navigatorObserver!);
 
     // Subscribe for autoplay changes
     OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
@@ -112,22 +112,22 @@ class OBPostVideoState extends State<OBPostBodyVideo> {
 
   Widget _buildVideoPlayer() {
     OBVideoFormat videoFormat =
-        widget.postVideo.getVideoFormatOfType(OBVideoFormatType.mp4SD);
+        widget.postVideo!.getVideoFormatOfType(OBVideoFormatType.mp4SD)!;
 
-    String videoUrl = videoFormat.file;
+    String videoUrl = videoFormat.file!;
 
     return OBVideoPlayer(
       videoUrl: videoUrl,
-      thumbnailUrl: widget.postVideo.thumbnail,
-      height: widget.height,
-      width: widget.width,
+      thumbnailUrl: widget.postVideo!.thumbnail!,
+      height: widget.height!,
+      width: widget.width!,
       isConstrained: widget.isConstrained,
       controller: _obVideoPlayerController,
     );
   }
 
   void _onInViewStateChanged() {
-    final bool isVideoInView = _inViewState.inView(widget.inViewId);
+    final bool isVideoInView = _inViewState?.inView(widget.inViewId!) ?? false;
 
     _digestInViewStateChangeOperation?.cancel();
     _digestInViewStateChangeOperation = CancelableOperation.fromFuture(
@@ -160,17 +160,17 @@ class OBPostVideoState extends State<OBPostBodyVideo> {
 }
 
 class PostVideoNavigatorObserver extends NavigatorObserver {
-  OBPostVideoState _state;
+  late OBPostVideoState _state;
 
   PostVideoNavigatorObserver(OBPostVideoState state) {
     _state = state;
   }
 
   @override
-  void didPush(Route route, Route previousRoute) {
+  void didPush(Route route, Route? previousRoute) {
     if (identical(previousRoute, _state._route)) {
       _state._wasPlaying = _state._obVideoPlayerController.isPlaying();
-      if (_state._wasPlaying) {
+      if (_state._wasPlaying == true) {
         debugLog('Pausing video due to another route opened.');
         _state._obVideoPlayerController.pause();
       }
@@ -178,11 +178,11 @@ class PostVideoNavigatorObserver extends NavigatorObserver {
   }
 
   @override
-  void didPop(Route route, Route previousRoute) {
+  void didPop(Route route, Route? previousRoute) {
     if (identical(previousRoute, _state._route) &&
         _state != null &&
         _state.mounted &&
-        _state._wasPlaying != null && _state._wasPlaying) {
+        _state._wasPlaying != null && _state._wasPlaying!) {
       debugLog('Resuming video as blocking route has been popped.');
       _state._obVideoPlayerController.play();
     }

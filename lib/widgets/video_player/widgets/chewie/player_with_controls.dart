@@ -13,7 +13,7 @@ class PlayerWithControls extends StatelessWidget {
   final bool isConstrained;
 
   const PlayerWithControls(
-      {Key key, this.height, this.width, this.isConstrained = false})
+      {Key? key, this.height, this.width, this.isConstrained = false})
       : super(key: key);
 
   @override
@@ -71,7 +71,7 @@ class PlayerWithControls extends StatelessWidget {
   ) {
     return chewieController.showControls
         ? chewieController.customControls != null
-            ? chewieController.customControls
+            ? chewieController.customControls!
             : Theme.of(context).platform == TargetPlatform.android
                 ? MaterialControls()
                 : CupertinoControls(

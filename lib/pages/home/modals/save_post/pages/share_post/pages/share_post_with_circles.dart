@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 class OBSharePostWithCirclesPage extends StatefulWidget {
   final OBNewPostData createPostData;
 
-  const OBSharePostWithCirclesPage({Key key, @required this.createPostData})
+  const OBSharePostWithCirclesPage({Key? key, required this.createPostData})
       : super(key: key);
 
   @override
@@ -29,20 +29,20 @@ class OBSharePostWithCirclesPage extends StatefulWidget {
 
 class OBSharePostWithCirclesPageState
     extends State<OBSharePostWithCirclesPage> {
-  UserService _userService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
-  List<Circle> _circles;
-  List<Circle> _circleSearchResults;
-  List<Circle> _selectedCircles;
-  List<Circle> _disabledCircles;
-  Circle _fakeWorldCircle;
-  Circle _connectionsCircle;
-  bool _fakeWorldCircleSelected;
+  late List<Circle> _circles;
+  late List<Circle> _circleSearchResults;
+  late List<Circle> _selectedCircles;
+  late List<Circle> _disabledCircles;
+  late Circle _fakeWorldCircle;
+  Circle? _connectionsCircle;
+  late bool _fakeWorldCircleSelected;
 
-  String _circleSearchQuery;
+  late String _circleSearchQuery;
 
   @override
   void initState() {
@@ -94,7 +94,7 @@ class OBSharePostWithCirclesPageState
     );
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
       title: _localizationService.trans('post__share_to_circles'),
       trailing: OBButton(
@@ -157,7 +157,7 @@ class OBSharePostWithCirclesPageState
     if (_fakeWorldCircleSelected) {
       selectedCircles = [];
     } else if (_selectedCircles.contains(_connectionsCircle)) {
-      selectedCircles = [ _connectionsCircle ];
+      selectedCircles = [ _connectionsCircle! ];
     } else {
       selectedCircles = _selectedCircles;
     }
@@ -212,7 +212,7 @@ class OBSharePostWithCirclesPageState
     String standarisedSearchStr = searchString.toLowerCase();
 
     List<Circle> results = _circles.where((Circle circle) {
-      return circle.name.toLowerCase().contains(standarisedSearchStr);
+      return circle.name!.toLowerCase().contains(standarisedSearchStr);
     }).toList();
 
     _setCircleSearchResults(results);
@@ -221,7 +221,7 @@ class OBSharePostWithCirclesPageState
 
   void _bootstrap() async {
     CirclesList circleList = await _userService.getConnectionsCircles();
-    this._setCircles(circleList.circles);
+    this._setCircles(circleList.circles!);
   }
 
   void _resetCircleSearchResults() {
@@ -236,9 +236,9 @@ class OBSharePostWithCirclesPageState
       _circles = circles;
       // Move connections circle to top
       _connectionsCircle = _circles
-          .firstWhere((circle) => circle.id == user.connectionsCircleId);
+          .firstWhere((circle) => circle.id == user!.connectionsCircleId);
       _circles.remove(_connectionsCircle);
-      _circles.insert(0, _connectionsCircle);
+      _circles.insert(0, _connectionsCircle!);
       // Add fake world circle
       _circles.insert(0, _fakeWorldCircle);
       _selectedCircles = [];

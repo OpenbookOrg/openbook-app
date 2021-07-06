@@ -18,11 +18,11 @@ import 'package:Okuna/services/httpie.dart';
 
 class OBPostCommenter extends StatefulWidget {
   final Post post;
-  final PostComment postComment;
+  final PostComment? postComment;
   final bool autofocus;
-  final FocusNode commentTextFieldFocusNode;
-  final ValueChanged<PostComment> onPostCommentCreated;
-  final VoidCallback onPostCommentWillBeCreated;
+  final FocusNode? commentTextFieldFocusNode;
+  final ValueChanged<PostComment>? onPostCommentCreated;
+  final VoidCallback? onPostCommentWillBeCreated;
   final DraftTextEditingController textController;
 
   OBPostCommenter(this.post,
@@ -31,7 +31,7 @@ class OBPostCommenter extends StatefulWidget {
       this.commentTextFieldFocusNode,
       this.onPostCommentCreated,
       this.onPostCommentWillBeCreated,
-      @required this.textController});
+      required this.textController});
 
   @override
   State<StatefulWidget> createState() {
@@ -40,19 +40,19 @@ class OBPostCommenter extends StatefulWidget {
 }
 
 class OBPostCommenterState extends State<OBPostCommenter> {
-  bool _commentInProgress;
-  bool _formWasSubmitted;
-  bool _needsBootstrap;
+  late bool _commentInProgress;
+  late bool _formWasSubmitted;
+  late bool _needsBootstrap;
 
-  int _charactersCount;
-  bool _isMultiline;
+  late int _charactersCount;
+  late bool _isMultiline;
 
-  UserService _userService;
-  ToastService _toastService;
-  ValidationService _validationService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late ValidationService _validationService;
+  late LocalizationService _localizationService;
 
-  CancelableOperation _submitFormOperation;
+  CancelableOperation? _submitFormOperation;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -69,7 +69,7 @@ class OBPostCommenterState extends State<OBPostCommenter> {
   @override
   void dispose() {
     super.dispose();
-    if (_submitFormOperation != null) _submitFormOperation.cancel();
+    if (_submitFormOperation != null) _submitFormOperation!.cancel();
   }
 
   @override
@@ -158,12 +158,12 @@ class OBPostCommenterState extends State<OBPostCommenter> {
     );
   }
 
-  Widget _buildTextFormField(int maxLines, TextStyle style) {
+  Widget _buildTextFormField(int? maxLines, TextStyle style) {
     EdgeInsetsGeometry inputContentPadding =
         EdgeInsets.symmetric(vertical: 8.0, horizontal: 10);
 
     bool autofocus = widget.autofocus;
-    FocusNode focusNode = widget.commentTextFieldFocusNode ?? null;
+    FocusNode? focusNode = widget.commentTextFieldFocusNode ?? null;
 
     return OBTextFormField(
       controller: widget.textController,
@@ -180,7 +180,7 @@ class OBPostCommenterState extends State<OBPostCommenter> {
       hasBorder: false,
       autofocus: autofocus,
       autocorrect: true,
-      validator: (String comment) {
+      validator: (String? comment) {
         if (!_formWasSubmitted) return null;
         return _validationService.validatePostComment(widget.textController.text);
       },
@@ -188,7 +188,7 @@ class OBPostCommenterState extends State<OBPostCommenter> {
   }
 
   void _submitForm() async {
-    if (_submitFormOperation != null) _submitFormOperation.cancel();
+    if (_submitFormOperation != null) _submitFormOperation!.cancel();
     _setFormWasSubmitted(true);
 
     bool formIsValid = _validateForm();
@@ -197,22 +197,25 @@ class OBPostCommenterState extends State<OBPostCommenter> {
 
     _setCommentInProgress(true);
     try {
-      await (widget.onPostCommentWillBeCreated != null
-          ? widget.onPostCommentWillBeCreated()
-          : Future.value());
+      if (widget.onPostCommentWillBeCreated != null) {
+        widget.onPostCommentWillBeCreated!();
+      } else {
+        await Future.value();
+      }
+
       String commentText = widget.textController.text;
       if (widget.postComment != null) {
         _submitFormOperation = CancelableOperation.fromFuture(
             _userService.replyPostComment(
                 text: commentText,
                 post: widget.post,
-                postComment: widget.postComment));
+                postComment: widget.postComment!));
       } else {
         _submitFormOperation = CancelableOperation.fromFuture(
             _userService.commentPost(text: commentText, post: widget.post));
       }
 
-      PostComment createdPostComment = await _submitFormOperation.value;
+      PostComment createdPostComment = await _submitFormOperation?.value;
       if (createdPostComment.parentComment == null)
         widget.post.incrementCommentsCount();
       widget.textController.clear();
@@ -220,7 +223,7 @@ class OBPostCommenterState extends State<OBPostCommenter> {
       _validateForm();
       _setCommentInProgress(false);
       if (widget.onPostCommentCreated != null)
-        widget.onPostCommentCreated(createdPostComment);
+        widget.onPostCommentCreated!(createdPostComment);
     } catch (error) {
       _onError(error);
     } finally {
@@ -239,7 +242,7 @@ class OBPostCommenterState extends State<OBPostCommenter> {
   }
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   void _onError(error) async {
@@ -247,8 +250,8 @@ class OBPostCommenterState extends State<OBPostCommenter> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(
           message: _localizationService.trans('error__unknown_error'),

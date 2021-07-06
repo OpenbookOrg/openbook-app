@@ -2,10 +2,10 @@ import 'package:Okuna/widgets/theming/text.dart';
 import 'package:flutter/material.dart';
 
 class OBTileGroupTitle extends StatelessWidget {
-  final String title;
-  final TextStyle style;
+  final String? title;
+  final TextStyle? style;
 
-  const OBTileGroupTitle({Key key, this.title, this.style}) : super(key: key);
+  const OBTileGroupTitle({Key? key, this.title, this.style}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class OBTileGroupTitle extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
       child: OBText(
-        title,
+        title ?? '',
         size: OBTextSize.large,
         style: finalStyle,
       ),

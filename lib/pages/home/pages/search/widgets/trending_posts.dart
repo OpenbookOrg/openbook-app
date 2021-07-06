@@ -13,8 +13,8 @@ import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 
 class OBTrendingPosts extends StatefulWidget {
-  final OBTrendingPostsController controller;
-  final Function(ScrollPosition) onScrollCallback;
+  final OBTrendingPostsController? controller;
+  final Function(ScrollPosition)? onScrollCallback;
   final double extraTopPadding;
 
   const OBTrendingPosts({
@@ -31,20 +31,20 @@ class OBTrendingPosts extends StatefulWidget {
 
 class OBTrendingPostsState extends State<OBTrendingPosts>
     with AutomaticKeepAliveClientMixin {
-  UserService _userService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
 
-  CancelableOperation _getTrendingPostsOperation;
+  CancelableOperation? _getTrendingPostsOperation;
 
-  OBPostsStreamController _obPostsStreamController;
-  List<TrendingPost> _currentTrendingPosts;
-  List<Post> _currentPosts;
+  late OBPostsStreamController _obPostsStreamController;
+  List<TrendingPost> _currentTrendingPosts = [];
+  late List<Post> _currentPosts = [];
 
   @override
   void initState() {
     super.initState();
     _obPostsStreamController = OBPostsStreamController();
-    if (widget.controller != null) widget.controller.attach(this);
+    if (widget.controller != null) widget.controller!.attach(this);
   }
 
   @override
@@ -53,10 +53,10 @@ class OBTrendingPostsState extends State<OBTrendingPosts>
   @override
   void dispose() {
     super.dispose();
-    if (_getTrendingPostsOperation != null) _getTrendingPostsOperation.cancel();
+    if (_getTrendingPostsOperation != null) _getTrendingPostsOperation!.cancel();
   }
 
-  Future refresh() {
+  Future? refresh() {
     return _obPostsStreamController.refreshPosts();
   }
 
@@ -95,9 +95,9 @@ class OBTrendingPostsState extends State<OBTrendingPosts>
 
   Future<List<Post>> _postsStreamRefresher() async {
     List<TrendingPost> trendingPosts =
-        (await _userService.getTrendingPosts(count: 10)).posts;
+        (await _userService.getTrendingPosts(count: 10)).posts ?? [];
     List<Post> posts =
-        trendingPosts.map((trendingPost) => trendingPost.post).toList();
+        trendingPosts.map((trendingPost) => trendingPost.post!).toList();
 
     _setTrendingPosts(trendingPosts);
     _setPosts(posts);
@@ -107,14 +107,14 @@ class OBTrendingPostsState extends State<OBTrendingPosts>
 
   Future<List<Post>> _postsStreamOnScrollLoader(List<Post> posts) async {
     TrendingPost lastTrendingPost = _currentTrendingPosts.last;
-    int lastTrendingPostId = lastTrendingPost.id;
+    int lastTrendingPostId = lastTrendingPost.id!;
 
     List<TrendingPost> moreTrendingPosts = (await _userService.getTrendingPosts(
             maxId: lastTrendingPostId, count: 10))
-        .posts;
+        .posts ?? [];
 
     List<Post> morePosts =
-        moreTrendingPosts.map((trendingPost) => trendingPost.post).toList();
+        moreTrendingPosts.map((trendingPost) => trendingPost.post!).toList();
 
     _appendCurrentTrendingPosts(moreTrendingPosts);
     _appendCurrentPosts(morePosts);
@@ -123,11 +123,17 @@ class OBTrendingPostsState extends State<OBTrendingPosts>
   }
 
   Widget _trendingPostBuilder(
-      {BuildContext context,
-      Post post,
-      OBPostDisplayContext displayContext,
-      String postIdentifier,
-      ValueChanged<Post> onPostDeleted}) {
+      {BuildContext? context,
+      Post? post,
+      OBPostDisplayContext? displayContext,
+      String? postIdentifier,
+      ValueChanged<Post>? onPostDeleted}) {
+
+    if (context == null || post == null || displayContext == null || postIdentifier == null || onPostDeleted == null) {
+      // TODO: very ugly, should probably refactor
+      return SizedBox();
+    }
+
     return OBPost(
       post,
       key: Key(postIdentifier),
@@ -163,17 +169,17 @@ class OBTrendingPostsState extends State<OBTrendingPosts>
 }
 
 class OBTrendingPostsController {
-  OBTrendingPostsState _state;
+  OBTrendingPostsState? _state;
 
-  void attach(OBTrendingPostsState state) {
+  void attach(OBTrendingPostsState? state) {
     _state = state;
   }
 
-  Future<void> refresh() {
-    return _state.refresh();
+  Future<void>? refresh() {
+    return _state?.refresh();
   }
 
   void scrollToTop() {
-    _state.scrollToTop();
+    _state?.scrollToTop();
   }
 }

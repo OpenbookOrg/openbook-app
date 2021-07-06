@@ -9,12 +9,12 @@ import 'moderated_object_log_actor.dart';
 class OBModeratedObjectStatusChangedLogTile extends StatelessWidget {
   final ModeratedObjectLog log;
   final ModeratedObjectStatusChangedLog moderatedObjectStatusChangedLog;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const OBModeratedObjectStatusChangedLogTile(
-      {Key key,
-      @required this.log,
-      @required this.moderatedObjectStatusChangedLog,
+      {Key? key,
+      required this.log,
+      required this.moderatedObjectStatusChangedLog,
       this.onPressed})
       : super(key: key);
 
@@ -31,7 +31,7 @@ class OBModeratedObjectStatusChangedLogTile extends StatelessWidget {
           OBSecondaryText(ModeratedObject.factory
               .convertStatusToHumanReadableString(
                   moderatedObjectStatusChangedLog.changedFrom,
-                  capitalize: true)),
+                  capitalize: true)!),
           const SizedBox(
             height: 10,
           ),
@@ -42,7 +42,7 @@ class OBModeratedObjectStatusChangedLogTile extends StatelessWidget {
           OBSecondaryText(ModeratedObject.factory
               .convertStatusToHumanReadableString(
                   moderatedObjectStatusChangedLog.changedTo,
-                  capitalize: true)),
+                  capitalize: true)!),
         ],
       ),
     );

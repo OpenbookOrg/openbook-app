@@ -10,11 +10,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 class OBImagePickerBottomSheet extends StatelessWidget {
-  const OBImagePickerBottomSheet({Key key}) : super(key: key);
+  const OBImagePickerBottomSheet({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var provider = OpenbookProvider.of(context);
+    var imagePicker = ImagePicker();
 
     LocalizationService localizationService = provider.localizationService;
 
@@ -28,11 +29,11 @@ class OBImagePickerBottomSheet extends StatelessWidget {
           bool permissionGranted = await provider.permissionService
               .requestStoragePermissions(context: context);
           if (permissionGranted) {
-            FilePickerResult result =
-                await FilePicker.platform.pickFiles(type: FileType.image);
+            PickedFile? pickedFile =
+                await imagePicker.getImage(source: ImageSource.gallery);
 
-            if (result != null) {
-              File file = File(result.files.single.path);
+            if (pickedFile != null) {
+              File file = File(pickedFile.path);
               Navigator.pop(context, file);
             }
           }
@@ -47,8 +48,10 @@ class OBImagePickerBottomSheet extends StatelessWidget {
           bool permissionGranted = await provider.permissionService
               .requestCameraPermissions(context: context);
           if (permissionGranted) {
-            File pickedImage =
-                await ImagePicker.pickImage(source: ImageSource.camera);
+            PickedFile? pickedFile =
+                await imagePicker.getImage(source: ImageSource.camera);
+
+            File? pickedImage = pickedFile != null ? File(pickedFile.path) : null;
             Navigator.pop(context, pickedImage);
           }
         },

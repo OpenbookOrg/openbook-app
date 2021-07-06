@@ -1,8 +1,8 @@
 import 'package:Okuna/models/user.dart';
 
 class ConnectionConfirmedNotification {
-  final int id;
-  final User connectionConfirmator;
+  final int? id;
+  final User? connectionConfirmator;
 
   ConnectionConfirmedNotification({this.id, this.connectionConfirmator});
 
@@ -12,7 +12,7 @@ class ConnectionConfirmedNotification {
         connectionConfirmator: _parseUser(json['connection_confirmator']));
   }
 
-  static User _parseUser(Map userData) {
+  static User _parseUser(Map<String, dynamic> userData) {
     return User.fromJson(userData);
   }
 }

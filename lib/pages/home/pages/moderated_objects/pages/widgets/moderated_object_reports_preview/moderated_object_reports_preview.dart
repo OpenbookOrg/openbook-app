@@ -24,7 +24,7 @@ class OBModeratedObjectReportsPreview extends StatefulWidget {
   final ModeratedObject moderatedObject;
 
   const OBModeratedObjectReportsPreview(
-      {Key key, @required this.moderatedObject, @required this.isEditable})
+      {Key? key, required this.moderatedObject, required this.isEditable})
       : super(key: key);
 
   @override
@@ -37,15 +37,15 @@ class OBModeratedObjectReportsPreviewState
     extends State<OBModeratedObjectReportsPreview> {
   static int reportsPreviewsCount = 5;
 
-  bool _needsBootstrap;
-  UserService _userService;
-  ToastService _toastService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
+  late bool _needsBootstrap;
+  late UserService _userService;
+  late ToastService _toastService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
 
-  CancelableOperation _refreshReportsOperation;
-  bool _refreshInProgress;
-  List<ModerationReport> _reports;
+  CancelableOperation? _refreshReportsOperation;
+  late bool _refreshInProgress;
+  late List<ModerationReport> _reports;
 
   @override
   void initState() {
@@ -58,7 +58,7 @@ class OBModeratedObjectReportsPreviewState
   @override
   void dispose() {
     super.dispose();
-    if (_refreshReportsOperation != null) _refreshReportsOperation.cancel();
+    if (_refreshReportsOperation != null) _refreshReportsOperation!.cancel();
   }
 
   @override
@@ -103,7 +103,7 @@ class OBModeratedObjectReportsPreviewState
         OBDivider(),
         OBSeeAllButton(
           previewedResourcesCount: _reports.length,
-          resourcesCount: widget.moderatedObject.reportsCount,
+          resourcesCount: widget.moderatedObject.reportsCount ?? 0,
           resourceName: _localizationService.moderation__reports_preview_resource_reports,
           onPressed: _onWantsToSeeAllReports,
         )
@@ -123,9 +123,9 @@ class OBModeratedObjectReportsPreviewState
       _refreshReportsOperation = CancelableOperation.fromFuture(_userService
           .getModeratedObjectReports(widget.moderatedObject, count: 5));
 
-      ModerationReportsList moderationReportsList =
-          await _refreshReportsOperation.value;
-      _setReports(moderationReportsList.moderationReports);
+      ModerationReportsList? moderationReportsList =
+          await _refreshReportsOperation?.value;
+      _setReports(moderationReportsList?.moderationReports ?? []);
     } catch (error) {
       _onError(error);
     }
@@ -154,8 +154,8 @@ class OBModeratedObjectReportsPreviewState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

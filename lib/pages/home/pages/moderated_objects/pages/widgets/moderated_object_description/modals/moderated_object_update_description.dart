@@ -19,7 +19,7 @@ class OBModeratedObjectUpdateDescriptionModal extends StatefulWidget {
   final ModeratedObject moderatedObject;
 
   const OBModeratedObjectUpdateDescriptionModal(
-      {Key key, @required this.moderatedObject})
+      {Key? key, required this.moderatedObject})
       : super(key: key);
 
   @override
@@ -30,20 +30,20 @@ class OBModeratedObjectUpdateDescriptionModal extends StatefulWidget {
 
 class OBModeratedObjectUpdateDescriptionModalState
     extends State<OBModeratedObjectUpdateDescriptionModal> {
-  UserService _userService;
-  ToastService _toastService;
-  ValidationService _validationService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late ValidationService _validationService;
+  late LocalizationService _localizationService;
 
-  bool _requestInProgress;
-  bool _formWasSubmitted;
-  bool _formValid;
+  late bool _requestInProgress;
+  late bool _formWasSubmitted;
+  late bool _formValid;
 
-  GlobalKey<FormState> _formKey;
+  late GlobalKey<FormState> _formKey;
 
-  TextEditingController _descriptionController;
+  late TextEditingController _descriptionController;
 
-  CancelableOperation _editDescriptionOperation;
+  CancelableOperation? _editDescriptionOperation;
 
   @override
   void initState() {
@@ -61,7 +61,7 @@ class OBModeratedObjectUpdateDescriptionModalState
   @override
   void dispose() {
     super.dispose();
-    if (_editDescriptionOperation != null) _editDescriptionOperation.cancel();
+    if (_editDescriptionOperation != null) _editDescriptionOperation!.cancel();
   }
 
   @override
@@ -96,7 +96,7 @@ class OBModeratedObjectUpdateDescriptionModalState
                                     labelText: _localizationService.trans('moderation__update_description_report_desc'),
                                     hintText:
                                         _localizationService.trans('moderation__update_description_report_hint_text')),
-                                validator: (String description) {
+                                validator: (String? description) {
                                   if (!_formWasSubmitted) return null;
                                   return _validationService
                                       .validateModeratedObjectDescription(
@@ -110,7 +110,7 @@ class OBModeratedObjectUpdateDescriptionModalState
         ));
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
         title: _localizationService.trans('moderation__update_description_title'),
         trailing: OBButton(
@@ -123,7 +123,7 @@ class OBModeratedObjectUpdateDescriptionModalState
   }
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   bool _updateFormValid() {
@@ -143,7 +143,7 @@ class OBModeratedObjectUpdateDescriptionModalState
           _userService.updateModeratedObject(widget.moderatedObject,
               description: _descriptionController.text));
 
-      await _editDescriptionOperation.value;
+      await _editDescriptionOperation?.value;
 
       Navigator.of(context).pop(_descriptionController.text);
     } catch (error) {
@@ -159,8 +159,8 @@ class OBModeratedObjectUpdateDescriptionModalState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(message: _localizationService.trans('error__unknown_error'), context: context);
       throw error;

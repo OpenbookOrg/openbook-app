@@ -1,7 +1,7 @@
 import 'package:Okuna/models/user.dart';
 
 class UsersList {
-  final List<User> users;
+  final List<User>? users;
 
   UsersList({
     this.users,

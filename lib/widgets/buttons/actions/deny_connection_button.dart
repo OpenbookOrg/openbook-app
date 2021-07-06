@@ -19,10 +19,10 @@ class OBDenyConnectionButton extends StatefulWidget {
 }
 
 class OBDenyConnectionButtonState extends State<OBDenyConnectionButton> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  bool _requestInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -44,8 +44,8 @@ class OBDenyConnectionButtonState extends State<OBDenyConnectionButton> {
         var user = snapshot.data;
 
         if (user?.isPendingConnectionConfirmation == null ||
-            !user.isConnected ||
-            !user.isPendingConnectionConfirmation) return const SizedBox();
+            user?.isConnected == false ||
+            user?.isPendingConnectionConfirmation == false) return const SizedBox();
 
         return _buildDenyConnectionButton();
       },
@@ -68,7 +68,7 @@ class OBDenyConnectionButtonState extends State<OBDenyConnectionButton> {
     if (_requestInProgress) return;
     _setRequestInProgress(true);
     try {
-      await _userService.disconnectFromUserWithUsername(widget.user.username);
+      await _userService.disconnectFromUserWithUsername(widget.user.username!);
       widget.user.decrementFollowersCount();
       _toastService.success(
           message: 'Disconnected successfully', context: context);
@@ -84,8 +84,8 @@ class OBDenyConnectionButtonState extends State<OBDenyConnectionButton> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown service', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;

@@ -17,10 +17,10 @@ class OBPostCommentCommenterIdentifier extends StatelessWidget {
   static int postCommentMaxVisibleLength = 500;
 
   OBPostCommentCommenterIdentifier({
-    Key key,
-    @required this.onUsernamePressed,
-    @required this.postComment,
-    @required this.post,
+    Key? key,
+    required this.onUsernamePressed,
+    required this.postComment,
+    required this.post,
   }) : super(key: key);
 
   @override
@@ -35,14 +35,14 @@ class OBPostCommentCommenterIdentifier extends StatelessWidget {
         stream: themeService.themeChange,
         initialData: themeService.getActiveTheme(),
         builder: (BuildContext context, AsyncSnapshot<OBTheme> snapshot) {
-          OBTheme theme = snapshot.data;
+          OBTheme theme = snapshot.data!;
 
           Color secondaryTextColor =
               themeValueParserService.parseColor(theme.secondaryTextColor);
 
-          String commenterUsername = postComment.commenter.username;
-          String commenterName = postComment.commenter.getProfileName();
-          String created = utilsService.timeAgo(postComment.created, localizationService);
+          String commenterUsername = postComment.commenter!.username!;
+          String commenterName = postComment.commenter!.getProfileName()!;
+          String created = utilsService.timeAgo(postComment.created!, localizationService);
 
           return Opacity(
             opacity: 0.8,
@@ -80,14 +80,14 @@ class OBPostCommentCommenterIdentifier extends StatelessWidget {
   }
 
   Widget _buildBadge() {
-    User postCommenter = postComment.commenter;
+    User postCommenter = postComment.commenter!;
 
     List<Widget> badges = [];
 
     if (postCommenter.hasProfileBadges()) badges.add(_buildProfileBadge());
 
     if (post.hasCommunity()) {
-      Community postCommunity = post.community;
+      Community postCommunity = post.community!;
 
       bool isCommunityAdministrator =
           postCommenter.isAdministratorOfCommunity(postCommunity);
@@ -132,7 +132,7 @@ class OBPostCommentCommenterIdentifier extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 1),
       child: OBUserBadge(
-          badge: postComment.commenter.getDisplayedProfileBadge(),
+          badge: postComment.commenter!.getDisplayedProfileBadge(),
           size: OBUserBadgeSize.small),
     );
   }

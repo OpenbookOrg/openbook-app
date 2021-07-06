@@ -1,9 +1,9 @@
 class CommunityMembership {
-  final int id;
-  final int userId;
-  final int communityId;
-  bool isAdministrator;
-  bool isModerator;
+  final int? id;
+  final int? userId;
+  final int? communityId;
+  bool? isAdministrator;
+  bool? isModerator;
 
   CommunityMembership(
       {this.id,
@@ -13,7 +13,6 @@ class CommunityMembership {
       this.isModerator});
 
   factory CommunityMembership.fromJSON(Map<String, dynamic> parsedJson) {
-    if (parsedJson == null) return null;
     return CommunityMembership(
         id: parsedJson['id'],
         communityId: parsedJson['community_id'],

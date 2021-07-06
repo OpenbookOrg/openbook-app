@@ -20,17 +20,17 @@ class OBPostCommentReactionsModal extends StatefulWidget {
   final Post post;
 
   // The optional emoji to show first
-  final Emoji reactionEmoji;
+  final Emoji? reactionEmoji;
 
   // The post comment reaction emoji counts
-  final List<ReactionsEmojiCount> reactionsEmojiCounts;
+  final List<ReactionsEmojiCount?> reactionsEmojiCounts;
 
   const OBPostCommentReactionsModal(
-      {Key key,
-      @required this.postComment,
+      {Key? key,
+      required this.postComment,
       this.reactionEmoji,
-      @required this.reactionsEmojiCounts,
-      @required this.post})
+      required this.reactionsEmojiCounts,
+      required this.post})
       : super(key: key);
 
   @override
@@ -41,11 +41,11 @@ class OBPostCommentReactionsModal extends StatefulWidget {
 
 class OBPostCommentReactionsModalState
     extends State<OBPostCommentReactionsModal> with TickerProviderStateMixin {
-  ThemeService _themeService;
-  ThemeValueParserService _themeValueParserService;
-  bool _needsBootstrap;
+  late ThemeService _themeService;
+  late ThemeValueParserService _themeValueParserService;
+  late bool _needsBootstrap;
 
-  TabController _tabController;
+  late TabController _tabController;
 
   @override
   void initState() {
@@ -95,24 +95,32 @@ class OBPostCommentReactionsModalState
 
   List<Widget> _buildPostCommentReactionsTabs() {
     return widget.reactionsEmojiCounts.map((reactionsEmojiCount) {
+      if (reactionsEmojiCount == null) {
+        return SizedBox();
+      }
+
       return OBPostCommentReactionList(
         postComment: widget.postComment,
         post: widget.post,
-        emoji: reactionsEmojiCount.emoji,
+        emoji: reactionsEmojiCount.emoji!,
       );
     }).toList();
   }
 
   List<Widget> _buildPostCommentReactionsIcons() {
     return widget.reactionsEmojiCounts.map((reactionsEmojiCount) {
+      if (reactionsEmojiCount == null) {
+        return SizedBox();
+      }
+
       return Padding(
         padding: EdgeInsets.symmetric(vertical: 5),
-        child: Tab(icon: OBEmoji(reactionsEmojiCount.emoji)),
+        child: Tab(icon: OBEmoji(reactionsEmojiCount.emoji!)),
       );
     }).toList();
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(title: 'Post comment reactions');
   }
 
@@ -121,7 +129,7 @@ class OBPostCommentReactionsModalState
 
     if (widget.reactionEmoji != null) {
       tabIndex = widget.reactionsEmojiCounts.indexWhere((reactionEmojiCount) {
-        return reactionEmojiCount.emoji.id == widget.reactionEmoji.id;
+        return reactionEmojiCount?.emoji?.id == widget.reactionEmoji!.id;
       });
     }
 

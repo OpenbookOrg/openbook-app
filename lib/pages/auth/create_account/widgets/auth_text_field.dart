@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class OBAuthTextField extends StatelessWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
 
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
 
-  final TextInputAction textInputAction;
+  final TextInputAction? textInputAction;
 
   final TextCapitalization textCapitalization;
 
@@ -18,36 +18,36 @@ class OBAuthTextField extends StatelessWidget {
 
   final bool autocorrect;
 
-  final int maxLength;
+  final int? maxLength;
 
   final bool maxLengthEnforced;
 
-  final VoidCallback onEditingComplete;
+  final VoidCallback? onEditingComplete;
 
-  final List<TextInputFormatter> inputFormatters;
+  final List<TextInputFormatter>? inputFormatters;
 
-  final FormFieldValidator<String> validator;
+  final FormFieldValidator<String>? validator;
 
-  final bool enabled;
+  final bool? enabled;
 
-  final Brightness keyboardAppearance;
+  final Brightness? keyboardAppearance;
 
   final int maxLines;
 
-  final String hintText;
+  final String? hintText;
 
-  final Widget prefixIcon;
+  final Widget? prefixIcon;
 
-  final Widget suffixIcon;
+  final Widget? suffixIcon;
 
   final double fontSize;
 
   final EdgeInsetsGeometry contentPadding;
 
-  final ValueChanged<String> onFieldSubmitted;
+  final ValueChanged<String>? onFieldSubmitted;
 
   OBAuthTextField({
-    Key key,
+    Key? key,
     this.controller,
     this.focusNode,
     this.textInputAction,
@@ -84,7 +84,7 @@ class OBAuthTextField extends StatelessWidget {
       obscureText: obscureText,
       maxLines: maxLines,
       maxLength: maxLength,
-      maxLengthEnforced: maxLengthEnforced,
+      maxLengthEnforcement: maxLengthEnforced ? MaxLengthEnforcement.enforced : MaxLengthEnforcement.none,
       validator: validator,
       onEditingComplete: onEditingComplete,
       inputFormatters: inputFormatters,

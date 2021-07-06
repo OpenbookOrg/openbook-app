@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class OBCommunityButtons extends StatelessWidget {
   final Community community;
 
-  const OBCommunityButtons({Key key, this.community}) : super(key: key);
+  const OBCommunityButtons({Key? key, required this.community}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class OBCommunityButtons extends StatelessWidget {
       ),
     );
 
-    if (community.rules != null && community.rules.isNotEmpty) {
+    if (community.rules != null && community.rules!.isNotEmpty) {
       communityButtons.add(
         OBButton(
           child: Row(

@@ -19,23 +19,23 @@ class OBPostCommentReactionNotificationTile extends StatelessWidget {
   final OBNotification notification;
   final PostCommentReactionNotification postCommentReactionNotification;
   static final double postCommentImagePreviewSize = 40;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const OBPostCommentReactionNotificationTile(
-      {Key key,
-      @required this.notification,
-      @required this.postCommentReactionNotification,
+      {Key? key,
+      required this.notification,
+      required this.postCommentReactionNotification,
       this.onPressed})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     PostCommentReaction postCommentReaction =
-        postCommentReactionNotification.postCommentReaction;
-    PostComment postComment = postCommentReaction.postComment;
-    Post post = postComment.post;
+        postCommentReactionNotification.postCommentReaction!;
+    PostComment postComment = postCommentReaction.postComment!;
+    Post post = postComment.post!;
 
-    Widget postCommentImagePreview;
+    Widget? postCommentImagePreview;
     if (post.hasMediaThumbnail()) {
       postCommentImagePreview = OBNotificationTilePostMediaPreview(
         post: post,
@@ -44,19 +44,19 @@ class OBPostCommentReactionNotificationTile extends StatelessWidget {
     OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
     var utilsService = openbookProvider.utilsService;
 
-    Function navigateToReactorProfile = () {
+    VoidCallback navigateToReactorProfile = () {
       openbookProvider.navigationService.navigateToUserProfile(
-          user: postCommentReaction.reactor, context: context);
+          user: postCommentReaction.reactor!, context: context);
     };
     LocalizationService _localizationService = openbookProvider.localizationService;
 
     return OBNotificationTileSkeleton(
       onTap: () {
-        if (onPressed != null) onPressed();
+        if (onPressed != null) onPressed!();
         OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
 
-        PostComment parentComment = postComment.parentComment;
-        if(parentComment!=null){
+        PostComment? parentComment = postComment.parentComment;
+        if(parentComment != null){
           openbookProvider.navigationService.navigateToPostCommentRepliesLinked(
               postComment: postComment,
               context: context,
@@ -69,7 +69,7 @@ class OBPostCommentReactionNotificationTile extends StatelessWidget {
       leading: OBAvatar(
         onPressed: navigateToReactorProfile,
         size: OBAvatarSize.medium,
-        avatarUrl: postCommentReaction.reactor.getProfileAvatar(),
+        avatarUrl: postCommentReaction.reactor!.getProfileAvatar(),
       ),
       title: OBNotificationTileTitle(
         text: TextSpan(text: _localizationService.notifications__reacted_to_post_comment_tile),
@@ -77,13 +77,13 @@ class OBPostCommentReactionNotificationTile extends StatelessWidget {
         user: postCommentReaction.reactor,
       ),
       subtitle: OBSecondaryText(
-        utilsService.timeAgo(notification.created, _localizationService),
+        utilsService.timeAgo(notification.created!, _localizationService),
         size: OBTextSize.small,
       ),
       trailing: Row(
         children: <Widget>[
           OBEmoji(
-            postCommentReaction.emoji,
+            postCommentReaction.emoji!,
           ),
           postCommentImagePreview ?? const SizedBox()
         ],

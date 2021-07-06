@@ -1,9 +1,9 @@
 import 'package:Okuna/services/httpie.dart';
 
 class EmojisApiService {
-  HttpieService _httpService;
+  late HttpieService _httpService;
 
-  String apiURL;
+  late String apiURL;
 
   static const GET_EMOJI_GROUPS_PATH = 'api/emojis/groups/';
 

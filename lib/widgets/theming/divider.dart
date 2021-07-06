@@ -29,7 +29,7 @@ class OBDivider extends StatelessWidget {
                   border: Border(
                       bottom: BorderSide(
                     color: themeValueParserService
-                        .parseColor(theme.secondaryTextColor),
+                        .parseColor(theme!.secondaryTextColor),
                     width: 0.5,
                   )),
                 ),

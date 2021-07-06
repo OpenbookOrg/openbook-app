@@ -8,16 +8,16 @@ class OBButtonAlert extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isLoading;
   final String text;
-  final OBIconData buttonIcon;
+  final OBIconData? buttonIcon;
   final String buttonText;
-  final String assetImage;
+  final String? assetImage;
 
   const OBButtonAlert(
-      {@required this.onPressed,
+      {required this.onPressed,
       this.isLoading = false,
-      @required this.text,
+      required this.text,
       this.buttonIcon,
-      @required this.buttonText,
+      required this.buttonText,
       this.assetImage});
 
   @override
@@ -31,7 +31,7 @@ class OBButtonAlert extends StatelessWidget {
                 padding:
                     EdgeInsets.only(right: 30, left: 10, top: 10, bottom: 10),
                 child: Image.asset(
-                  assetImage,
+                  assetImage!,
                   height: 80,
                 ),
               )
@@ -57,7 +57,7 @@ class OBButtonAlert extends StatelessWidget {
               OBButton(
                 icon: buttonIcon != null
                     ? OBIcon(
-                        buttonIcon,
+                        buttonIcon!,
                         size: OBIconSize.small,
                       )
                     : null,

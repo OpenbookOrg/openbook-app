@@ -6,7 +6,7 @@ import 'package:Okuna/services/theme.dart';
 import 'package:flutter/material.dart';
 
 class OBCuratedThemes extends StatelessWidget {
-  ThemeService _themeService;
+  late ThemeService _themeService;
 
   @override
   Widget build(BuildContext context) {

@@ -18,7 +18,7 @@ class OBPostDivider extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<OBTheme> snapshot) {
           var theme = snapshot.data;
 
-          Color color = themeValueParserService.parseColor(theme.primaryColor);
+          Color color = themeValueParserService.parseColor(theme!.primaryColor);
 
           TinyColor modifiedColor = themeValueParserService.isDarkColor(color)
               ? TinyColor(color).lighten(30)

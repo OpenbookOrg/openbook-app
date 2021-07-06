@@ -12,18 +12,18 @@ import '../../../provider.dart';
 class OBFollowsListHorizontalListItem extends StatelessWidget {
   final bool isSelected;
   final FollowsList followsList;
-  final OnFollowsListPressed onFollowsListPressed;
+  final OnFollowsListPressed? onFollowsListPressed;
   final bool wasPreviouslySelected;
 
   OBFollowsListHorizontalListItem(this.followsList,
-      {@required this.onFollowsListPressed,
-      this.isSelected,
+      {required this.onFollowsListPressed,
+      this.isSelected = false,
       this.wasPreviouslySelected = false});
 
   @override
   Widget build(BuildContext context) {
     LocalizationService _localizationService = OpenbookProvider.of(context).localizationService;
-    int usersCount = followsList.followsCount;
+    int usersCount = followsList.followsCount!;
 
     if (wasPreviouslySelected) {
       if (!isSelected) {
@@ -37,7 +37,7 @@ class OBFollowsListHorizontalListItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (this.onFollowsListPressed != null) {
-          this.onFollowsListPressed(followsList);
+          this.onFollowsListPressed!(followsList);
         }
       },
       child: ConstrainedBox(
@@ -48,7 +48,7 @@ class OBFollowsListHorizontalListItem extends StatelessWidget {
             Stack(
               overflow: Overflow.visible,
               children: <Widget>[
-                OBEmoji(followsList.emoji, size: OBEmojiSize.large,),
+                OBEmoji(followsList.emoji!, size: OBEmojiSize.large,),
                 Positioned(
                   child: OBCheckbox(
                     value: isSelected,
@@ -62,7 +62,7 @@ class OBFollowsListHorizontalListItem extends StatelessWidget {
               height: 10,
             ),
             OBText(
-              followsList.name,
+              followsList.name!,
               maxLines: 1,
               style: TextStyle(
                   fontSize: 14,

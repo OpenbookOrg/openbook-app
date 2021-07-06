@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 
 class OBModerationCategoryTile extends StatelessWidget {
   final ModerationCategory category;
-  final Widget trailing;
-  final ValueChanged<ModerationCategory> onPressed;
-  final EdgeInsets contentPadding;
+  final Widget? trailing;
+  final ValueChanged<ModerationCategory>? onPressed;
+  final EdgeInsets? contentPadding;
 
   const OBModerationCategoryTile(
-      {Key key,
+      {Key? key,
       this.trailing,
-      @required this.category,
+      required this.category,
       this.onPressed,
       this.contentPadding})
       : super(key: key);
@@ -23,14 +23,14 @@ class OBModerationCategoryTile extends StatelessWidget {
     return GestureDetector(
       key: Key(category.id.toString()),
       onTap: () {
-        if (onPressed != null) onPressed(category);
+        if (onPressed != null) onPressed!(category);
       },
       child: ListTile(
         contentPadding: contentPadding,
         title: OBText(
-          category.title,
+          category.title!,
         ),
-        subtitle: OBSecondaryText(category.description),
+        subtitle: OBSecondaryText(category.description ?? ''),
         trailing: trailing,
         //trailing: OBIcon(OBIcons.chevronRight),
       ),

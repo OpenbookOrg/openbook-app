@@ -16,22 +16,22 @@ class OBPostUserMentionNotificationTile extends StatelessWidget {
   final OBNotification notification;
   final PostUserMentionNotification postUserMentionNotification;
   static final double postImagePreviewSize = 40;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const OBPostUserMentionNotificationTile(
-      {Key key,
-      @required this.notification,
-      @required this.postUserMentionNotification,
+      {Key? key,
+      required this.notification,
+      required this.postUserMentionNotification,
       this.onPressed})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     PostUserMention postUserMention =
-        postUserMentionNotification.postUserMention;
-    Post post = postUserMention.post;
+        postUserMentionNotification.postUserMention!;
+    Post post = postUserMention.post!;
 
-    Widget postImagePreview;
+    Widget? postImagePreview;
     if (post.hasMediaThumbnail()) {
       postImagePreview = OBNotificationTilePostMediaPreview(
         post: post,
@@ -40,35 +40,35 @@ class OBPostUserMentionNotificationTile extends StatelessWidget {
     OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
     var utilsService = openbookProvider.utilsService;
 
-    Function navigateToMentionerProfile = () {
+    VoidCallback navigateToMentionerProfile = () {
       openbookProvider.navigationService.navigateToUserProfile(
-          user: postUserMention.post.creator, context: context);
+          user: postUserMention.post!.creator!, context: context);
     };
     LocalizationService _localizationService =
         openbookProvider.localizationService;
 
-    Function onTileTapped = () {
-      if (onPressed != null) onPressed();
+    VoidCallback onTileTapped = () {
+      if (onPressed != null) onPressed!();
       OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
       openbookProvider.navigationService
-          .navigateToPost(post: postUserMention.post, context: context);
+          .navigateToPost(post: postUserMention.post!, context: context);
     };
     return OBNotificationTileSkeleton(
       onTap: onTileTapped,
       leading: OBAvatar(
         onPressed: navigateToMentionerProfile,
         size: OBAvatarSize.medium,
-        avatarUrl: postUserMention.post.creator.getProfileAvatar(),
+        avatarUrl: postUserMention.post!.creator!.getProfileAvatar(),
       ),
       title: OBNotificationTileTitle(
         onUsernamePressed: navigateToMentionerProfile,
-        user: postUserMention.post.creator,
+        user: postUserMention.post!.creator,
         text: TextSpan(
             text: _localizationService.notifications__mentioned_in_post_tile),
       ),
       trailing: postImagePreview,
       subtitle: OBSecondaryText(
-          utilsService.timeAgo(notification.created, _localizationService)),
+          utilsService.timeAgo(notification.created!, _localizationService)),
     );
   }
 }

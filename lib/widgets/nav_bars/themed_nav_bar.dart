@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 /// A navigation bar that uses the current theme colours
 class OBThemedNavigationBar extends StatelessWidget
     implements ObstructingPreferredSizeWidget {
-  final Widget leading;
-  final String title;
-  final Widget trailing;
-  final String previousPageTitle;
-  final Widget middle;
+  final Widget? leading;
+  final String? title;
+  final Widget? trailing;
+  final String? previousPageTitle;
+  final Widget? middle;
 
   OBThemedNavigationBar({
     this.leading,
@@ -34,7 +34,7 @@ class OBThemedNavigationBar extends StatelessWidget
         var theme = snapshot.data;
 
         Color actionsForegroundColor = themeValueParserService
-            .parseGradient(theme.primaryAccentColor)
+            .parseGradient(theme!.primaryAccentColor)
             .colors[1];
 
         Color actionsColor = actionsForegroundColor != null
@@ -55,7 +55,7 @@ class OBThemedNavigationBar extends StatelessWidget
               middle: middle ??
                   (title != null
                       ? OBText(
-                          title,
+                          title!,
                         )
                       : const SizedBox()),
               transitionBetweenRoutes: false,

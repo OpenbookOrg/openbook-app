@@ -3,7 +3,7 @@ import 'package:Okuna/models/follows_list.dart';
 // This f'ing NAME!!!!!
 
 class FollowsListsList {
-  final List<FollowsList> lists;
+  final List<FollowsList>? lists;
 
   FollowsListsList({
     this.lists,

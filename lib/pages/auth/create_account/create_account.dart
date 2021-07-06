@@ -21,17 +21,17 @@ class OBAuthCreateAccountPage extends StatefulWidget {
 class OBAuthCreateAccountPageState extends State<OBAuthCreateAccountPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  CreateAccountBloc _createAccountBloc;
-  LocalizationService _localizationService;
-  ValidationService _validationService;
-  ToastService _toastService;
+  late CreateAccountBloc _createAccountBloc;
+  late LocalizationService _localizationService;
+  late ValidationService _validationService;
+  late ToastService _toastService;
 
   TextEditingController _linkController = TextEditingController();
 
-  bool _tokenIsInvalid;
-  bool _tokenValidationInProgress;
+  late bool _tokenIsInvalid;
+  late bool _tokenValidationInProgress;
 
-  CancelableOperation _tokenValidationOperation;
+  CancelableOperation? _tokenValidationOperation;
 
   @override
   void initState() {
@@ -99,7 +99,7 @@ class OBAuthCreateAccountPageState extends State<OBAuthCreateAccountPage> {
   }
 
   Future<bool> _validateForm() async {
-    if (_formKey.currentState.validate()) {
+    if (_formKey.currentState?.validate() == true) {
       bool tokenIsValid = await _validateToken();
       if (!tokenIsValid) _setTokenIsInvalid(true);
       return tokenIsValid;
@@ -124,7 +124,7 @@ class OBAuthCreateAccountPageState extends State<OBAuthCreateAccountPage> {
     final params = Uri.parse(uri).queryParametersAll;
     var token = '';
     if (params.containsKey('token')) {
-      token = params['token'][0];
+      token = params['token']![0];
     } else {
       token = uri.split('?token=')[1];
     }
@@ -145,7 +145,7 @@ class OBAuthCreateAccountPageState extends State<OBAuthCreateAccountPage> {
     );
   }
 
-  Widget _buildPreviousButton({@required BuildContext context}) {
+  Widget _buildPreviousButton({required BuildContext context}) {
     String buttonText =
         _localizationService.trans('auth__create_acc__previous');
 
@@ -173,7 +173,7 @@ class OBAuthCreateAccountPageState extends State<OBAuthCreateAccountPage> {
     );
   }
 
-  Widget _buildPasteRegisterLink({@required BuildContext context}) {
+  Widget _buildPasteRegisterLink({required BuildContext context}) {
     String pasteLinkText =
         _localizationService.trans('auth__create_acc__paste_link');
 
@@ -206,9 +206,9 @@ class OBAuthCreateAccountPageState extends State<OBAuthCreateAccountPage> {
               child: OBAuthTextField(
                 autocorrect: false,
                 hintText: '',
-                validator: (String link) {
-                  String validateLink = _validationService
-                      .validateUserRegistrationLink(link.trim());
+                validator: (String? link) {
+                  String? validateLink = _validationService
+                      .validateUserRegistrationLink(link?.trim());
                   if (validateLink != null) {
                     return validateLink;
                   }
@@ -227,7 +227,7 @@ class OBAuthCreateAccountPageState extends State<OBAuthCreateAccountPage> {
     );
   }
 
-  Widget _buildRequestInvite({@required BuildContext context}) {
+  Widget _buildRequestInvite({required BuildContext context}) {
     String requestInviteText =
         _localizationService.trans('auth__create_acc__request_invite');
 
@@ -272,7 +272,7 @@ class OBAuthCreateAccountPageState extends State<OBAuthCreateAccountPage> {
   _setTokenIsInvalid(bool tokenIsInvalid) {
     setState(() {
       _tokenIsInvalid = tokenIsInvalid;
-      _formKey.currentState.validate();
+      _formKey.currentState?.validate();
     });
   }
 
@@ -287,8 +287,8 @@ class OBAuthCreateAccountPageState extends State<OBAuthCreateAccountPage> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;

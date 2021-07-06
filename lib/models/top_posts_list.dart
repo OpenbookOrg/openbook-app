@@ -1,7 +1,7 @@
 import 'package:Okuna/models/top_post.dart';
 
 class TopPostsList {
-  final List<TopPost> posts;
+  final List<TopPost>? posts;
 
   TopPostsList({
     this.posts,

@@ -5,12 +5,12 @@ import 'package:Okuna/models/users_list.dart';
 import 'package:dcache/dcache.dart';
 
 class Device extends UpdatableModel<Device> {
-  final int id;
+  final int? id;
 
-  User owner;
-  String uuid;
-  String name;
-  DateTime created;
+  User? owner;
+  String? uuid;
+  String? name;
+  DateTime? created;
 
   static final factory = DeviceFactory();
 
@@ -46,7 +46,7 @@ class Device extends UpdatableModel<Device> {
 
 class DeviceFactory extends UpdatableModelFactory<Device> {
   @override
-  SimpleCache<int, Device> cache =
+  SimpleCache<int, Device>? cache =
       SimpleCache(storage: UpdatableModelSimpleStorage(size: 20));
 
   @override
@@ -59,22 +59,22 @@ class DeviceFactory extends UpdatableModelFactory<Device> {
         uuid: json['uuid']);
   }
 
-  User parseUser(Map userData) {
+  User? parseUser(Map<String, dynamic>? userData) {
     if (userData == null) return null;
     return User.fromJson(userData);
   }
 
-  UsersList parseUsers(List usersData) {
+  UsersList? parseUsers(List? usersData) {
     if (usersData == null) return null;
     return UsersList.fromJson(usersData);
   }
 
-  Emoji parseEmoji(Map emojiData) {
+  Emoji? parseEmoji(Map<String, dynamic>? emojiData) {
     if (emojiData == null) return null;
     return Emoji.fromJson(emojiData);
   }
 
-  DateTime parseCreated(String created) {
+  DateTime? parseCreated(String? created) {
     if (created == null) return null;
     return DateTime.parse(created).toLocal();
   }

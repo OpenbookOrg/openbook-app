@@ -2,9 +2,9 @@ import 'package:Okuna/models/post.dart';
 import 'package:Okuna/models/user.dart';
 
 class PostUserMention {
-  final int id;
-  final User user;
-  final Post post;
+  final int? id;
+  final User? user;
+  final Post? post;
 
   PostUserMention({
     this.id,
@@ -20,12 +20,12 @@ class PostUserMention {
     );
   }
 
-  static User parseUser(Map userData) {
+  static User? parseUser(Map<String, dynamic>? userData) {
     if (userData == null) return null;
     return User.fromJson(userData);
   }
 
-  static Post parsePost(Map postData) {
+  static Post? parsePost(Map<String, dynamic>? postData) {
     if (postData == null) return null;
     return Post.fromJson(postData);
   }

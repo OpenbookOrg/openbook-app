@@ -13,10 +13,10 @@ import 'package:flutter/material.dart';
 class OBConnectToUserTile extends StatefulWidget {
   final User user;
   final BuildContext parentContext;
-  final VoidCallback onWillShowModalBottomSheet;
+  final VoidCallback? onWillShowModalBottomSheet;
 
   const OBConnectToUserTile(this.user, this.parentContext,
-      {Key key, this.onWillShowModalBottomSheet})
+      {Key? key, this.onWillShowModalBottomSheet})
       : super(key: key);
 
   @override
@@ -26,10 +26,10 @@ class OBConnectToUserTile extends StatefulWidget {
 }
 
 class OBConnectToUserTileState extends State<OBConnectToUserTile> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  BottomSheetService _bottomSheetService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late BottomSheetService _bottomSheetService;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class OBConnectToUserTileState extends State<OBConnectToUserTile> {
     _localizationService = openbookProvider.localizationService;
     _bottomSheetService = openbookProvider.bottomSheetService;
 
-    String userName = widget.user.getProfileName();
+    String userName = widget.user.getProfileName()!;
 
     return ListTile(
         title: OBText(_localizationService.user__connect_to_user_connect_with_username(userName)),
@@ -49,7 +49,7 @@ class OBConnectToUserTileState extends State<OBConnectToUserTile> {
 
   void _displayAddConnectionToCirclesBottomSheet() {
     if (widget.onWillShowModalBottomSheet != null)
-      widget.onWillShowModalBottomSheet();
+      widget.onWillShowModalBottomSheet!();
 
     _bottomSheetService.showConnectionsCirclesPicker(
         context: context,
@@ -64,10 +64,10 @@ class OBConnectToUserTileState extends State<OBConnectToUserTile> {
 
   Future _connectUserInCircles(List<Circle> circles) async {
     try {
-      bool userWasFollowing = widget.user.isFollowing;
-      await _userService.connectWithUserWithUsername(widget.user.username,
+      bool userWasFollowing = widget.user.isFollowing ?? false;
+      await _userService.connectWithUserWithUsername(widget.user.username!,
           circles: circles);
-      if (!userWasFollowing && widget.user.isFollowing) {
+      if (!userWasFollowing && (widget.user.isFollowing ?? false)) {
         widget.user.incrementFollowersCount();
       }
       _toastService.success(
@@ -82,8 +82,8 @@ class OBConnectToUserTileState extends State<OBConnectToUserTile> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(message: _localizationService.trans('error__unknown_error'), context: context);
       throw error;

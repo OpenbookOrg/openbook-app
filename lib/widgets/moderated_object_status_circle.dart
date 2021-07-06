@@ -11,7 +11,7 @@ class OBModeratedObjectStatusCircle extends StatelessWidget {
   static double statusCircleSize = 10;
   static String pendingColor = '#f48c42';
 
-  const OBModeratedObjectStatusCircle({Key key, @required this.status})
+  const OBModeratedObjectStatusCircle({Key? key, required this.status})
       : super(key: key);
 
   @override
@@ -19,7 +19,7 @@ class OBModeratedObjectStatusCircle extends StatelessWidget {
     OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
     OBTheme currentTheme = openbookProvider.themeService.getActiveTheme();
 
-    String circleColor;
+    late String circleColor;
     switch (status) {
       case ModeratedObjectStatus.rejected:
         circleColor = currentTheme.dangerColor;

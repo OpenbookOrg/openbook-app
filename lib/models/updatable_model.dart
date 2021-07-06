@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 abstract class UpdatableModel<T> {
-  final int id;
+  final int? id;
 
   Stream<T> get updateSubject => _updateChangeSubject.stream;
   final _updateChangeSubject = BehaviorSubject<T>();
@@ -30,7 +30,7 @@ abstract class UpdatableModel<T> {
 }
 
 abstract class UpdatableModelFactory<T extends UpdatableModel> {
-  SimpleCache<int, T> cache;
+  SimpleCache<int, T>? cache;
 
   UpdatableModelFactory({this.cache}) {
     if (this.cache == null)
@@ -40,47 +40,47 @@ abstract class UpdatableModelFactory<T extends UpdatableModel> {
   T fromJson(Map<String, dynamic> json) {
     int itemId = json['id'];
 
-    UpdatableModel item = getItemWithIdFromCache(itemId);
+    UpdatableModel? item = getItemWithIdFromCache(itemId);
 
     if (item != null) {
       item.update(json);
-      return item;
+      return item as T;
     }
 
     item = makeFromJson(json);
-    addToCache(item);
+    addToCache(item as T);
     return item;
   }
 
   T makeFromJson(Map json);
 
-  T getItemWithIdFromCache(int itemId) {
-    return cache.get(itemId);
+  T? getItemWithIdFromCache(int itemId) {
+    return cache!.get(itemId);
   }
 
   void addToCache(T item) {
-    cache.set(item.id, item);
+    cache!.set(item.id!, item);
   }
 
   void clearCache() {
-    cache.clear();
+    cache!.clear();
   }
 }
 
 class UpdatableModelSimpleStorage<K, V extends UpdatableModel>
     implements Storage<K, V> {
-  static int MAX_INT = pow(2, 30) - 1; // (for 32 bit OS)
+  static int MAX_INT = pow(2, 30) - 1 as int; // (for 32 bit OS)
 
-  Map<K, CacheEntry<K, V>> _internalMap;
-  int _size;
+  late Map<K, CacheEntry<K, V>> _internalMap;
+  late int _size;
 
-  UpdatableModelSimpleStorage({@required int size}) {
+  UpdatableModelSimpleStorage({required int size}) {
     this._size = size;
     this._internalMap = new LinkedHashMap();
   }
 
   @override
-  CacheEntry<K, V> operator [](K key) {
+  CacheEntry<K, V>? operator [](K key) {
     var ce = this._internalMap[key];
     return ce;
   }
@@ -96,7 +96,7 @@ class UpdatableModelSimpleStorage<K, V extends UpdatableModel>
   }
 
   @override
-  CacheEntry<K, V> get(K key) {
+  CacheEntry<K, V>? get(K key) {
     return this[key];
   }
 
@@ -108,7 +108,7 @@ class UpdatableModelSimpleStorage<K, V extends UpdatableModel>
 
   @override
   void remove(K key) {
-    CacheEntry<K, UpdatableModel> item = get(key);
+    CacheEntry<K, UpdatableModel>? item = get(key);
     // https://stackoverflow.com/questions/49879438/dart-do-i-have-to-cancel-stream-subscriptions-and-close-streamsinks
     // item.value.dispose();
     this._internalMap.remove(key);

@@ -23,12 +23,12 @@ class OBPostReactions extends StatefulWidget {
 }
 
 class OBPostReactionsState extends State<OBPostReactions> {
-  UserService _userService;
-  ToastService _toastService;
-  NavigationService _navigationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late NavigationService _navigationService;
 
-  CancelableOperation _requestOperation;
-  bool _requestInProgress;
+  CancelableOperation? _requestOperation;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -39,7 +39,7 @@ class OBPostReactionsState extends State<OBPostReactions> {
   @override
   void dispose() {
     super.dispose();
-    if (_requestOperation != null) _requestOperation.cancel();
+    if (_requestOperation != null) _requestOperation!.cancel();
   }
 
   @override
@@ -55,8 +55,8 @@ class OBPostReactionsState extends State<OBPostReactions> {
         builder: (BuildContext context, AsyncSnapshot<Post> snapshot) {
           var post = snapshot.data;
 
-          List<ReactionsEmojiCount> emojiCounts =
-              post.reactionsEmojiCounts?.counts;
+          List<ReactionsEmojiCount?>? emojiCounts =
+              post!.reactionsEmojiCounts?.counts;
 
           if (emojiCounts == null || emojiCounts.length == 0)
             return const SizedBox();
@@ -76,11 +76,11 @@ class OBPostReactionsState extends State<OBPostReactions> {
                 itemCount: emojiCounts.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (BuildContext context, int index) {
-                  ReactionsEmojiCount emojiCount = emojiCounts[index];
+                  ReactionsEmojiCount emojiCount = emojiCounts[index]!;
 
                   return OBEmojiReactionButton(
                     emojiCount,
-                    reacted: widget.post.isReactionEmoji(emojiCount.emoji),
+                    reacted: widget.post.isReactionEmoji(emojiCount.emoji!),
                     onLongPressed: (pressedEmojiCount) {
                       _navigationService.navigateToPostReactions(
                           post: widget.post,
@@ -99,7 +99,7 @@ class OBPostReactionsState extends State<OBPostReactions> {
 
   void _onEmojiReactionCountPressed(
       ReactionsEmojiCount pressedEmojiCount) async {
-    bool reacted = widget.post.isReactionEmoji(pressedEmojiCount.emoji);
+    bool reacted = widget.post.isReactionEmoji(pressedEmojiCount.emoji!);
 
     if (reacted) {
       await _deleteReaction();
@@ -107,18 +107,18 @@ class OBPostReactionsState extends State<OBPostReactions> {
     } else {
       // React
       PostReaction newPostReaction =
-          await _reactToPost(pressedEmojiCount.emoji);
+          await _reactToPost(pressedEmojiCount.emoji!);
       widget.post.setReaction(newPostReaction);
     }
   }
 
   Future<PostReaction> _reactToPost(Emoji emoji) async {
     _setRequestInProgress(true);
-    PostReaction postReaction;
+    late PostReaction postReaction;
     try {
       _requestOperation = CancelableOperation.fromFuture(
           _userService.reactToPost(post: widget.post, emoji: emoji));
-      postReaction = await _requestOperation.value;
+      postReaction = await _requestOperation!.value;
     } catch (error) {
       _onError(error);
     } finally {
@@ -133,8 +133,8 @@ class OBPostReactionsState extends State<OBPostReactions> {
     try {
       _requestOperation = CancelableOperation.fromFuture(
           _userService.deletePostReaction(
-              postReaction: widget.post.reaction, post: widget.post));
-      await _requestOperation.value;
+              postReaction: widget.post.reaction!, post: widget.post));
+      await _requestOperation!.value;
     } catch (error) {
       _onError(error);
     } finally {
@@ -147,8 +147,8 @@ class OBPostReactionsState extends State<OBPostReactions> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;

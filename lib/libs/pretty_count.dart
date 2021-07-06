@@ -1,8 +1,8 @@
 import 'package:Okuna/services/localization.dart';
 
 String getPrettyCount(int value, LocalizationService localizationService) {
-  String postfix;
-  double finalValue;
+  late String postfix;
+  late double finalValue;
 
   if (value < 0) {
     throw 'Invalid value';

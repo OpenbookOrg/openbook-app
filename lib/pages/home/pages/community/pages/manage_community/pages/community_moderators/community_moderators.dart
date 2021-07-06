@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 class OBCommunityModeratorsPage extends StatefulWidget {
   final Community community;
 
-  const OBCommunityModeratorsPage({Key key, @required this.community})
+  const OBCommunityModeratorsPage({Key? key, required this.community})
       : super(key: key);
 
   @override
@@ -34,14 +34,14 @@ class OBCommunityModeratorsPage extends StatefulWidget {
 
 class OBCommunityModeratorsPageState
     extends State<OBCommunityModeratorsPage> {
-  UserService _userService;
-  ModalService _modalService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
-  ToastService _toastService;
+  late UserService _userService;
+  late ModalService _modalService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
+  late ToastService _toastService;
 
-  OBHttpListController _httpListController;
-  bool _needsBootstrap;
+  late OBHttpListController _httpListController;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -120,8 +120,8 @@ class OBCommunityModeratorsPageState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(message: _localizationService.trans('error__unknown_error'), context: context);
       throw error;
@@ -131,7 +131,7 @@ class OBCommunityModeratorsPageState
   Future<List<User>> _refreshCommunityModerators() async {
     UsersList communityModerators =
         await _userService.getModeratorsForCommunity(widget.community);
-    return communityModerators.users;
+    return communityModerators.users ?? [];
   }
 
   Future<List<User>> _loadMoreCommunityModerators(
@@ -145,18 +145,18 @@ class OBCommunityModeratorsPageState
       count: 20,
     ))
             .users;
-    return moreCommunityModerators;
+    return moreCommunityModerators ?? [];
   }
 
   Future<List<User>> _searchCommunityModerators(String query) async {
     UsersList results = await _userService.searchCommunityModerators(
         query: query, community: widget.community);
 
-    return results.users;
+    return results.users ?? [];
   }
 
   void _onWantsToAddNewModerator() async {
-    User addedCommunityModerator =
+    User? addedCommunityModerator =
         await _modalService.openAddCommunityModerator(
             context: context, community: widget.community);
 

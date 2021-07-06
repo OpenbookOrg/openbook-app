@@ -11,13 +11,13 @@ class OBRequestNotifications extends StatefulWidget {
   final String resourcePluralName;
 
   const OBRequestNotifications(
-      {Key key,
-      @required @required this.controller,
-      @required this.refresher,
-      @required this.onScrollLoader,
-      @required this.itemBuilder,
-      @required this.resourceSingularName,
-      @required this.resourcePluralName})
+      {Key? key,
+      required this.controller,
+      required this.refresher,
+      required this.onScrollLoader,
+      required this.itemBuilder,
+      required this.resourceSingularName,
+      required this.resourcePluralName})
       : super(key: key);
 
   @override

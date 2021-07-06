@@ -23,12 +23,12 @@ class OBMyModerationTasksPage extends StatefulWidget {
 }
 
 class OBMyModerationTasksPageState extends State<OBMyModerationTasksPage> {
-  UserService _userService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
 
-  OBHttpListController _httpListController;
-  bool _needsBootstrap;
+  late OBHttpListController _httpListController;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -95,7 +95,7 @@ class OBMyModerationTasksPageState extends State<OBMyModerationTasksPage> {
   Future<List<Community>> _refreshPendingModeratedObjectsCommunities() async {
     CommunitiesList pendingModeratedObjectsCommunities =
         await _userService.getPendingModeratedObjectsCommunities();
-    return pendingModeratedObjectsCommunities.communities;
+    return pendingModeratedObjectsCommunities.communities ?? [];
   }
 
   Future<List<Community>> _loadMorePendingModeratedObjectsCommunities(
@@ -110,6 +110,6 @@ class OBMyModerationTasksPageState extends State<OBMyModerationTasksPage> {
       count: 10,
     ))
             .communities;
-    return morePendingModeratedObjectsCommunities;
+    return morePendingModeratedObjectsCommunities ?? [];
   }
 }

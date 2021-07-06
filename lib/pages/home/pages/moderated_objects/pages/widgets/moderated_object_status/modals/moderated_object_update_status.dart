@@ -19,7 +19,7 @@ class OBModeratedObjectUpdateStatusModal extends StatefulWidget {
   final ModeratedObject moderatedObject;
 
   const OBModeratedObjectUpdateStatusModal(
-      {Key key, @required this.moderatedObject})
+      {Key? key, required this.moderatedObject})
       : super(key: key);
 
   @override
@@ -30,25 +30,25 @@ class OBModeratedObjectUpdateStatusModal extends StatefulWidget {
 
 class OBModeratedObjectUpdateStatusModalState
     extends State<OBModeratedObjectUpdateStatusModal> {
-  UserService _userService;
-  LocalizationService _localizationService;
-  ToastService _toastService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
+  late ToastService _toastService;
   List<ModeratedObjectStatus> _moderationStatuses = [
     ModeratedObjectStatus.rejected,
     ModeratedObjectStatus.approved,
   ];
-  ModeratedObjectStatus _selectedModerationStatus;
-  bool _needsBootstrap;
-  bool _requestInProgress;
+  late ModeratedObjectStatus _selectedModerationStatus;
+  late bool _needsBootstrap;
+  late bool _requestInProgress;
 
-  CancelableOperation _updateStatusOperation;
+  CancelableOperation? _updateStatusOperation;
 
   @override
   void initState() {
     super.initState();
     _needsBootstrap = true;
     _requestInProgress = false;
-    _selectedModerationStatus = widget.moderatedObject.status;
+    _selectedModerationStatus = widget.moderatedObject.status!;
   }
 
   @override
@@ -78,7 +78,7 @@ class OBModeratedObjectUpdateStatusModalState
   @override
   void dispose() {
     super.dispose();
-    if (_updateStatusOperation != null) _updateStatusOperation.cancel();
+    if (_updateStatusOperation != null) _updateStatusOperation!.cancel();
   }
 
   Widget _buildProgressIndicator() {
@@ -105,7 +105,7 @@ class OBModeratedObjectUpdateStatusModalState
   Widget _buildModerationStatusTile(context, index) {
     ModeratedObjectStatus status = _moderationStatuses[index];
     String statusString = ModeratedObject.factory
-        .convertStatusToHumanReadableString(status, capitalize: true);
+        .convertStatusToHumanReadableString(status, capitalize: true)!;
 
     return GestureDetector(
       key: Key(statusString),
@@ -168,7 +168,7 @@ class OBModeratedObjectUpdateStatusModalState
         default:
           throw 'Unsuppported update type';
       }
-      await _updateStatusOperation.value;
+      await _updateStatusOperation?.value;
       Navigator.of(context).pop(_selectedModerationStatus);
       widget.moderatedObject.setStatus(_selectedModerationStatus);
     } catch (error) {
@@ -184,15 +184,15 @@ class OBModeratedObjectUpdateStatusModalState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(message: _localizationService.trans('error__unknown_error'), context: context);
       throw error;
     }
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
       title: _localizationService.trans('moderation__update_status_title'),
       trailing: OBButton(

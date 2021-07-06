@@ -14,10 +14,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBTrendingCommunities extends StatefulWidget {
-  final Category category;
-  final ScrollController scrollController;
+  final Category? category;
+  final ScrollController? scrollController;
 
-  const OBTrendingCommunities({Key key, this.category, this.scrollController})
+  const OBTrendingCommunities({Key? key, this.category, this.scrollController})
       : super(key: key);
 
   @override
@@ -28,14 +28,14 @@ class OBTrendingCommunities extends StatefulWidget {
 
 class OBTrendingCommunitiesState extends State<OBTrendingCommunities>
     with AutomaticKeepAliveClientMixin {
-  bool _needsBootstrap;
-  UserService _userService;
-  ToastService _toastService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
-  List<Community> _trendingCommunities;
-  bool _refreshInProgress;
-  GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
+  late bool _needsBootstrap;
+  late UserService _userService;
+  late ToastService _toastService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
+  late List<Community> _trendingCommunities;
+  late bool _refreshInProgress;
+  late GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
 
   @override
   void initState() {
@@ -98,7 +98,7 @@ class OBTrendingCommunitiesState extends State<OBTrendingCommunities>
           child: OBText(
             hasCategory
                 ? _localizationService
-                    .community__trending_in_category(widget.category.title)
+                    .community__trending_in_category(widget.category?.title ?? '')
                 : _localizationService.community__trending_in_all,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
@@ -119,7 +119,7 @@ class OBTrendingCommunitiesState extends State<OBTrendingCommunities>
     Community community = _trendingCommunities[index];
     return OBCommunityTile(
       community,
-      key: Key(community.name),
+      key: Key(community.name!),
       onCommunityTilePressed: _onTrendingCommunityPressed,
     );
   }
@@ -136,7 +136,7 @@ class OBTrendingCommunitiesState extends State<OBTrendingCommunities>
           milliseconds: 0,
         ), () {
       if (_refreshIndicatorKey.currentState != null) {
-        _refreshIndicatorKey.currentState.show();
+        _refreshIndicatorKey.currentState!.show();
       }
     });
   }
@@ -147,7 +147,7 @@ class OBTrendingCommunitiesState extends State<OBTrendingCommunities>
     try {
       CommunitiesList trendingCommunitiesList =
           await _userService.getTrendingCommunities(category: widget.category);
-      _setTrendingCommunities(trendingCommunitiesList.communities);
+      _setTrendingCommunities(trendingCommunitiesList.communities ?? []);
     } catch (error) {
       _onError(error);
     } finally {
@@ -160,8 +160,8 @@ class OBTrendingCommunitiesState extends State<OBTrendingCommunities>
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);

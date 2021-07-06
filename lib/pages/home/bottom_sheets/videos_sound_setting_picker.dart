@@ -9,10 +9,10 @@ import 'package:flutter/material.dart';
 class OBVideosSoundSettingPickerBottomSheet extends StatefulWidget {
   final ValueChanged<VideosSoundSetting> onTypeChanged;
 
-  final VideosSoundSetting initialValue;
+  final VideosSoundSetting? initialValue;
 
   const OBVideosSoundSettingPickerBottomSheet(
-      {Key key, @required this.onTypeChanged, this.initialValue})
+      {Key? key, required this.onTypeChanged, this.initialValue})
       : super(key: key);
 
   @override
@@ -23,8 +23,8 @@ class OBVideosSoundSettingPickerBottomSheet extends StatefulWidget {
 
 class OBVideosSoundSettingPickerBottomSheetState
     extends State<OBVideosSoundSettingPickerBottomSheet> {
-  FixedExtentScrollController _cupertinoPickerController;
-  List<VideosSoundSetting> allVideosSoundSettings;
+  late FixedExtentScrollController _cupertinoPickerController;
+  late List<VideosSoundSetting> allVideosSoundSettings;
 
   @override
   void initState() {
@@ -32,8 +32,8 @@ class OBVideosSoundSettingPickerBottomSheetState
     allVideosSoundSettings = VideosSoundSetting.values();
     _cupertinoPickerController = FixedExtentScrollController(
         initialItem: widget.initialValue != null
-            ? allVideosSoundSettings.indexOf(widget.initialValue)
-            : null);
+            ? allVideosSoundSettings.indexOf(widget.initialValue!)
+            : 0);
   }
 
   @override
@@ -58,7 +58,7 @@ class OBVideosSoundSettingPickerBottomSheetState
           itemExtent: 32,
           children: allVideosSoundSettings.map((VideosSoundSetting setting) {
             return Center(
-              child: OBText(localizationMap[setting]),
+              child: OBText(localizationMap[setting]!),
             );
           }).toList(),
         ),

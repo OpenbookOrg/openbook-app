@@ -18,7 +18,7 @@ void main() {
       translationStrings[mainKey] = {};
     }
 
-    translationStrings[mainKey][translationKey] = json[key];
+    translationStrings[mainKey]![translationKey] = json[key];
 
     if (!mainKey.startsWith('@') && !mainKeys.contains(mainKey)) {
       mainKeys.add(mainKey);
@@ -30,9 +30,9 @@ void main() {
     var output = {};
     var current = translationStrings[mainKey];
 
-    current.keys.forEach((key) {
+    current?.keys.forEach((key) {
       output[key] = current[key];
-      output['@$key'] = translationStrings['@$mainKey'][key];
+      output['@$key'] = translationStrings['@$mainKey']![key];
     });
 
     var str = jsonEncoder.convert(output);

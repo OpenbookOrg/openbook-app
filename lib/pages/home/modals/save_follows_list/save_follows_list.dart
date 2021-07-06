@@ -21,7 +21,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBSaveFollowsListModal extends StatefulWidget {
-  final FollowsList followsList;
+  final FollowsList? followsList;
   final bool autofocusNameTextField;
 
   OBSaveFollowsListModal(
@@ -36,22 +36,22 @@ class OBSaveFollowsListModal extends StatefulWidget {
 class OBSaveFollowsListModalState extends State<OBSaveFollowsListModal> {
   static const double INPUT_EMOJIS_SIZE = 16;
 
-  UserService _userService;
-  ToastService _toastService;
-  ValidationService _validationService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late ValidationService _validationService;
+  late LocalizationService _localizationService;
 
-  bool _requestInProgress;
-  bool _formWasSubmitted;
-  bool _formValid;
-  bool _hasExistingList;
-  String _takenFollowsListName;
-  List<User> _users;
+  late bool _requestInProgress;
+  late bool _formWasSubmitted;
+  late bool _formValid;
+  late bool _hasExistingList;
+  String? _takenFollowsListName;
+  late List<User> _users;
 
-  GlobalKey<FormState> _formKey;
+  late GlobalKey<FormState> _formKey;
 
-  TextEditingController _nameController;
-  Emoji _emoji;
+  late TextEditingController _nameController;
+  Emoji? _emoji;
 
   @override
   void initState() {
@@ -62,13 +62,13 @@ class OBSaveFollowsListModalState extends State<OBSaveFollowsListModal> {
     _nameController = TextEditingController();
     _formKey = GlobalKey<FormState>();
     _hasExistingList = widget.followsList != null;
-    _users = _hasExistingList && widget.followsList.hasUsers()
-        ? widget.followsList.users.users.toList()
+    _users = _hasExistingList && widget.followsList!.hasUsers()
+        ? widget.followsList!.users!.users!.toList()
         : [];
 
     if (_hasExistingList) {
-      _nameController.text = widget.followsList.name;
-      _emoji = widget.followsList.emoji;
+      _nameController.text = widget.followsList!.name!;
+      _emoji = widget.followsList!.emoji;
     }
 
     _nameController.addListener(_updateFormValid);
@@ -105,13 +105,13 @@ class OBSaveFollowsListModalState extends State<OBSaveFollowsListModal> {
                                 decoration: InputDecoration(
                                     labelText: _localizationService.user__save_follows_list_name,
                                     hintText: _localizationService.user__save_follows_list_hint_text),
-                                validator: (String followsListName) {
+                                validator: (String? followsListName) {
                                   if (!_formWasSubmitted) return null;
 
                                   if (_takenFollowsListName != null &&
                                       _takenFollowsListName ==
                                           followsListName) {
-                                    return _localizationService.user__save_follows_list_name_taken(_takenFollowsListName);
+                                    return _localizationService.user__save_follows_list_name_taken(_takenFollowsListName!);
                                   }
 
                                   return _validationService
@@ -119,7 +119,7 @@ class OBSaveFollowsListModalState extends State<OBSaveFollowsListModal> {
                                 }),
                             OBEmojiField(
                                 emoji: _emoji,
-                                onEmojiFieldTapped: (Emoji emoji) =>
+                                onEmojiFieldTapped: (Emoji? emoji) =>
                                     _onWantsToPickEmoji(),
                                 labelText: _localizationService.user__save_follows_list_emoji,
                                 errorText: _formWasSubmitted && _emoji == null
@@ -156,7 +156,7 @@ class OBSaveFollowsListModalState extends State<OBSaveFollowsListModal> {
         ));
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
         leading: GestureDetector(
           child: const OBIcon(OBIcons.close),
@@ -176,7 +176,7 @@ class OBSaveFollowsListModalState extends State<OBSaveFollowsListModal> {
   }
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   bool _updateFormValid() {
@@ -205,8 +205,8 @@ class OBSaveFollowsListModalState extends State<OBSaveFollowsListModal> {
       }
 
       FollowsList followsList = await (_hasExistingList
-          ? _userService.updateFollowsList(widget.followsList,
-              name: _nameController.text != widget.followsList.name
+          ? _userService.updateFollowsList(widget.followsList!,
+              name: _nameController.text != widget.followsList!.name
                   ? _nameController.text
                   : null,
               users: _users,
@@ -227,8 +227,8 @@ class OBSaveFollowsListModalState extends State<OBSaveFollowsListModal> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;
@@ -236,14 +236,14 @@ class OBSaveFollowsListModalState extends State<OBSaveFollowsListModal> {
   }
 
   Future<bool> _isFollowsListNameTaken(String followsListName) async {
-    if (_hasExistingList && widget.followsList.name == _nameController.text) {
+    if (_hasExistingList && widget.followsList!.name == _nameController.text) {
       return false;
     }
     return _validationService.isFollowsListNameTaken(followsListName);
   }
 
   void _onWantsToPickEmoji() async {
-    Emoji pickedEmoji = await Navigator.push(
+    Emoji? pickedEmoji = await Navigator.push(
         context,
         OBSlideRightRoute<Emoji>(builder: (BuildContext context) {
           return OBPickFollowsListEmojiPage();

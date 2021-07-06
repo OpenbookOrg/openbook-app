@@ -22,7 +22,7 @@ class OBProfileConnectedIn extends StatelessWidget {
         var user = snapshot.data;
         var connectedCircles = user?.connectedCircles?.circles;
         bool isFullyConnected =
-            user?.isFullyConnected != null && user.isFullyConnected;
+            user?.isFullyConnected != null && user!.isFullyConnected!;
 
         if (connectedCircles == null ||
             connectedCircles.length == 0 ||

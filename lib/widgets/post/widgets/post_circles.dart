@@ -37,8 +37,8 @@ class OBPostCircles extends StatelessWidget {
           ),
         ),
       );
-    } else if (_post.isEncircled != null && _post.isEncircled) {
-      String postCreatorUsername = _post.creator.username;
+    } else if (_post.isEncircled != null && _post.isEncircled!) {
+      String postCreatorUsername = _post.creator!.username!;
 
       return Padding(
         padding: const EdgeInsets.only(left: 20, right: 20, top: 10),

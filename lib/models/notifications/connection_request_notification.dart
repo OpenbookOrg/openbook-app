@@ -1,8 +1,8 @@
 import 'package:Okuna/models/user.dart';
 
 class ConnectionRequestNotification {
-  final int id;
-  final User connectionRequester;
+  final int? id;
+  final User? connectionRequester;
 
   ConnectionRequestNotification({this.id, this.connectionRequester});
 
@@ -12,7 +12,7 @@ class ConnectionRequestNotification {
         connectionRequester: _parseUser(json['connection_requester']));
   }
 
-  static User _parseUser(Map userData) {
+  static User _parseUser(Map<String, dynamic> userData) {
     return User.fromJson(userData);
   }
 }

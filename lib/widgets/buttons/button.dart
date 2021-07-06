@@ -5,25 +5,25 @@ import 'package:flutter/material.dart';
 
 class OBButton extends StatelessWidget {
   final Widget child;
-  final Widget icon;
-  final VoidCallback onPressed;
-  final VoidCallback onLongPressed;
+  final Widget? icon;
+  final VoidCallback? onPressed;
+  final VoidCallback? onLongPressed;
   final bool isDisabled;
   final bool isLoading;
-  final OBButtonSize size;
-  final double minWidth;
-  final EdgeInsets padding;
+  final OBButtonSize? size;
+  final double? minWidth;
+  final EdgeInsets? padding;
   final OBButtonType type;
-  final ShapeBorder shape;
-  final double minHeight;
-  final List<BoxShadow> boxShadow;
-  final TextStyle textStyle;
-  final Color color;
-  final Color textColor;
+  final ShapeBorder? shape;
+  final double? minHeight;
+  final List<BoxShadow>? boxShadow;
+  final TextStyle? textStyle;
+  final Color? color;
+  final Color? textColor;
 
   const OBButton(
-      {@required this.child,
-      @required this.onPressed,
+      {required this.child,
+      required this.onPressed,
       this.minHeight,
       this.minWidth,
       this.type = OBButtonType.primary,
@@ -45,14 +45,14 @@ class OBButton extends StatelessWidget {
     var themeValueParser = provider.themeValueParserService;
 
     return color != null
-        ? _buildButton(color: color, textColor: textColor)
+        ? _buildButton(color: color!, textColor: textColor!)
         : StreamBuilder(
             stream: themeService.themeChange,
             initialData: themeService.getActiveTheme(),
             builder: (BuildContext context, AsyncSnapshot<OBTheme> snapshot) {
               var theme = snapshot.data;
               Color buttonTextColor = _getButtonTextColorForType(type,
-                  themeValueParser: themeValueParser, theme: theme);
+                  themeValueParser: themeValueParser, theme: theme!);
               Gradient gradient = _getButtonGradientForType(type,
                   themeValueParser: themeValueParser, theme: theme);
 
@@ -62,9 +62,9 @@ class OBButton extends StatelessWidget {
   }
 
   Widget _buildButton(
-      {Gradient gradient, Color color, @required Color textColor}) {
-    EdgeInsets buttonPadding = _getButtonPaddingForSize(size);
-    double buttonMinWidth = minWidth ?? _getButtonMinWidthForSize(size);
+      {Gradient? gradient, Color? color, required Color textColor}) {
+    EdgeInsets buttonPadding = _getButtonPaddingForSize(size!);
+    double buttonMinWidth = minWidth ?? _getButtonMinWidthForSize(size!);
     double buttonMinHeight = minHeight ?? 20;
     var finalOnPressed = isLoading || isDisabled ? () {} : onPressed;
     var finalOnLongPressed = isLoading || isDisabled ? () {} : onLongPressed;
@@ -76,7 +76,7 @@ class OBButton extends StatelessWidget {
     if (icon != null && !isLoading) {
       buttonChild = Row(
         children: <Widget>[
-          icon,
+          icon!,
           const SizedBox(
             width: 5,
           ),
@@ -86,7 +86,7 @@ class OBButton extends StatelessWidget {
     }
 
     TextStyle defaultTextStyle =
-        _getButtonTextStyleForSize(size: size, color: textColor);
+        _getButtonTextStyleForSize(size: size!, color: textColor);
 
     if (textStyle != null) {
       defaultTextStyle = defaultTextStyle.merge(textStyle);
@@ -128,9 +128,9 @@ class OBButton extends StatelessWidget {
   }
 
   Gradient _getButtonGradientForType(OBButtonType type,
-      {@required ThemeValueParserService themeValueParser,
-      @required OBTheme theme}) {
-    Gradient buttonGradient;
+      {required ThemeValueParserService themeValueParser,
+      required OBTheme theme}) {
+    late Gradient buttonGradient;
 
     switch (type) {
       case OBButtonType.danger:
@@ -160,9 +160,9 @@ class OBButton extends StatelessWidget {
   }
 
   Color _getButtonTextColorForType(OBButtonType type,
-      {@required ThemeValueParserService themeValueParser,
-      @required OBTheme theme}) {
-    Color buttonTextColor;
+      {required ThemeValueParserService themeValueParser,
+      required OBTheme theme}) {
+    late Color buttonTextColor;
 
     switch (type) {
       case OBButtonType.danger:
@@ -184,9 +184,9 @@ class OBButton extends StatelessWidget {
   }
 
   EdgeInsets _getButtonPaddingForSize(OBButtonSize type) {
-    if (padding != null) return padding;
+    if (padding != null) return padding!;
 
-    EdgeInsets buttonPadding;
+    late EdgeInsets buttonPadding;
 
     switch (size) {
       case OBButtonSize.large:
@@ -205,8 +205,8 @@ class OBButton extends StatelessWidget {
   }
 
   TextStyle _getButtonTextStyleForSize(
-      {OBButtonSize size, @required Color color}) {
-    TextStyle textStyle;
+      {OBButtonSize? size, required Color color}) {
+    late TextStyle textStyle;
 
     switch (size) {
       case OBButtonSize.large:
@@ -223,9 +223,9 @@ class OBButton extends StatelessWidget {
   }
 
   double _getButtonMinWidthForSize(OBButtonSize type) {
-    if (minWidth != null) return minWidth;
+    if (minWidth != null) return minWidth!;
 
-    double buttonMinWidth;
+    late double buttonMinWidth;
 
     switch (size) {
       case OBButtonSize.large:

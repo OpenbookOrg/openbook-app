@@ -14,7 +14,7 @@ import 'package:flutter/cupertino.dart';
 class OBConfirmBlockUserModal<T> extends StatefulWidget {
   final User user;
 
-  const OBConfirmBlockUserModal({Key key, @required this.user}) : super(key: key);
+  const OBConfirmBlockUserModal({Key? key, required this.user}) : super(key: key);
 
   @override
   OBConfirmBlockUserModalState createState() {
@@ -23,11 +23,11 @@ class OBConfirmBlockUserModal<T> extends StatefulWidget {
 }
 
 class OBConfirmBlockUserModalState extends State<OBConfirmBlockUserModal> {
-  bool _confirmationInProgress;
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  bool _needsBootstrap;
+  late bool _confirmationInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class OBConfirmBlockUserModalState extends State<OBConfirmBlockUserModal> {
 
   @override
   Widget build(BuildContext context) {
-    String username = widget.user.username;
+    String username = widget.user.username!;
 
     if (_needsBootstrap) {
       OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
@@ -132,8 +132,8 @@ class OBConfirmBlockUserModalState extends State<OBConfirmBlockUserModal> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

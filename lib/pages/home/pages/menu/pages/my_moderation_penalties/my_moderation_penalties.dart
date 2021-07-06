@@ -22,11 +22,11 @@ class OBMyModerationPenaltiesPage extends StatefulWidget {
 
 class OBMyModerationPenaltiesPageState
     extends State<OBMyModerationPenaltiesPage> {
-  UserService _userService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
 
-  OBHttpListController _httpListController;
-  bool _needsBootstrap;
+  late OBHttpListController _httpListController;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -72,7 +72,7 @@ class OBMyModerationPenaltiesPageState
   Future<List<ModerationPenalty>> _refreshModerationPenalties() async {
     ModerationPenaltiesList moderationPenalties =
         await _userService.getModerationPenalties();
-    return moderationPenalties.moderationPenalties;
+    return moderationPenalties.moderationPenalties ?? [];
   }
 
   Future<List<ModerationPenalty>> _loadMoreModerationPenalties(
@@ -84,6 +84,6 @@ class OBMyModerationPenaltiesPageState
       count: 10,
     ))
         .moderationPenalties;
-    return moreModerationPenalties;
+    return moreModerationPenalties ?? [];
   }
 }

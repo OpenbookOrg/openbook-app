@@ -18,10 +18,10 @@ import 'package:flutter_advanced_networkimage/provider.dart';
 import 'package:flutter_advanced_networkimage/transition.dart';
 
 class OBPostBodyMedia extends StatefulWidget {
-  final Post post;
-  final String inViewId;
+  final Post? post;
+  final String? inViewId;
 
-  const OBPostBodyMedia({Key key, this.post, this.inViewId}) : super(key: key);
+  const OBPostBodyMedia({Key? key, this.post, this.inViewId}) : super(key: key);
 
   @override
   OBPostBodyMediaState createState() {
@@ -30,17 +30,17 @@ class OBPostBodyMedia extends StatefulWidget {
 }
 
 class OBPostBodyMediaState extends State<OBPostBodyMedia> {
-  UserService _userService;
-  LocalizationService _localizationService;
-  bool _needsBootstrap;
-  String _errorMessage;
+  late UserService _userService;
+  late LocalizationService _localizationService;
+  late bool _needsBootstrap;
+  late String _errorMessage;
 
-  CancelableOperation _retrievePostMediaOperation;
-  bool _retrievePostMediaInProgress;
+  CancelableOperation? _retrievePostMediaOperation;
+  late bool _retrievePostMediaInProgress;
 
-  double _mediaHeight;
-  double _mediaWidth;
-  bool _mediaIsConstrained;
+  double? _mediaHeight;
+  double? _mediaWidth;
+  late bool _mediaIsConstrained;
 
   @override
   void initState() {
@@ -116,17 +116,17 @@ class OBPostBodyMediaState extends State<OBPostBodyMedia> {
 
   Widget _buildMediaItems() {
     return StreamBuilder(
-      stream: widget.post.updateSubject,
+      stream: widget.post!.updateSubject,
       initialData: widget.post,
       builder: (BuildContext context, AsyncSnapshot<Post> snapshot) {
-        List<PostMedia> postMediaItems = widget.post.getMedia();
+        List<PostMedia> postMediaItems = widget.post!.getMedia() ?? [];
         return _buildPostMediaItems(postMediaItems);
       },
     );
   }
 
   Widget _buildPostMediaItemsThumbnail() {
-    String thumbnailUrl = widget.post.mediaThumbnail;
+    String? thumbnailUrl = widget.post?.mediaThumbnail;
 
     return TransitionToImage(
       height: _mediaHeight,
@@ -136,7 +136,7 @@ class OBPostBodyMediaState extends State<OBPostBodyMedia> {
       ),
       fit: BoxFit.cover,
       alignment: Alignment.center,
-      image: AdvancedNetworkImage(thumbnailUrl,
+      image: AdvancedNetworkImage(thumbnailUrl ?? '',
           useDiskCache: true,
           fallbackAssetImage: 'assets/images/fallbacks/post-fallback.png',
           retryLimit: 3,
@@ -188,13 +188,13 @@ class OBPostBodyMediaState extends State<OBPostBodyMedia> {
     double screenHeight = MediaQuery.of(context).size.height;
     double maxBoxHeight = screenHeight * .70;
 
-    double imageAspectRatio = widget.post.mediaWidth / widget.post.mediaHeight;
+    double imageAspectRatio = widget.post!.mediaWidth! / widget.post!.mediaHeight!;
     double imageHeight = (screenWidth / imageAspectRatio);
     _mediaHeight = min(imageHeight, maxBoxHeight);
     if (_mediaHeight == maxBoxHeight) _mediaIsConstrained = true;
     _mediaWidth = screenWidth;
 
-    if (widget.post.media != null) {
+    if (widget.post?.media != null) {
       _retrievePostMediaInProgress = false;
       return;
     }
@@ -206,9 +206,9 @@ class OBPostBodyMediaState extends State<OBPostBodyMedia> {
     _setRetrievePostMediaInProgress(true);
     try {
       _retrievePostMediaOperation = CancelableOperation.fromFuture(
-          _userService.getMediaForPost(post: widget.post), onCancel: _onRetrievePostMediaOperationCancelled);
-      PostMediaList mediaList = await _retrievePostMediaOperation.value;
-      widget.post.setMedia(mediaList);
+          _userService.getMediaForPost(post: widget.post!), onCancel: _onRetrievePostMediaOperationCancelled);
+      PostMediaList mediaList = await _retrievePostMediaOperation!.value;
+      widget.post!.setMedia(mediaList);
     } catch (error) {
       _onError(error);
     } finally {
@@ -225,8 +225,8 @@ class OBPostBodyMediaState extends State<OBPostBodyMedia> {
     if (error is HttpieConnectionRefusedError) {
       _setErrorMessage(error.toHumanReadableMessage());
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _setErrorMessage(errorMessage);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _setErrorMessage(errorMessage ?? _localizationService.error__unknown_error);
     } else {
       _setErrorMessage(_localizationService.error__unknown_error);
       throw error;

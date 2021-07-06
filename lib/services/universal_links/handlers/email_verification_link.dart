@@ -13,10 +13,10 @@ import '../../localization.dart';
 
 class EmailVerificationLinkHandler extends UniversalLinkHandler {
   static const String verifyEmailLink = '/api/auth/email/verify';
-  StreamSubscription _onLoggedInUserChangeSubscription;
+  late StreamSubscription _onLoggedInUserChangeSubscription;
 
   @override
-  Future handle({BuildContext context, String link}) async{
+  Future handle({required BuildContext context, required String link}) async {
     if (link.indexOf(verifyEmailLink) != -1) {
       final token = _getEmailVerificationTokenFromLink(link);
       OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
@@ -26,7 +26,7 @@ class EmailVerificationLinkHandler extends UniversalLinkHandler {
       LocalizationService localizationService = openbookProvider.localizationService;
 
       _onLoggedInUserChangeSubscription =
-          userService.loggedInUserChange.listen((User newUser) async {
+          userService.loggedInUserChange.listen((User? newUser) async {
         _onLoggedInUserChangeSubscription.cancel();
 
         try {
@@ -42,9 +42,9 @@ class EmailVerificationLinkHandler extends UniversalLinkHandler {
                 context: context);
           }
         } on HttpieConnectionRefusedError {
-          toastService.error(message: localizationService.error__no_internet_connection, context: null);
+          toastService.error(message: localizationService.error__no_internet_connection, context: context);
         } catch (e) {
-          toastService.error(message: localizationService.error__unknown_error, context: null);
+          toastService.error(message: localizationService.error__unknown_error, context: context);
           rethrow;
         }
       });

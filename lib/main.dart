@@ -44,18 +44,18 @@ class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 
-  static void setLocale(BuildContext context, Locale newLocale) {
-    _MyAppState state = context.findAncestorStateOfType<_MyAppState>();
+  static void setLocale(BuildContext context, Locale? newLocale) {
+    _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
 
-    state.setState(() {
-      state.locale = newLocale;
+    state?.setState(() {
+      state.locale = newLocale ?? Locale('en', 'US');
     });
   }
 }
 
 class _MyAppState extends State<MyApp> {
-  Locale locale;
-  bool _needsBootstrap;
+  Locale? locale;
+  late bool _needsBootstrap;
 
   static const MAX_NETWORK_IMAGE_CACHE_MB = 200;
   static const MAX_NETWORK_IMAGE_CACHE_ENTRIES = 1000;
@@ -220,9 +220,9 @@ class _MyAppState extends State<MyApp> {
               },
               '/waitlist/subscribe_done_step': (BuildContext context) {
                 bootstrapOpenbookProviderInContext(context);
-                WaitlistSubscribeArguments args =
-                    ModalRoute.of(context).settings.arguments;
-                return OBWaitlistSubscribeDoneStep(count: args.count);
+                WaitlistSubscribeArguments? args =
+                    ModalRoute.of(context)?.settings.arguments as WaitlistSubscribeArguments?;
+                return OBWaitlistSubscribeDoneStep(count: args?.count ?? 0);
               }
             }),
       ),
@@ -232,7 +232,7 @@ class _MyAppState extends State<MyApp> {
   void bootstrapOpenbookProviderInContext(BuildContext context) {
     var openbookProvider = OpenbookProvider.of(context);
     var localizationService = LocalizationService.of(context);
-    if (this.locale.languageCode !=
+    if (this.locale?.languageCode !=
         localizationService.getLocale().languageCode) {
       Future.delayed(Duration(milliseconds: 0), () {
         MyApp.setLocale(context, this.locale);
@@ -260,11 +260,11 @@ Future<Null> main() async {
       return;
     }
 
-    SentryClient sentryClient =
-        app.openbookProviderKey.currentState.sentryClient;
+    SentryClient? sentryClient =
+        app.openbookProviderKey.currentState?.sentryClient;
 
     try {
-      sentryClient.captureException(
+      sentryClient?.captureException(
         error,
         stackTrace: stackTrace,
       );

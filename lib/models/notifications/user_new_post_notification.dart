@@ -1,8 +1,8 @@
 import '../post.dart';
 
 class UserNewPostNotification {
-  final int id;
-  final Post post;
+  final int? id;
+  final Post? post;
 
   const UserNewPostNotification({
     this.post,
@@ -15,7 +15,7 @@ class UserNewPostNotification {
         post: _parsePost(json['post']));
   }
 
-  static Post _parsePost(Map postData) {
+  static Post _parsePost(Map<String, dynamic> postData) {
     return Post.fromJson(postData);
   }
 }

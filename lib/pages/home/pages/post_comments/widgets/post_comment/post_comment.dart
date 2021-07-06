@@ -14,10 +14,10 @@ import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 
 class OBPostComment extends StatefulWidget {
-  final PostComment postComment;
-  final Post post;
-  final ValueChanged<PostComment> onPostCommentDeleted;
-  final ValueChanged<PostComment> onPostCommentReported;
+  final PostComment? postComment;
+  final Post? post;
+  final ValueChanged<PostComment>? onPostCommentDeleted;
+  final ValueChanged<PostComment>? onPostCommentReported;
   final bool showReplies;
   final bool showActions;
   final bool showReplyAction;
@@ -25,11 +25,11 @@ class OBPostComment extends StatefulWidget {
   final EdgeInsets padding;
 
   OBPostComment({
-    @required this.post,
-    @required this.postComment,
+    required this.post,
+    required this.postComment,
     this.onPostCommentDeleted,
     this.onPostCommentReported,
-    Key key,
+    Key? key,
     this.showReplies = true,
     this.showActions = true,
     this.showReactions = true,
@@ -44,24 +44,24 @@ class OBPostComment extends StatefulWidget {
 }
 
 class OBPostCommentState extends State<OBPostComment> {
-  NavigationService _navigationService;
-  UserPreferencesService _userPreferencesService;
-  int _repliesCount;
-  List<PostComment> _replies;
+  late NavigationService _navigationService;
+  late UserPreferencesService _userPreferencesService;
+  int? _repliesCount;
+  late List<PostComment> _replies;
 
-  CancelableOperation _requestOperation;
+  CancelableOperation? _requestOperation;
 
   @override
   void initState() {
     super.initState();
-    _repliesCount = widget.postComment.repliesCount;
-    _replies = widget.postComment.getPostCommentReplies();
+    _repliesCount = widget.postComment?.repliesCount ?? 0;
+    _replies = widget.postComment?.getPostCommentReplies() ?? [];
   }
 
   @override
   void dispose() {
     super.dispose();
-    if (_requestOperation != null) _requestOperation.cancel();
+    if (_requestOperation != null) _requestOperation!.cancel();
   }
 
   @override
@@ -71,28 +71,28 @@ class OBPostCommentState extends State<OBPostComment> {
     _userPreferencesService = provider.userPreferencesService;
 
     return StreamBuilder(
-        key: Key('OBPostCommentTile#${widget.postComment.id}'),
-        stream: widget.postComment.updateSubject,
+        key: Key('OBPostCommentTile#${widget.postComment!.id}'),
+        stream: widget.postComment!.updateSubject,
         initialData: widget.postComment,
         builder: (BuildContext context, AsyncSnapshot<PostComment> snapshot) {
-          PostComment postComment = snapshot.data;
-          User commenter = postComment.commenter;
+          PostComment postComment = snapshot.data!;
+          User commenter = postComment.commenter!;
 
           List<Widget> commentBodyColumnItems = [
             OBPostCommentCommenterIdentifier(
-              post: widget.post,
-              postComment: widget.postComment,
+              post: widget.post!,
+              postComment: widget.postComment!,
               onUsernamePressed: _onPostCommenterPressed,
             ),
             const SizedBox(
               height: 5,
             ),
             OBPostCommentText(
-              widget.postComment,
-              widget.post,
+              widget.postComment!,
+              widget.post!,
               onUsernamePressed: () {
                 _navigationService.navigateToUserProfile(
-                    user: widget.postComment.commenter, context: context);
+                    user: widget.postComment!.commenter!, context: context);
               },
             ),
           ];
@@ -100,8 +100,8 @@ class OBPostCommentState extends State<OBPostComment> {
           if (widget.showReactions) {
             commentBodyColumnItems.add(
               OBPostCommentReactions(
-                postComment: widget.postComment,
-                post: widget.post,
+                postComment: widget.postComment!,
+                post: widget.post!,
               ),
             );
           }
@@ -109,8 +109,8 @@ class OBPostCommentState extends State<OBPostComment> {
           if (widget.showActions) {
             commentBodyColumnItems.addAll([
               OBPostCommentActions(
-                post: widget.post,
-                postComment: widget.postComment,
+                post: widget.post!,
+                postComment: widget.postComment!,
                 onReplyDeleted: _onReplyDeleted,
                 onReplyAdded: _onReplyAdded,
                 onPostCommentReported: widget.onPostCommentReported,
@@ -120,7 +120,7 @@ class OBPostCommentState extends State<OBPostComment> {
             ]);
           }
 
-          if (widget.showReplies && _repliesCount != null && _repliesCount > 0)
+          if (widget.showReplies && _repliesCount != null && _repliesCount! > 0)
             commentBodyColumnItems.add(_buildPostCommentReplies());
 
           return Column(
@@ -161,10 +161,10 @@ class OBPostCommentState extends State<OBPostComment> {
             shrinkWrap: true,
             physics: const ClampingScrollPhysics(),
             padding: EdgeInsets.all(0),
-            itemCount: widget.postComment.getPostCommentReplies().length,
+            itemCount: widget.postComment!.getPostCommentReplies().length,
             itemBuilder: (context, index) {
               PostComment reply =
-                  widget.postComment.getPostCommentReplies()[index];
+                  widget.postComment!.getPostCommentReplies()[index];
 
               return OBPostComment(
                 key: Key('postCommentReply#${reply.id}'),
@@ -180,7 +180,7 @@ class OBPostCommentState extends State<OBPostComment> {
   }
 
   Widget _buildViewAllReplies() {
-    if (!widget.postComment.hasReplies() ||
+    if (!widget.postComment!.hasReplies() ||
         (_repliesCount == _replies.length)) {
       return SizedBox();
     }
@@ -196,8 +196,8 @@ class OBPostCommentState extends State<OBPostComment> {
 
   void _onWantsToViewAllReplies() {
     _navigationService.navigateToPostCommentReplies(
-        post: widget.post,
-        postComment: widget.postComment,
+        post: widget.post!,
+        postComment: widget.postComment!,
         context: context,
         onReplyDeleted: _onReplyDeleted,
         onReplyAdded: _onReplyAdded);
@@ -205,7 +205,10 @@ class OBPostCommentState extends State<OBPostComment> {
 
   void _onReplyDeleted(PostComment postCommentReply) async {
     setState(() {
-      _repliesCount -= 1;
+      if (_repliesCount != null) {
+        _repliesCount = _repliesCount! - 1;
+      }
+
       _replies.removeWhere((reply) => reply.id == postCommentReply.id);
     });
   }
@@ -219,13 +222,16 @@ class OBPostCommentState extends State<OBPostComment> {
       } else if (_repliesCount == _replies.length) {
         _replies.add(postCommentReply);
       }
-      _repliesCount += 1;
+
+      if (_repliesCount != null) {
+        _repliesCount = _repliesCount! + 1;
+      }
     });
   }
 
   void _onPostCommenterPressed() {
     _navigationService.navigateToUserProfile(
-        user: widget.postComment.commenter, context: context);
+        user: widget.postComment!.commenter!, context: context);
   }
 }
 

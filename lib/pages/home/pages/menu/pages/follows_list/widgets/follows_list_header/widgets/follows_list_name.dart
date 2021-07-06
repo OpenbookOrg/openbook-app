@@ -15,7 +15,7 @@ class OBFollowsListName extends StatelessWidget {
         stream: followsList.updateSubject,
         initialData: followsList,
         builder: (BuildContext context, AsyncSnapshot<FollowsList> snapshot) {
-          var followsList = snapshot.data;
+          var followsList = snapshot.data!;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,7 +28,7 @@ class OBFollowsListName extends StatelessWidget {
                 children: <Widget>[
                   Flexible(
                     child: OBPrimaryAccentText(
-                      followsList.name,
+                      followsList.name!,
                       size: OBTextSize.extraLarge,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,

@@ -1,7 +1,7 @@
 import 'package:Okuna/models/moderation/moderation_category.dart';
 
 class ModerationCategoriesList {
-  final List<ModerationCategory> moderationCategories;
+  final List<ModerationCategory>? moderationCategories;
 
   ModerationCategoriesList({
     this.moderationCategories,

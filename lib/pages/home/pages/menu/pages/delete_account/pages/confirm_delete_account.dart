@@ -12,7 +12,7 @@ import 'package:flutter/cupertino.dart';
 class OBConfirmDeleteAccount<T> extends StatefulWidget {
   final String userPassword;
 
-  const OBConfirmDeleteAccount({Key key, @required this.userPassword})
+  const OBConfirmDeleteAccount({Key? key, required this.userPassword})
       : super(key: key);
 
   @override
@@ -22,11 +22,11 @@ class OBConfirmDeleteAccount<T> extends StatefulWidget {
 }
 
 class OBConfirmDeleteAccountState extends State<OBConfirmDeleteAccount> {
-  bool _confirmationInProgress;
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  bool _needsBootstrap;
+  late bool _confirmationInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -131,8 +131,8 @@ class OBConfirmDeleteAccountState extends State<OBConfirmDeleteAccount> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
 
       if (error.response.isUnauthorized()) {
         // Password was incorrect

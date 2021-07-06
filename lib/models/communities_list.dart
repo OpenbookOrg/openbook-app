@@ -1,7 +1,7 @@
 import 'package:Okuna/models/community.dart';
 
 class CommunitiesList {
-  final List<Community> communities;
+  final List<Community>? communities;
 
   CommunitiesList({
     this.communities,

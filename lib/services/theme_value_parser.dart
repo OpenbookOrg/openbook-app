@@ -9,10 +9,10 @@ class ThemeValueParserService {
   static AlignmentGeometry _endAlignment = Alignment.bottomRight;
 
   static SimpleCache<String, Color> colorCache =
-      SimpleCache(storage: SimpleStorage(size: 30));
+      SimpleCache(storage: new InMemoryStorage(30));
 
   static SimpleCache<String, Gradient> gradientCache =
-      SimpleCache<String, Gradient>(storage: SimpleStorage(size: 10));
+      SimpleCache<String, Gradient>(storage: new InMemoryStorage(10));
 
   Color parseColor(String value) {
     return colorCache.get(value) ?? _parseAndStoreColor(value);

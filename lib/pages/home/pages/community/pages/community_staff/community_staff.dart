@@ -12,7 +12,7 @@ import '../../../../../../provider.dart';
 class OBCommunityStaffPage extends StatelessWidget {
   final Community community;
 
-  const OBCommunityStaffPage({Key key, @required this.community})
+  const OBCommunityStaffPage({Key? key, required this.community})
       : super(key: key);
 
   @override

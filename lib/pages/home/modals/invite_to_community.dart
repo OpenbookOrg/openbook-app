@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 class OBInviteToCommunityModal extends StatefulWidget {
   final Community community;
 
-  const OBInviteToCommunityModal({Key key, @required this.community})
+  const OBInviteToCommunityModal({Key? key, required this.community})
       : super(key: key);
 
   @override
@@ -28,10 +28,10 @@ class OBInviteToCommunityModal extends StatefulWidget {
 }
 
 class OBInviteToCommunityModalState extends State<OBInviteToCommunityModal> {
-  UserService _userService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -88,7 +88,7 @@ class OBInviteToCommunityModalState extends State<OBInviteToCommunityModal> {
   Future<List<User>> _refreshLinkedUsers() async {
     UsersList linkedUsers =
         await _userService.getLinkedUsers(withCommunity: widget.community);
-    return linkedUsers.users;
+    return linkedUsers.users!;
   }
 
   Future<List<User>> _loadMoreLinkedUsers(List<User> linkedUsersList) async {
@@ -99,13 +99,13 @@ class OBInviteToCommunityModalState extends State<OBInviteToCommunityModal> {
             count: 10,
             withCommunity: widget.community))
         .users;
-    return moreLinkedUsers;
+    return moreLinkedUsers!;
   }
 
   Future<List<User>> _searchLinkedUsers(String query) async {
     UsersList results = await _userService.searchLinkedUsers(
         query: query, withCommunity: widget.community);
 
-    return results.users;
+    return results.users!;
   }
 }

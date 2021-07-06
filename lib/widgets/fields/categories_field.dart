@@ -9,21 +9,21 @@ import 'package:flutter/material.dart';
 import '../../provider.dart';
 
 class OBCategoriesField extends StatefulWidget {
-  final OBCategoriesFieldController controller;
+  final OBCategoriesFieldController? controller;
   final String title;
   final int max;
   final int min;
   final bool displayErrors;
   final ValueChanged<List<Category>> onChanged;
-  final List<Category> initialCategories;
+  final List<Category>? initialCategories;
 
   const OBCategoriesField(
-      {Key key,
+      {Key? key,
       this.controller,
-      @required this.title,
-      @required this.max,
-      @required this.min,
-      @required this.onChanged,
+      required this.title,
+      required this.max,
+      required this.min,
+      required this.onChanged,
       this.displayErrors = false,
       this.initialCategories})
       : super(key: key);
@@ -35,18 +35,18 @@ class OBCategoriesField extends StatefulWidget {
 }
 
 class OBCategoriesFieldState extends State<OBCategoriesField> {
-  bool _isValid;
-  LocalizationService _localizationService;
+  late bool _isValid;
+  late LocalizationService _localizationService;
 
   @override
   void initState() {
     super.initState();
     if (widget.controller != null) {
-      widget.controller.attach(this);
+      widget.controller!.attach(this);
     }
     _isValid = widget.initialCategories == null
         ? false
-        : _categoriesLengthIsValid(widget.initialCategories);
+        : _categoriesLengthIsValid(widget.initialCategories!);
   }
 
   @override
@@ -122,13 +122,13 @@ class OBCategoriesFieldState extends State<OBCategoriesField> {
 }
 
 class OBCategoriesFieldController {
-  OBCategoriesFieldState _state;
+  OBCategoriesFieldState? _state;
 
   void attach(OBCategoriesFieldState state) {
     _state = state;
   }
 
   bool isValid() {
-    return _state == null ? false : _state._isValid;
+    return _state == null ? false : _state!._isValid;
   }
 }

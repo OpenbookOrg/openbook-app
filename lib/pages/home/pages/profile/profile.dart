@@ -19,7 +19,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBProfilePage extends StatefulWidget {
-  final OBProfilePageController controller;
+  final OBProfilePageController? controller;
   final User user;
 
   OBProfilePage(
@@ -34,18 +34,18 @@ class OBProfilePage extends StatefulWidget {
 }
 
 class OBProfilePageState extends State<OBProfilePage> {
-  User _user;
-  bool _needsBootstrap;
-  UserService _userService;
-  LocalizationService _localizationService;
-  OBPostsStreamController _obPostsStreamController;
-  bool _profileCommunityPostsVisible;
-  OBPostDisplayContext _postsDisplayContext;
+  late User _user;
+  late bool _needsBootstrap;
+  late UserService _userService;
+  late LocalizationService _localizationService;
+  late OBPostsStreamController _obPostsStreamController;
+  late bool _profileCommunityPostsVisible;
+  late OBPostDisplayContext _postsDisplayContext;
 
-  List<Community> _recentlyExcludedCommunities;
+  late List<Community> _recentlyExcludedCommunities;
   GlobalKey<RefreshIndicatorState> _protectedProfileRefreshIndicatorKey =
       GlobalKey();
-  bool _needsProtectedProfileBootstrap;
+  late bool _needsProtectedProfileBootstrap;
 
   @override
   void initState() {
@@ -54,7 +54,7 @@ class OBProfilePageState extends State<OBProfilePage> {
     _needsBootstrap = true;
     _needsProtectedProfileBootstrap = true;
     _user = widget.user;
-    if (widget.controller != null) widget.controller.attach(this);
+    if (widget.controller != null) widget.controller!.attach(this);
     _profileCommunityPostsVisible =
         widget.user.getProfileCommunityPostsVisible();
     _recentlyExcludedCommunities = [];
@@ -81,13 +81,13 @@ class OBProfilePageState extends State<OBProfilePage> {
               initialData: widget.user,
               stream: widget.user.updateSubject,
               builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
-                User user = snapshot.data;
+                User? user = snapshot.data;
                 if (user == null) return const SizedBox();
 
                 if (_postsDisplayContext ==
                         OBPostDisplayContext.ownProfilePosts ||
                     user.visibility != UserVisibility.private ||
-                    (user.isFollowing != null && user.isFollowing)) {
+                    (user.isFollowing != null && user.isFollowing!)) {
                   return _buildVisibleProfileContent();
                 }
 
@@ -107,7 +107,7 @@ class OBProfilePageState extends State<OBProfilePage> {
               displayContext: _postsDisplayContext,
               prependedItems: _buildProfileContentDetails(),
               controller: _obPostsStreamController,
-              postBuilder: _buildPostsStreamPost,
+              postBuilder: _buildPostsStreamPost as OBPostsStreamPostBuilder, // TODO: I don't understand why I have to do this.
               secondaryRefresher: _refreshUser,
               refresher: _refreshPosts,
               onScrollLoader: _loadMorePosts,
@@ -121,7 +121,7 @@ class OBProfilePageState extends State<OBProfilePage> {
   Widget _buildProtectedProfileContent() {
     if (_needsProtectedProfileBootstrap) {
       Future.delayed(Duration(milliseconds: 100), () {
-        _protectedProfileRefreshIndicatorKey.currentState.show();
+        _protectedProfileRefreshIndicatorKey.currentState?.show();
       });
       _needsProtectedProfileBootstrap = false;
     }
@@ -171,7 +171,7 @@ class OBProfilePageState extends State<OBProfilePage> {
               ),
               OBSecondaryText(
                 _localizationService
-                    .user__protected_account_desc(widget.user.username),
+                    .user__protected_account_desc(widget.user.username!),
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(
@@ -181,10 +181,10 @@ class OBProfilePageState extends State<OBProfilePage> {
                 stream: widget.user.updateSubject,
                 builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
                   if (snapshot.data == null ||
-                      snapshot.data.isFollowRequested == null)
+                      snapshot.data!.isFollowRequested == null)
                     return const SizedBox();
-                  User user = snapshot.data;
-                  return OBSecondaryText((user.isFollowRequested
+                  User user = snapshot.data!;
+                  return OBSecondaryText((user.isFollowRequested == true
                       ? _localizationService
                           .user__protected_account_instructions_complete
                       : _localizationService
@@ -212,23 +212,23 @@ class OBProfilePageState extends State<OBProfilePage> {
   }
 
   Widget _buildPostsStreamStatusIndicator(
-      {BuildContext context,
-      OBPostsStreamStatus streamStatus,
-      List<Widget> streamPrependedItems,
-      Function streamRefresher}) {
+      {required BuildContext context,
+      required OBPostsStreamStatus streamStatus,
+      required List<Widget> streamPrependedItems,
+      required Function streamRefresher}) {
     return OBProfilePostsStreamStatusIndicator(
         user: widget.user,
-        streamRefresher: streamRefresher,
+        streamRefresher: streamRefresher as VoidCallback,
         streamPrependedItems: streamPrependedItems,
         streamStatus: streamStatus);
   }
 
   Widget _buildPostsStreamPost({
-    BuildContext context,
-    Post post,
-    String postIdentifier,
-    OBPostDisplayContext displayContext,
-    ValueChanged<Post> onPostDeleted,
+    required BuildContext context,
+    required Post post,
+    required String postIdentifier,
+    required OBPostDisplayContext displayContext,
+    required ValueChanged<Post> onPostDeleted,
   }) {
     return _recentlyExcludedCommunities.contains(post.community)
         ? const SizedBox()
@@ -244,7 +244,7 @@ class OBProfilePageState extends State<OBProfilePage> {
   }
 
   String getFollowButtonText() {
-    return widget.user.isFollowed != null && widget.user.isFollowed
+    return widget.user.isFollowed != null && widget.user.isFollowed!
         ? _localizationService.user__follow_button_follow_back_text
         : _localizationService.user__follow_button_follow_text;
   }
@@ -275,13 +275,13 @@ class OBProfilePageState extends State<OBProfilePage> {
   }
 
   Future<void> _refreshUser() async {
-    var user = await _userService.getUserWithUsername(_user.username);
+    var user = await _userService.getUserWithUsername(_user.username!);
     _setUser(user);
   }
 
   Future<List<Post>> _refreshPosts() async {
     return (await _userService.getTimelinePosts(username: _user.username))
-        .posts;
+        .posts ?? [];
   }
 
   Future<List<Post>> _loadMorePosts(List<Post> posts) async {
@@ -289,7 +289,7 @@ class OBProfilePageState extends State<OBProfilePage> {
 
     return (await _userService.getTimelinePosts(
             maxId: lastPost.id, username: _user.username))
-        .posts;
+        .posts ?? [];
   }
 
   void _onPostsRefreshed(List<Post> posts) {
@@ -316,15 +316,15 @@ class OBProfilePageState extends State<OBProfilePage> {
 }
 
 class OBProfilePageController {
-  OBProfilePageState _timelinePageState;
+  OBProfilePageState? _timelinePageState;
 
-  void attach(OBProfilePageState profilePageState) {
+  void attach(OBProfilePageState? profilePageState) {
     assert(profilePageState != null, 'Cannot attach to empty state');
     _timelinePageState = profilePageState;
   }
 
   void scrollToTop() {
-    if (_timelinePageState != null) _timelinePageState.scrollToTop();
+    if (_timelinePageState != null) _timelinePageState!.scrollToTop();
   }
 }
 

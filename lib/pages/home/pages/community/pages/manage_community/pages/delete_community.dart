@@ -13,7 +13,7 @@ import 'package:flutter/cupertino.dart';
 class OBDeleteCommunityPage<T> extends StatefulWidget {
   final Community community;
 
-  const OBDeleteCommunityPage({Key key, @required this.community})
+  const OBDeleteCommunityPage({Key? key, required this.community})
       : super(key: key);
 
   @override
@@ -23,11 +23,11 @@ class OBDeleteCommunityPage<T> extends StatefulWidget {
 }
 
 class OBDeleteCommunityPageState extends State<OBDeleteCommunityPage> {
-  bool _confirmationInProgress;
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  bool _needsBootstrap;
+  late bool _confirmationInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -134,8 +134,8 @@ class OBDeleteCommunityPageState extends State<OBDeleteCommunityPage> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(message: _localizationService.trans('error__unknown_error'), context: context);
       throw error;

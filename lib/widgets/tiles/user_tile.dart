@@ -12,13 +12,13 @@ import '../../provider.dart';
 
 class OBUserTile extends StatelessWidget {
   final User user;
-  final OnUserTilePressed onUserTilePressed;
-  final OnUserTileDeleted onUserTileDeleted;
+  final OnUserTilePressed? onUserTilePressed;
+  final OnUserTileDeleted? onUserTileDeleted;
   final bool showFollowing;
-  final Widget trailing;
+  final Widget? trailing;
 
   const OBUserTile(this.user,
-      {Key key,
+      {Key? key,
       this.onUserTilePressed,
       this.onUserTileDeleted,
       this.showFollowing = false,
@@ -32,7 +32,7 @@ class OBUserTile extends StatelessWidget {
         openbookProvider.localizationService;
     Widget tile = ListTile(
       onTap: () {
-        if (onUserTilePressed != null) onUserTilePressed(user);
+        if (onUserTilePressed != null) onUserTilePressed!(user);
       },
       leading: OBAvatar(
         size: OBAvatarSize.medium,
@@ -41,15 +41,15 @@ class OBUserTile extends StatelessWidget {
       trailing: trailing,
       title: Row(children: <Widget>[
         OBText(
-          user.username,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          user.username!,
+          style: TextStyle(fontWeight: FontWeight.bold)
         ),
         _getUserBadge(user)
       ]),
       subtitle: Row(
         children: [
-          OBSecondaryText(user.getProfileName()),
-          showFollowing && user.isFollowing != null && user.isFollowing
+          Expanded(child: OBSecondaryText(user.getProfileName()!)),
+          showFollowing && user.isFollowing != null && user.isFollowing!
               ? OBSecondaryText(
                   _localizationService.trans('user__tile_following'))
               : const SizedBox()
@@ -68,7 +68,7 @@ class OBUserTile extends StatelessWidget {
             color: Colors.red,
             icon: Icons.delete,
             onTap: () {
-              onUserTileDeleted(user);
+              onUserTileDeleted!(user);
             },
           ),
         ],
@@ -79,7 +79,7 @@ class OBUserTile extends StatelessWidget {
 
   Widget _getUserBadge(User creator) {
     if (creator.hasProfileBadges()) {
-      Badge badge = creator.getProfileBadges()[0];
+      Badge badge = creator.getProfileBadges()![0];
       return OBUserBadge(badge: badge, size: OBUserBadgeSize.small);
     }
     return const SizedBox();

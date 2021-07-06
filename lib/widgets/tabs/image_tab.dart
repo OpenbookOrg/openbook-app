@@ -5,17 +5,17 @@ class OBImageTab extends StatelessWidget {
   static const double width = 130;
   static const double height = 80;
 
-  final Color color;
+  final Color? color;
   final Color textColor;
   final String text;
   final ImageProvider imageProvider;
 
   const OBImageTab(
-      {Key key,
+      {Key? key,
       this.color,
-      @required this.textColor,
-      @required this.text,
-      this.imageProvider})
+      required this.textColor,
+      required this.text,
+      required this.imageProvider})
       : super(key: key);
 
   @override

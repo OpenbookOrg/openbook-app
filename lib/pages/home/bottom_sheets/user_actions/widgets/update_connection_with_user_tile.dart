@@ -14,7 +14,7 @@ class OBUpdateConnectionWithUserTile extends StatefulWidget {
   final User user;
 
   const OBUpdateConnectionWithUserTile(this.user,
-      {Key key})
+      {Key? key})
       : super(key: key);
 
   @override
@@ -25,10 +25,10 @@ class OBUpdateConnectionWithUserTile extends StatefulWidget {
 
 class OBUpdateConnectionWithUserTileState
     extends State<OBUpdateConnectionWithUserTile> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  BottomSheetService _bottomSheetService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late BottomSheetService _bottomSheetService;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class OBUpdateConnectionWithUserTileState
   }
 
   void _displayAddConnectionToCirclesBottomSheet() {
-    List<Circle> connectedCircles = widget.user.connectedCircles.circles;
+    List<Circle> connectedCircles = widget.user.connectedCircles!.circles!;
 
     _bottomSheetService.showConnectionsCirclesPicker(
         context: context,
@@ -61,9 +61,9 @@ class OBUpdateConnectionWithUserTileState
 
   Future _updateConnectionWithUser(List<Circle> circles) async {
     try {
-      await _userService.updateConnectionWithUsername(widget.user.username,
+      await _userService.updateConnectionWithUsername(widget.user.username!,
           circles: circles);
-      if (!widget.user.isFollowing) widget.user.incrementFollowersCount();
+      if (!widget.user.isFollowing!) widget.user.incrementFollowersCount();
       _toastService.success(message: _localizationService.trans('user__update_connection_circle_updated'), context: context);
     } catch (error) {
       _onError(error);
@@ -75,8 +75,8 @@ class OBUpdateConnectionWithUserTileState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(message: _localizationService.trans('error__unknown_error'), context: context);
       throw error;

@@ -10,11 +10,11 @@ import 'package:flutter/material.dart';
 
 class OBDisconnectFromUserTile extends StatefulWidget {
   final User user;
-  final String title;
+  final String? title;
   final VoidCallback onDisconnectedFromUser;
 
   const OBDisconnectFromUserTile(this.user,
-      {Key key, this.title, @required this.onDisconnectedFromUser})
+      {Key? key, this.title, required this.onDisconnectedFromUser})
       : super(key: key);
 
   @override
@@ -24,9 +24,9 @@ class OBDisconnectFromUserTile extends StatefulWidget {
 }
 
 class OBDisconnectFromUserTileState extends State<OBDisconnectFromUserTile> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class OBDisconnectFromUserTileState extends State<OBDisconnectFromUserTile> {
     _toastService = openbookProvider.toastService;
     _localizationService = openbookProvider.localizationService;
 
-    String userName = widget.user.getProfileName();
+    String userName = widget.user.getProfileName()!;
 
     return ListTile(
         title: OBText(widget.title ?? _localizationService.user__disconnect_from_user(userName)),
@@ -48,7 +48,7 @@ class OBDisconnectFromUserTileState extends State<OBDisconnectFromUserTile> {
 
   Future _disconnectFromUser() async {
     try {
-      await _userService.disconnectFromUserWithUsername(widget.user.username);
+      await _userService.disconnectFromUserWithUsername(widget.user.username!);
       widget.user.decrementFollowersCount();
       _toastService.success(
           message: _localizationService.user__disconnect_from_user_success, context: context);
@@ -62,8 +62,8 @@ class OBDisconnectFromUserTileState extends State<OBDisconnectFromUserTile> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

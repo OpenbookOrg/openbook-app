@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class PoppablePageController {
-  BuildContext _context;
+  late BuildContext _context;
 
-  void attach({@required BuildContext context}) {
+  void attach({required BuildContext context}) {
     _context = context;
   }
 
@@ -12,12 +12,12 @@ class PoppablePageController {
   }
 
   bool isFirstRoute() {
-    Route currentRoute;
+    Route? currentRoute;
     Navigator.popUntil(_context, (route) {
       currentRoute = route;
       return true;
     });
-    return currentRoute.isFirst;
+    return currentRoute?.isFirst ?? false;
   }
 
   bool canPop() {

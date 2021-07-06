@@ -11,7 +11,7 @@ import 'package:flutter/services.dart';
 
 class OBPostBodyText extends StatefulWidget {
   final Post post;
-  final OnTextExpandedChange onTextExpandedChange;
+  final OnTextExpandedChange? onTextExpandedChange;
 
   OBPostBodyText(this.post, {this.onTextExpandedChange}) : super();
 
@@ -24,12 +24,12 @@ class OBPostBodyText extends StatefulWidget {
 class OBPostBodyTextState extends State<OBPostBodyText> {
   static const int MAX_LENGTH_LIMIT = 1300;
 
-  ToastService _toastService;
-  UserService _userService;
-  LocalizationService _localizationService;
-  String _translatedText;
-  bool _translationInProgress;
-  bool _needsBootstrap;
+  late ToastService _toastService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
+  String? _translatedText;
+  late bool _translationInProgress;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -76,7 +76,7 @@ class OBPostBodyTextState extends State<OBPostBodyText> {
   }
 
   Future<String> _translatePostText() async {
-    String translatedText;
+    late String translatedText;
     try {
       _setTranslationInProgress(true);
       translatedText = await _userService.translatePost(post: widget.post);
@@ -89,7 +89,7 @@ class OBPostBodyTextState extends State<OBPostBodyText> {
   }
 
   Widget _buildActionablePostText() {
-    if (widget.post.isEdited != null && widget.post.isEdited) {
+    if (widget.post.isEdited != null && widget.post.isEdited!) {
       return OBCollapsibleSmartText(
         text: _translatedText != null ? _translatedText : widget.post.text,
         trailingSmartTextElement: SecondaryTextElement(' (edited)'),
@@ -111,7 +111,7 @@ class OBPostBodyTextState extends State<OBPostBodyText> {
 
   Widget _buildTranslationButton() {
     if (_userService.getLoggedInUser() != null &&
-        !_userService.getLoggedInUser().canTranslatePost(widget.post)) {
+        !_userService.getLoggedInUser()!.canTranslatePost(widget.post)) {
       return SizedBox();
     }
 
@@ -173,7 +173,7 @@ class OBPostBodyTextState extends State<OBPostBodyText> {
     });
   }
 
-  void _setTranslatedText(String translatedText) {
+  void _setTranslatedText(String? translatedText) {
     setState(() {
       _translatedText = translatedText;
     });
@@ -181,4 +181,4 @@ class OBPostBodyTextState extends State<OBPostBodyText> {
 }
 
 typedef void OnTextExpandedChange(
-    {@required Post post, @required bool isExpanded});
+    {required Post post, required bool isExpanded});

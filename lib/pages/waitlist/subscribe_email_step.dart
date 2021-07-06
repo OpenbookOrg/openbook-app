@@ -18,14 +18,14 @@ class OBWaitlistSubscribePage extends StatefulWidget {
 }
 
 class OBWaitlistSubscribePageState extends State<OBWaitlistSubscribePage> {
-  bool _subscribeInProgress;
+  late bool _subscribeInProgress;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  bool _isSubmitted;
-  UserService _userService;
-  LocalizationService _localizationService;
-  ValidationService _validationService;
-  ToastService _toastService;
+  late bool _isSubmitted;
+  late UserService _userService;
+  late LocalizationService _localizationService;
+  late ValidationService _validationService;
+  late ToastService _toastService;
 
   TextEditingController _emailController = TextEditingController();
 
@@ -81,17 +81,17 @@ class OBWaitlistSubscribePageState extends State<OBWaitlistSubscribePage> {
     );
   }
 
-  bool _validateForm() {
+  bool? _validateForm() {
     if (!_isSubmitted) return null;
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate();
   }
 
   void onPressedNextStep(BuildContext context) async {
     if (_subscribeInProgress) return;
     _isSubmitted = true;
-    bool isEmailValid = _validateForm();
+    bool? isEmailValid = _validateForm();
 
-    if (!isEmailValid) return;
+    if (isEmailValid == null || !isEmailValid) return;
 
     _setSubscribeInProgress(true);
     try {
@@ -122,7 +122,7 @@ class OBWaitlistSubscribePageState extends State<OBWaitlistSubscribePage> {
     );
   }
 
-  Widget _buildPreviousButton({@required BuildContext context}) {
+  Widget _buildPreviousButton({required BuildContext context}) {
     String buttonText = _localizationService.trans('auth__create_acc__previous');
 
     return OBSecondaryButton(
@@ -149,7 +149,7 @@ class OBWaitlistSubscribePageState extends State<OBWaitlistSubscribePage> {
     );
   }
 
-  Widget _buildSubscribeEmailText({@required BuildContext context}) {
+  Widget _buildSubscribeEmailText({required BuildContext context}) {
     String subscribeEmailText = _localizationService
         .trans('auth__create_acc__subscribe_to_waitlist_text');
 
@@ -185,9 +185,9 @@ class OBWaitlistSubscribePageState extends State<OBWaitlistSubscribePage> {
               child: OBAuthTextField(
                 autocorrect: false,
                 hintText: emailInputPlaceholder,
-                validator: (String email) {
-                  String validateEMail =
-                      _validationService.validateUserEmail(email.trim());
+                validator: (String? email) {
+                  String? validateEMail =
+                      _validationService.validateUserEmail(email?.trim());
                   if (validateEMail != null) return validateEMail;
                 },
                 controller: _emailController,
@@ -203,8 +203,8 @@ class OBWaitlistSubscribePageState extends State<OBWaitlistSubscribePage> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;

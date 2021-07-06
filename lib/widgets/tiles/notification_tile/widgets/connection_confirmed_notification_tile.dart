@@ -13,12 +13,12 @@ import 'notification_tile_title.dart';
 class OBConnectionConfirmedNotificationTile extends StatelessWidget {
   final OBNotification notification;
   final ConnectionConfirmedNotification connectionConfirmedNotification;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const OBConnectionConfirmedNotificationTile(
-      {Key key,
-      @required this.notification,
-      @required this.connectionConfirmedNotification,
+      {Key? key,
+      required this.notification,
+      required this.connectionConfirmedNotification,
       this.onPressed})
       : super(key: key);
 
@@ -28,10 +28,10 @@ class OBConnectionConfirmedNotificationTile extends StatelessWidget {
     var utilsService = openbookProvider.utilsService;
 
     var navigateToConfirmatorProfile = () {
-      if (onPressed != null) onPressed();
+      if (onPressed != null) onPressed!();
       OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
       openbookProvider.navigationService.navigateToUserProfile(
-          user: connectionConfirmedNotification.connectionConfirmator,
+          user: connectionConfirmedNotification.connectionConfirmator!,
           context: context);
     };
     LocalizationService _localizationService = OpenbookProvider.of(context).localizationService;
@@ -40,7 +40,7 @@ class OBConnectionConfirmedNotificationTile extends StatelessWidget {
       onTap: navigateToConfirmatorProfile,
       leading: OBAvatar(
         size: OBAvatarSize.medium,
-        avatarUrl: connectionConfirmedNotification.connectionConfirmator
+        avatarUrl: connectionConfirmedNotification.connectionConfirmator!
             .getProfileAvatar(),
       ),
       title: OBNotificationTileTitle(
@@ -48,7 +48,7 @@ class OBConnectionConfirmedNotificationTile extends StatelessWidget {
         user: connectionConfirmedNotification.connectionConfirmator,
         text: TextSpan(text: _localizationService.notifications__accepted_connection_request_tile),
       ),
-      subtitle: OBSecondaryText(utilsService.timeAgo(notification.created, _localizationService)),
+      subtitle: OBSecondaryText(utilsService.timeAgo(notification.created!, _localizationService)),
     );
   }
 }

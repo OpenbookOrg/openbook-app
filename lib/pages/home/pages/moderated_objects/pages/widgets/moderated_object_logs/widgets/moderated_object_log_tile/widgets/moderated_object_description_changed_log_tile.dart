@@ -9,12 +9,12 @@ class OBModeratedObjectDescriptionChangedLogTile extends StatelessWidget {
   final ModeratedObjectLog log;
   final ModeratedObjectDescriptionChangedLog
       moderatedObjectDescriptionChangedLog;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const OBModeratedObjectDescriptionChangedLogTile(
-      {Key key,
-      @required this.log,
-      @required this.moderatedObjectDescriptionChangedLog,
+      {Key? key,
+      required this.log,
+      required this.moderatedObjectDescriptionChangedLog,
       this.onPressed})
       : super(key: key);
 
@@ -30,7 +30,7 @@ class OBModeratedObjectDescriptionChangedLogTile extends StatelessWidget {
           ),
           OBSecondaryText(
             moderatedObjectDescriptionChangedLog.changedFrom != null
-                ? moderatedObjectDescriptionChangedLog.changedFrom
+                ? moderatedObjectDescriptionChangedLog.changedFrom!
                 : 'No description',
             style: TextStyle(
                 fontStyle:
@@ -45,7 +45,7 @@ class OBModeratedObjectDescriptionChangedLogTile extends StatelessWidget {
             'To:',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          OBSecondaryText(moderatedObjectDescriptionChangedLog.changedTo),
+          OBSecondaryText(moderatedObjectDescriptionChangedLog.changedTo!),
         ],
       ),
     );

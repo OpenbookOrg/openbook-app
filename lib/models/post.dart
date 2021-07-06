@@ -21,51 +21,52 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'language.dart';
 import 'link_preview/link_preview.dart';
 
+import 'package:collection/collection.dart';
+
 class Post extends UpdatableModel<Post> {
-  final int id;
-  final String uuid;
-  final int creatorId;
-  DateTime created;
-  User creator;
-  CirclesList circles;
+  final int? id;
+  final String? uuid;
+  final int? creatorId;
+  DateTime? created;
+  User? creator;
+  CirclesList? circles;
 
-  ReactionsEmojiCountList reactionsEmojiCounts;
-  PostReaction reaction;
-  int reactionsCount;
-  int commentsCount;
-  double mediaHeight;
-  double mediaWidth;
-  String mediaThumbnail;
-  bool areCommentsEnabled;
-  bool publicReactions;
-  String text;
-  Language language;
-  OBPostStatus status;
+  ReactionsEmojiCountList? reactionsEmojiCounts;
+  PostReaction? reaction;
+  int? reactionsCount;
+  int? commentsCount;
+  double? mediaHeight;
+  double? mediaWidth;
+  String? mediaThumbnail;
+  bool? areCommentsEnabled;
+  bool? publicReactions;
+  String? text;
+  Language? language;
+  OBPostStatus? status;
 
-  PostMediaList media;
-  PostCommentList commentsList;
-  Community community;
-  HashtagsList hashtagsList;
-  PostLinksList postLinksList;
-  Map<String, Hashtag> hashtagsMap;
+  PostMediaList? media;
+  PostCommentList? commentsList;
+  Community? community;
+  HashtagsList? hashtagsList;
+  PostLinksList? postLinksList;
+  Map<String, Hashtag>? hashtagsMap;
 
-  bool isMuted;
-  bool isEncircled;
-  bool isEdited;
-  bool isClosed;
-  bool isReported;
+  bool? isMuted;
+  bool? isEncircled;
+  bool? isEdited;
+  bool? isClosed;
+  bool? isReported;
 
   // stored only in the app
   bool isExcludedFromTopPosts = false;
   bool isExcludedFromProfilePosts = false;
 
   // Stored as cache
-  LinkPreview linkPreview;
+  LinkPreview? linkPreview;
 
   static final factory = PostFactory();
 
   factory Post.fromJson(Map<String, dynamic> json) {
-    if (json == null) return null;
     return factory.fromJson(json);
   }
 
@@ -77,11 +78,11 @@ class Post extends UpdatableModel<Post> {
       'creator_id': creatorId,
       'creator': creator?.toJson(),
       'circles':
-          circles?.circles?.map((Circle circle) => circle.toJson())?.toList(),
+          circles?.circles?.map((Circle circle) => circle.toJson()).toList(),
       'reactions_emoji_counts': reactionsEmojiCounts?.counts
-          ?.map((ReactionsEmojiCount reactionEmojiCount) =>
-              reactionEmojiCount.toJson())
-          ?.toList(),
+          ?.map((ReactionsEmojiCount? reactionEmojiCount) =>
+              reactionEmojiCount?.toJson())
+          .toList(),
       'reaction': reaction?.toJson(),
       'reactions_count': reactionsCount,
       'comments_count': commentsCount,
@@ -95,16 +96,16 @@ class Post extends UpdatableModel<Post> {
       'status': status?.code,
       'media': media?.postMedia
           ?.map((PostMedia mediaObj) => mediaObj.toJson())
-          ?.toList(),
+          .toList(),
       'comments': commentsList?.comments
           ?.map((PostComment comment) => comment.toJson())
-          ?.toList(),
+          .toList(),
       'hashtags': hashtagsList?.hashtags
           ?.map((Hashtag hashtag) => hashtag.toJson())
-          ?.toList(),
+          .toList(),
       'links': postLinksList?.postLinks
           ?.map((PostLink postLink) => postLink.toJson())
-          ?.toList(),
+          .toList(),
       'community': community?.toJson(),
       'is_muted': isMuted,
       'is_encircled': isEncircled,
@@ -245,11 +246,11 @@ class Post extends UpdatableModel<Post> {
   }
 
   bool isReactionEmoji(Emoji emoji) {
-    return hasReaction() && reaction.getEmojiId() == emoji.id;
+    return hasReaction() && reaction?.getEmojiId() == emoji.id;
   }
 
   bool hasPublicInteractions() {
-    return publicReactions && areCommentsEnabled;
+    return publicReactions != null && areCommentsEnabled != null && publicReactions! && areCommentsEnabled!;
   }
 
   bool isCommunityPost() {
@@ -261,13 +262,13 @@ class Post extends UpdatableModel<Post> {
   }
 
   bool hasMedia() {
-    return media != null && media.postMedia.isNotEmpty;
+    return media != null && media!.postMedia!.isNotEmpty;
   }
 
-  PostLink getLinkToPreview() {
-    if (postLinksList != null && postLinksList.postLinks != null && postLinksList.postLinks.isNotEmpty) {
-      var linkPreview = postLinksList.postLinks
-          .firstWhere((link) => link.hasPreview, orElse: () => null);
+  PostLink? getLinkToPreview() {
+    if (postLinksList != null && postLinksList!.postLinks != null && postLinksList!.postLinks!.isNotEmpty) {
+      PostLink? linkPreview = postLinksList!.postLinks
+          !.firstWhereOrNull((link) => link.hasPreview!);
       return linkPreview;
     }
 
@@ -279,7 +280,7 @@ class Post extends UpdatableModel<Post> {
   }
 
   bool hasText() {
-    return text != null && text.length > 0;
+    return text != null && text!.length > 0;
   }
 
   bool hasLanguage() {
@@ -287,72 +288,85 @@ class Post extends UpdatableModel<Post> {
   }
 
   bool hasComments() {
-    return commentsList != null && commentsList.comments.length > 0;
+    return commentsList != null && commentsList!.comments!.length > 0;
   }
 
   bool hasCircles() {
-    return circles != null && circles.circles.length > 0;
+    return circles != null && circles!.circles!.length > 0;
   }
 
   bool hasCommentsCount() {
-    return commentsCount != null && commentsCount > 0;
+    return commentsCount != null && commentsCount! > 0;
   }
 
   bool isEncircledPost() {
-    return isEncircled || false;
+    return (isEncircled != null && isEncircled!) || false;
   }
 
   bool isOlderThan(Duration duration) {
-    return created.isBefore(DateTime.now().subtract(duration));
+    return created != null && created!.isBefore(DateTime.now().subtract(duration));
   }
 
-  List<PostComment> getPostComments() {
-    return commentsList.comments;
+  List<PostComment>? getPostComments() {
+    return commentsList?.comments;
   }
 
-  List<Circle> getPostCircles() {
-    return circles.circles;
+  List<Circle>? getPostCircles() {
+    return circles?.circles;
   }
 
-  List<ReactionsEmojiCount> getEmojiCounts() {
-    return reactionsEmojiCounts.counts.toList();
+  List<ReactionsEmojiCount?>? getEmojiCounts() {
+    return reactionsEmojiCounts?.counts?.toList();
   }
 
-  String getCreatorUsername() {
-    return creator.username;
+  String? getCreatorUsername() {
+    return creator?.username;
   }
 
-  int getCreatorId() {
-    return creator.id;
+  int? getCreatorId() {
+    return creator?.id;
   }
 
-  String getCreatorAvatar() {
-    return creator.profile.avatar;
+  String? getCreatorAvatar() {
+    return creator?.profile?.avatar;
   }
 
-  List<PostMedia> getMedia() {
-    return media.postMedia;
+  List<PostMedia>? getMedia() {
+    return media?.postMedia;
   }
 
-  PostMedia getFirstMedia() {
-    return media.postMedia.first;
+  PostMedia? getFirstMedia() {
+    return media?.postMedia?.first;
   }
 
-  Language getLanguage() {
+  Language? getLanguage() {
     return language;
   }
 
-  String getRelativeCreated() {
-    return timeago.format(created);
+  String? getRelativeCreated() {
+    if (created == null) {
+      return null;
+    }
+
+    return timeago.format(created!);
   }
 
   void incrementCommentsCount() {
-    this.commentsCount += 1;
+    if (this.commentsCount == null) {
+      this.commentsCount = 1;
+    } else {
+      this.commentsCount = this.commentsCount! + 1;
+    }
+
     this.notifyUpdate();
   }
 
   void decreaseCommentsCount() {
-    this.commentsCount -= 1;
+    if (this.commentsCount == null) {
+      return;
+    }
+
+    this.commentsCount = this.commentsCount! - 1;
     this.notifyUpdate();
   }
 
@@ -361,7 +375,7 @@ class Post extends UpdatableModel<Post> {
     this.notifyUpdate();
   }
 
-  void setLinkPreview(LinkPreview linkPreview) {
+  void setLinkPreview(LinkPreview? linkPreview) {
     this.linkPreview = linkPreview;
     this.notifyUpdate();
   }
@@ -370,41 +384,41 @@ class Post extends UpdatableModel<Post> {
     this.setReaction(null);
   }
 
-  void setReaction(PostReaction newReaction) {
+  void setReaction(PostReaction? newReaction) {
     bool hasReaction = this.hasReaction();
 
     if (!hasReaction && newReaction == null) {
       throw 'Trying to remove no reaction';
     }
 
-    var newEmojiCounts = reactionsEmojiCounts.counts.toList();
+    var newEmojiCounts = reactionsEmojiCounts?.counts?.toList();
 
     if (hasReaction) {
-      var currentReactionEmojiCount = newEmojiCounts.firstWhere((emojiCount) {
-        return emojiCount.getEmojiId() == reaction.getEmojiId();
+      var currentReactionEmojiCount = newEmojiCounts?.firstWhere((emojiCount) {
+        return emojiCount?.getEmojiId() == reaction?.getEmojiId();
       });
 
-      if (currentReactionEmojiCount.count > 1) {
+      if (currentReactionEmojiCount?.count != null && currentReactionEmojiCount!.count! > 1) {
         // Decrement emoji reaction counts
-        currentReactionEmojiCount.count -= 1;
+        currentReactionEmojiCount.count = currentReactionEmojiCount.count! + 1;
       } else {
         // Remove emoji reaction count
-        newEmojiCounts.remove(currentReactionEmojiCount);
+        newEmojiCounts?.remove(currentReactionEmojiCount);
       }
     }
 
     if (newReaction != null) {
-      var reactionEmojiCount = newEmojiCounts.firstWhere((emojiCount) {
-        return emojiCount.getEmojiId() == newReaction.getEmojiId();
-      }, orElse: () {});
+      var reactionEmojiCount = newEmojiCounts?.firstWhereOrNull((emojiCount) {
+        return emojiCount?.getEmojiId() == newReaction.getEmojiId();
+      });
 
       if (reactionEmojiCount != null) {
         // Up existing count
-        reactionEmojiCount.count += 1;
+        reactionEmojiCount.count = reactionEmojiCount.count! + 1;
       } else {
         // Add new emoji count
         newEmojiCounts
-            .add(ReactionsEmojiCount(emoji: newReaction.emoji, count: 1));
+            ?.add(ReactionsEmojiCount(emoji: newReaction.emoji, count: 1));
       }
     }
 
@@ -420,7 +434,7 @@ class Post extends UpdatableModel<Post> {
     notifyUpdate();
   }
 
-  void setStatus(OBPostStatus status) {
+  void setStatus(OBPostStatus? status) {
     this.status = status;
     this.notifyUpdate();
   }
@@ -436,15 +450,15 @@ class Post extends UpdatableModel<Post> {
     }
 
     Map<String, Hashtag> updatedMap = Map();
-    hashtagsList.hashtags
-        .forEach((hashtag) => updatedMap[hashtag.name] = hashtag);
+    hashtagsList?.hashtags
+        ?.forEach((hashtag) => updatedMap[hashtag.name!] = hashtag);
     hashtagsMap = updatedMap;
   }
 }
 
 class PostFactory extends UpdatableModelFactory<Post> {
   @override
-  SimpleCache<int, Post> cache =
+  SimpleCache<int, Post>? cache =
       SimpleCache(storage: UpdatableModelSimpleStorage(size: 100));
 
   @override
@@ -481,73 +495,73 @@ class PostFactory extends UpdatableModelFactory<Post> {
             parseReactionsEmojiCounts(json['reactions_emoji_counts']));
   }
 
-  User parseUser(Map userData) {
+  User? parseUser(Map<String, dynamic>? userData) {
     if (userData == null) return null;
     return User.fromJson(userData);
   }
 
-  DateTime parseCreated(String created) {
+  DateTime? parseCreated(String? created) {
     if (created == null) return null;
     return DateTime.parse(created).toLocal();
   }
 
-  PostMediaList parseMedia(List mediaRawData) {
+  PostMediaList? parseMedia(List? mediaRawData) {
     if (mediaRawData == null) return null;
     return PostMediaList.fromJson(mediaRawData);
   }
 
-  User parseCreator(Map creator) {
+  User? parseCreator(Map<String, dynamic>? creator) {
     if (creator == null) return null;
     return User.fromJson(creator);
   }
 
-  PostReaction parseReaction(Map postReaction) {
+  PostReaction? parseReaction(Map<String, dynamic>? postReaction) {
     if (postReaction == null) return null;
     return PostReaction.fromJson(postReaction);
   }
 
-  Community parseCommunity(Map communityData) {
+  Community? parseCommunity(Map<String, dynamic>? communityData) {
     if (communityData == null) return null;
     return Community.fromJSON(communityData);
   }
 
-  ReactionsEmojiCountList parseReactionsEmojiCounts(List reactionsEmojiCounts) {
+  ReactionsEmojiCountList? parseReactionsEmojiCounts(List? reactionsEmojiCounts) {
     if (reactionsEmojiCounts == null) return null;
     return ReactionsEmojiCountList.fromJson(reactionsEmojiCounts);
   }
 
-  PostCommentList parseCommentList(List commentList) {
+  PostCommentList? parseCommentList(List? commentList) {
     if (commentList == null) return null;
     return PostCommentList.fromJson(commentList);
   }
 
-  HashtagsList parseHashtagsList(List hashtagsList) {
+  HashtagsList? parseHashtagsList(List? hashtagsList) {
     if (hashtagsList == null) return null;
     return HashtagsList.fromJson(hashtagsList);
   }
 
-  PostLinksList parsePostLinksList(List postLinksList) {
+  PostLinksList? parsePostLinksList(List? postLinksList) {
     if (postLinksList == null) return null;
     return PostLinksList.fromJson(postLinksList);
   }
 
-  CirclesList parseCircles(List circlesData) {
+  CirclesList? parseCircles(List? circlesData) {
     if (circlesData == null) return null;
     return CirclesList.fromJson(circlesData);
   }
 
-  Language parseLanguage(Map languageData) {
+  Language? parseLanguage(Map<String, dynamic>? languageData) {
     if (languageData == null) return null;
     return Language.fromJson(languageData);
   }
 
-  double parseMediaWidth(dynamic mediaWidth) {
+  double? parseMediaWidth(dynamic mediaWidth) {
     if (mediaWidth == null) return null;
     if (mediaWidth is int) return mediaWidth.toDouble();
     if (mediaWidth is double) return mediaWidth;
   }
 
-  double parseMediaHeight(dynamic mediaHeight) {
+  double? parseMediaHeight(dynamic mediaHeight) {
     if (mediaHeight == null) return null;
     if (mediaHeight is int) return mediaHeight.toDouble();
     if (mediaHeight is double) return mediaHeight;
@@ -569,10 +583,10 @@ class OBPostStatus {
 
   static values() => _values;
 
-  static OBPostStatus parse(String string) {
+  static OBPostStatus? parse(String? string) {
     if (string == null) return null;
 
-    OBPostStatus postStatus;
+    OBPostStatus? postStatus;
     for (var type in _values) {
       if (string == type.code) {
         postStatus = type;

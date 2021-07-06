@@ -1,7 +1,7 @@
 import 'package:Okuna/models/video_format.dart';
 
 class OBVideoFormatsList {
-  final List<OBVideoFormat> videoFormats;
+  final List<OBVideoFormat>? videoFormats;
 
   OBVideoFormatsList({
     this.videoFormats,

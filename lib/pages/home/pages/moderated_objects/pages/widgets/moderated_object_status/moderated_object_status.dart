@@ -10,12 +10,12 @@ import 'package:flutter/material.dart';
 class OBModeratedObjectStatus extends StatelessWidget {
   final bool isEditable;
   final ModeratedObject moderatedObject;
-  final ValueChanged<ModeratedObjectStatus> onStatusChanged;
+  final ValueChanged<ModeratedObjectStatus>? onStatusChanged;
 
   const OBModeratedObjectStatus(
-      {Key key,
-      @required this.moderatedObject,
-      @required this.isEditable,
+      {Key? key,
+      required this.moderatedObject,
+      required this.isEditable,
       this.onStatusChanged})
       : super(key: key);
 
@@ -46,12 +46,12 @@ class OBModeratedObjectStatus extends StatelessWidget {
                 if (!isEditable) return;
                 OpenbookProviderState openbookProvider =
                     OpenbookProvider.of(context);
-                ModeratedObjectStatus newModerationStatus =
+                ModeratedObjectStatus? newModerationStatus =
                     await openbookProvider.modalService
                         .openModeratedObjectUpdateStatus(
                             context: context, moderatedObject: moderatedObject);
                 if (newModerationStatus != null && onStatusChanged != null)
-                  onStatusChanged(newModerationStatus);
+                  onStatusChanged!(newModerationStatus);
               },
             );
           },

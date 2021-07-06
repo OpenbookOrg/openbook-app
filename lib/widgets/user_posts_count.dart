@@ -19,12 +19,12 @@ class OBUserPostsCount extends StatefulWidget {
 }
 
 class OBUserPostsCountState extends State<OBUserPostsCount> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  bool _requestInProgress;
-  bool _hasError;
-  bool _needsBootstrap;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late bool _requestInProgress;
+  late bool _hasError;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class OBUserPostsCountState extends State<OBUserPostsCount> {
             ? _buildErrorIcon()
             : _requestInProgress
                 ? _buildLoadingIcon()
-                : _buildPostsCount(user);
+                : _buildPostsCount(user!);
       },
     );
   }
@@ -96,8 +96,8 @@ class OBUserPostsCountState extends State<OBUserPostsCount> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);

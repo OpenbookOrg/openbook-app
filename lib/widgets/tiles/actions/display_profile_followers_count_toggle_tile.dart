@@ -12,11 +12,11 @@ import 'package:flutter/material.dart';
 
 class OBDisplayProfileFollowersCountToggleTile extends StatefulWidget {
   final User user;
-  final ValueChanged<bool> onChanged;
+  final ValueChanged<bool>? onChanged;
   final bool hasDivider;
 
   const OBDisplayProfileFollowersCountToggleTile(
-      {Key key, this.onChanged, @required this.user, this.hasDivider = false})
+      {Key? key, this.onChanged, required this.user, this.hasDivider = false})
       : super(key: key);
 
   @override
@@ -31,13 +31,13 @@ class OBDisplayProfileFollowersCountToggleTileState
   static EdgeInsetsGeometry inputContentPadding =
       EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0);
 
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
 
-  bool _requestInProgress;
+  late bool _requestInProgress;
 
-  bool _followersCountVisible;
+  late bool _followersCountVisible;
 
   @override
   void initState() {
@@ -78,7 +78,7 @@ class OBDisplayProfileFollowersCountToggleTileState
       await _userService.updateUser(
         followersCountVisible: _followersCountVisible,
       );
-      if (widget.onChanged != null) widget.onChanged(_followersCountVisible);
+      if (widget.onChanged != null) widget.onChanged!(_followersCountVisible);
     } catch (error) {
       _onError(error);
     } finally {
@@ -91,8 +91,8 @@ class OBDisplayProfileFollowersCountToggleTileState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);

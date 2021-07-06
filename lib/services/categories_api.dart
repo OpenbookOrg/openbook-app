@@ -1,9 +1,9 @@
 import 'package:Okuna/services/httpie.dart';
 
 class CategoriesApiService {
-  HttpieService _httpService;
+  late HttpieService _httpService;
 
-  String apiURL;
+  late String apiURL;
 
   static const getCategoriesPath = 'api/categories/';
 

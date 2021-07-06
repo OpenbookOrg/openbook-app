@@ -21,9 +21,9 @@ import 'package:flutter/material.dart';
 
 class OBPostCommenterExpandedModal extends StatefulWidget {
   final Post post;
-  final PostComment postComment;
+  final PostComment? postComment;
 
-  const OBPostCommenterExpandedModal({Key key, this.post, this.postComment})
+  const OBPostCommenterExpandedModal({Key? key, required this.post, this.postComment})
       : super(key: key);
 
   @override
@@ -34,33 +34,33 @@ class OBPostCommenterExpandedModal extends StatefulWidget {
 
 class OBPostCommenterExpandedModalState
     extends OBContextualSearchBoxState<OBPostCommenterExpandedModal> {
-  ValidationService _validationService;
-  ToastService _toastService;
-  UserService _userService;
-  LocalizationService _localizationService;
+  late ValidationService _validationService;
+  late ToastService _toastService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
 
-  TextEditingController _textController;
-  int _charactersCount;
-  bool _isPostCommentTextAllowedLength;
-  bool _isPostCommentTextOriginal;
-  List<Widget> _postCommentItemsWidgets;
-  String _originalText;
-  bool _requestInProgress;
-  bool _needsBootstrap;
+  late TextEditingController _textController;
+  late int _charactersCount;
+  late bool _isPostCommentTextAllowedLength;
+  late bool _isPostCommentTextOriginal;
+  late List<Widget> _postCommentItemsWidgets;
+  late String _originalText;
+  late bool _requestInProgress;
+  late bool _needsBootstrap;
 
-  CancelableOperation _postCommentOperation;
+  CancelableOperation? _postCommentOperation;
 
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController(
-        text: widget.postComment != null ? widget.postComment.text : '');
+        text: widget.postComment?.text ?? '');
     _textController.addListener(_onPostCommentTextChanged);
     setAutocompleteTextController(_textController);
     _charactersCount = 0;
     _isPostCommentTextAllowedLength = false;
     _isPostCommentTextOriginal = false;
-    _originalText = widget.postComment.text;
+    _originalText = widget.postComment?.text ?? '';
     _requestInProgress = false;
     _needsBootstrap = true;
   }
@@ -69,13 +69,13 @@ class OBPostCommenterExpandedModalState
   void dispose() {
     super.dispose();
     _textController.removeListener(_onPostCommentTextChanged);
-    if (_postCommentOperation != null) _postCommentOperation.cancel();
+    if (_postCommentOperation != null) _postCommentOperation!.cancel();
   }
 
   @override
   void bootstrap() {
     super.bootstrap();
-    String hintText = widget.post.commentsCount > 0
+    String hintText = widget.post.commentsCount! > 0
         ? _localizationService.post__commenter_expanded_join_conversation
         : _localizationService.post__commenter_expanded_start_conversation;
     _postCommentItemsWidgets = [
@@ -109,7 +109,7 @@ class OBPostCommenterExpandedModalState
         )));
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     bool isPrimaryActionButtonIsEnabled = (_isPostCommentTextAllowedLength &&
         _charactersCount > 0 &&
         !_isPostCommentTextOriginal);
@@ -127,7 +127,7 @@ class OBPostCommenterExpandedModalState
     );
   }
 
-  Widget _buildPrimaryActionButton({bool isEnabled}) {
+  Widget _buildPrimaryActionButton({bool isEnabled = false}) {
     return OBButton(
       isDisabled: !isEnabled,
       isLoading: _requestInProgress,
@@ -192,10 +192,10 @@ class OBPostCommenterExpandedModalState
       _postCommentOperation = CancelableOperation.fromFuture(
           _userService.editPostComment(
               post: widget.post,
-              postComment: widget.postComment,
+              postComment: widget.postComment!,
               text: _textController.text));
 
-      PostComment comment = await _postCommentOperation.value;
+      PostComment? comment = await _postCommentOperation?.value;
       Navigator.pop(context, comment);
     } catch (error) {
       _onError(error);
@@ -210,8 +210,8 @@ class OBPostCommenterExpandedModalState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);

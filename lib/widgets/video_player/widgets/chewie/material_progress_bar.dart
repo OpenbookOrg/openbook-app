@@ -6,7 +6,7 @@ import 'package:video_player/video_player.dart';
 class MaterialVideoProgressBar extends StatefulWidget {
   MaterialVideoProgressBar(
     this.controller, {
-    ChewieProgressColors colors,
+    ChewieProgressColors? colors,
     this.onDragEnd,
     this.onDragStart,
     this.onDragUpdate,
@@ -14,9 +14,9 @@ class MaterialVideoProgressBar extends StatefulWidget {
 
   final VideoPlayerController controller;
   final ChewieProgressColors colors;
-  final Function() onDragStart;
-  final Function() onDragEnd;
-  final Function() onDragUpdate;
+  final Function()? onDragStart;
+  final Function()? onDragEnd;
+  final Function()? onDragUpdate;
 
   @override
   _VideoProgressBarState createState() {
@@ -31,7 +31,7 @@ class _VideoProgressBarState extends State<MaterialVideoProgressBar> {
     };
   }
 
-  VoidCallback listener;
+  late VoidCallback listener;
   bool _controllerWasPlaying = false;
 
   VideoPlayerController get controller => widget.controller;
@@ -54,7 +54,7 @@ class _VideoProgressBarState extends State<MaterialVideoProgressBar> {
       final box = context.findRenderObject() as RenderBox;
       final Offset tapPos = box.globalToLocal(globalPosition);
       final double relative = tapPos.dx / box.size.width;
-      final Duration position = controller.value.duration * relative;
+      final Duration position = controller.value.duration! * relative;
       controller.seekTo(position);
     }
 
@@ -82,7 +82,7 @@ class _VideoProgressBarState extends State<MaterialVideoProgressBar> {
         }
 
         if (widget.onDragStart != null) {
-          widget.onDragStart();
+          widget.onDragStart!();
         }
       },
       onHorizontalDragUpdate: (DragUpdateDetails details) {
@@ -92,7 +92,7 @@ class _VideoProgressBarState extends State<MaterialVideoProgressBar> {
         seekToRelativePosition(details.globalPosition);
 
         if (widget.onDragUpdate != null) {
-          widget.onDragUpdate();
+          widget.onDragUpdate!();
         }
       },
       onHorizontalDragEnd: (DragEndDetails details) {
@@ -101,7 +101,7 @@ class _VideoProgressBarState extends State<MaterialVideoProgressBar> {
         }
 
         if (widget.onDragEnd != null) {
-          widget.onDragEnd();
+          widget.onDragEnd!();
         }
       },
       onTapDown: (TapDownDetails details) {
@@ -143,12 +143,12 @@ class _ProgressBarPainter extends CustomPainter {
       return;
     }
     final double playedPartPercent =
-        value.position.inMilliseconds / value.duration.inMilliseconds;
+        value.position.inMilliseconds / value.duration!.inMilliseconds;
     final double playedPart =
         playedPartPercent > 1 ? size.width : playedPartPercent * size.width;
     for (DurationRange range in value.buffered) {
-      final double start = range.startFraction(value.duration) * size.width;
-      final double end = range.endFraction(value.duration) * size.width;
+      final double start = range.startFraction(value.duration!) * size.width;
+      final double end = range.endFraction(value.duration!) * size.width;
       canvas.drawRRect(
         RRect.fromRectAndRadius(
           Rect.fromPoints(

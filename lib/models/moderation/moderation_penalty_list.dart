@@ -1,7 +1,7 @@
 import 'package:Okuna/models/moderation/moderation_penalty.dart';
 
 class ModerationPenaltiesList {
-  final List<ModerationPenalty> moderationPenalties;
+  final List<ModerationPenalty>? moderationPenalties;
 
   ModerationPenaltiesList({
     this.moderationPenalties,

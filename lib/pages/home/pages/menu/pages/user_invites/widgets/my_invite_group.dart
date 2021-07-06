@@ -19,23 +19,23 @@ class OBMyInvitesGroup extends StatefulWidget {
   final OBHttpListSearcher<UserInvite> inviteListSearcher;
   final void Function(BuildContext, UserInvite) inviteGroupListItemDeleteCallback;
   final OBHttpListOnScrollLoader<UserInvite> inviteGroupListOnScrollLoader;
-  final OBMyInvitesGroupFallbackBuilder noGroupItemsFallbackBuilder;
-  final OBMyInvitesGroupController controller;
+  final OBMyInvitesGroupFallbackBuilder? noGroupItemsFallbackBuilder;
+  final OBMyInvitesGroupController? controller;
   final String groupItemName;
   final String groupName;
   final int maxGroupListPreviewItems;
   final String title;
 
   const OBMyInvitesGroup({
-    Key key,
-    @required this.inviteGroupListRefresher,
-    @required this.inviteGroupListOnScrollLoader,
-    @required this.groupItemName,
-    @required this.inviteListSearcher,
-    @required this.groupName,
-    @required this.title,
-    @required this.maxGroupListPreviewItems,
-    @required this.inviteGroupListItemDeleteCallback,
+    Key? key,
+    required this.inviteGroupListRefresher,
+    required this.inviteGroupListOnScrollLoader,
+    required this.groupItemName,
+    required this.inviteListSearcher,
+    required this.groupName,
+    required this.title,
+    required this.maxGroupListPreviewItems,
+    required this.inviteGroupListItemDeleteCallback,
     this.noGroupItemsFallbackBuilder,
     this.controller,
   }) : super(key: key);
@@ -47,18 +47,18 @@ class OBMyInvitesGroup extends StatefulWidget {
 }
 
 class OBMyInvitesGroupState extends State<OBMyInvitesGroup> {
-  bool _needsBootstrap;
-  ToastService _toastService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
-  List<UserInvite> _inviteGroupList;
-  bool _refreshInProgress;
-  CancelableOperation _refreshOperation;
+  late bool _needsBootstrap;
+  late ToastService _toastService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
+  late List<UserInvite> _inviteGroupList;
+  late bool _refreshInProgress;
+  CancelableOperation? _refreshOperation;
 
   @override
   void initState() {
     super.initState();
-    if (widget.controller != null) widget.controller.attach(this);
+    if (widget.controller != null) widget.controller!.attach(this);
     _needsBootstrap = true;
     _inviteGroupList = [];
     _refreshInProgress = false;
@@ -82,7 +82,7 @@ class OBMyInvitesGroupState extends State<OBMyInvitesGroup> {
 
     if (listItemCount == 0) {
       if (widget.noGroupItemsFallbackBuilder != null && !_refreshInProgress) {
-        return widget.noGroupItemsFallbackBuilder(
+        return widget.noGroupItemsFallbackBuilder!(
             context, _refreshInvites);
       }
       return const SizedBox();
@@ -120,8 +120,8 @@ class OBMyInvitesGroupState extends State<OBMyInvitesGroup> {
   @override
   void dispose() {
     super.dispose();
-    if (widget.controller != null) widget.controller.detach();
-    if (_refreshOperation != null) _refreshOperation.cancel();
+    if (widget.controller != null) widget.controller!.detach();
+    if (_refreshOperation != null) _refreshOperation!.cancel();
   }
 
   Widget _buildSeeAllButton() {
@@ -178,13 +178,13 @@ class OBMyInvitesGroupState extends State<OBMyInvitesGroup> {
   }
 
   Future<void> _refreshInvites() async {
-    if (_refreshOperation != null) _refreshOperation.cancel();
+    if (_refreshOperation != null) _refreshOperation!.cancel();
     _setRefreshInProgress(true);
     try {
       _refreshOperation =
           CancelableOperation.fromFuture(widget.inviteGroupListRefresher());
 
-      List<UserInvite> groupInvites = await _refreshOperation.value;
+      List<UserInvite> groupInvites = await _refreshOperation!.value;
 
       _setUserInviteGroupList(groupInvites);
     } catch (error) {
@@ -200,8 +200,8 @@ class OBMyInvitesGroupState extends State<OBMyInvitesGroup> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;
@@ -249,7 +249,7 @@ class OBMyInvitesGroupState extends State<OBMyInvitesGroup> {
 }
 
 class OBMyInvitesGroupController {
-  OBMyInvitesGroupState _state;
+  OBMyInvitesGroupState? _state;
 
   void attach(OBMyInvitesGroupState state) {
     this._state = state;
@@ -261,7 +261,7 @@ class OBMyInvitesGroupController {
 
   Future<void> refresh() {
     if (_state == null) return Future.value();
-    return _state._refreshInvites();
+    return _state!._refreshInvites();
   }
 }
 

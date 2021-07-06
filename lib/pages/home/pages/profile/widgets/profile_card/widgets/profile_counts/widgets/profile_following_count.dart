@@ -12,7 +12,7 @@ class OBProfileFollowingCount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int followingCount = user.followingCount;
+    int? followingCount = user.followingCount;
     LocalizationService localizationService = OpenbookProvider.of(context).localizationService;
 
     if (followingCount == null || followingCount == 0) return const SizedBox();
@@ -49,7 +49,7 @@ class OBProfileFollowingCount extends StatelessWidget {
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: themeValueParserService
-                                .parseColor(theme.primaryTextColor))),
+                                .parseColor(theme!.primaryTextColor))),
                     TextSpan(
                         text: localizationService.post__profile_counts_following,
                         style: TextStyle(

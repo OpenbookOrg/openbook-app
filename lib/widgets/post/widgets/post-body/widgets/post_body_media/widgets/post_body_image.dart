@@ -8,13 +8,13 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 class OBPostBodyImage extends StatelessWidget {
-  final PostImage postImage;
+  final PostImage? postImage;
   final bool hasExpandButton;
-  final double height;
-  final double width;
+  final double? height;
+  final double? width;
 
   const OBPostBodyImage(
-      {Key key,
+      {Key? key,
       this.postImage,
       this.hasExpandButton = false,
       this.height,
@@ -23,10 +23,10 @@ class OBPostBodyImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String imageUrl = postImage.image;
+    String imageUrl = postImage!.image!;
 
     List<Widget> stackItems = [
-      _buildImageWidget(imageUrl: imageUrl, width: width, height: height)
+      _buildImageWidget(imageUrl: imageUrl, width: width!, height: height!)
     ];
 
     if (hasExpandButton) {
@@ -45,12 +45,12 @@ class OBPostBodyImage extends StatelessWidget {
     );
   }
 
-  Widget _buildImageWidget({String imageUrl, double height, double width}) {
+  Widget _buildImageWidget({String? imageUrl, double? height, double? width}) {
     return Image(
       height: height,
       width: width,
       fit: BoxFit.cover,
-      image: AdvancedNetworkImage(imageUrl,
+      image: AdvancedNetworkImage(imageUrl ?? '',
           useDiskCache: true,
           fallbackAssetImage: 'assets/images/fallbacks/post-fallback.png',
           retryLimit: 3,

@@ -1,9 +1,9 @@
 import 'package:Okuna/models/user.dart';
 
 class FollowRequest {
-  final int id;
-  final User creator;
-  final User targetUser;
+  final int? id;
+  final User? creator;
+  final User? targetUser;
 
   FollowRequest({this.id, this.creator, this.targetUser});
 
@@ -15,7 +15,7 @@ class FollowRequest {
     );
   }
 
-  static User _parseFollowRequestedUser(Map followRequestedUserData) {
+  static User? _parseFollowRequestedUser(Map<String, dynamic>? followRequestedUserData) {
     if (followRequestedUserData == null) return null;
     return User.fromJson(followRequestedUserData);
   }

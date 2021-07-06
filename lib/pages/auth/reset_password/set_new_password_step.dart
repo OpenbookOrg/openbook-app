@@ -18,16 +18,16 @@ class OBAuthSetNewPasswordPage extends StatefulWidget {
 }
 
 class OBAuthSetNewPasswordPageState extends State<OBAuthSetNewPasswordPage> {
-  bool _passwordIsVisible;
-  CreateAccountBloc createAccountBloc;
-  LocalizationService localizationService;
-  ValidationService validationService;
-  UserService userService;
-  ToastService toastService;
+  late bool _passwordIsVisible;
+  late CreateAccountBloc createAccountBloc;
+  late LocalizationService localizationService;
+  late ValidationService validationService;
+  late UserService userService;
+  late ToastService toastService;
   static const passwordMaxLength = ValidationService.PASSWORD_MAX_LENGTH;
   static const passwordMinLength = ValidationService.PASSWORD_MIN_LENGTH;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _requestInProgress;
+  late bool _requestInProgress;
 
   TextEditingController _passwordController = TextEditingController();
 
@@ -96,7 +96,7 @@ class OBAuthSetNewPasswordPageState extends State<OBAuthSetNewPasswordPage> {
   }
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   void onPressedNextStep() async {
@@ -109,14 +109,14 @@ class OBAuthSetNewPasswordPageState extends State<OBAuthSetNewPasswordPage> {
   Future<void> _verifyResetPassword(BuildContext context) async {
     _setRequestInProgress(true);
     String newPassword = _passwordController.text;
-    String passwordResetToken = createAccountBloc.getPasswordResetToken();
+    String? passwordResetToken = createAccountBloc.getPasswordResetToken();
     try {
-      await userService.verifyPasswordReset(newPassword: newPassword, passwordResetToken: passwordResetToken);
+      await userService.verifyPasswordReset(newPassword: newPassword, passwordResetToken: passwordResetToken ?? '');
       createAccountBloc.clearAll();
       Navigator.pushNamed(context, '/auth/password_reset_success_step');
     } catch (error) {
       if (error is HttpieRequestError) {
-        String errorMessage = await error.toHumanReadableMessage();
+        String? errorMessage = await error.toHumanReadableMessage();
         _showErrorMessage(errorMessage);
       }
       if (error is HttpieConnectionRefusedError) {
@@ -127,7 +127,7 @@ class OBAuthSetNewPasswordPageState extends State<OBAuthSetNewPasswordPage> {
     }
   }
 
-  Widget _buildPreviousButton({@required BuildContext context}) {
+  Widget _buildPreviousButton({required BuildContext context}) {
     String buttonText = localizationService.trans('auth__create_acc__previous');
 
     return OBSecondaryButton(
@@ -154,7 +154,7 @@ class OBAuthSetNewPasswordPageState extends State<OBAuthSetNewPasswordPage> {
     );
   }
 
-  Widget _buildWhatYourPassword({@required BuildContext context}) {
+  Widget _buildWhatYourPassword({required BuildContext context}) {
     String whatPasswordText =
     localizationService.auth__create_acc__what_password;
 
@@ -197,8 +197,8 @@ class OBAuthSetNewPasswordPageState extends State<OBAuthSetNewPasswordPage> {
               child: OBAuthTextField(
                 autocorrect: false,
                 obscureText: !_passwordIsVisible,
-                validator: (String password) {
-                  String validatePassword = validationService.validateUserPassword(password);
+                validator: (String? password) {
+                  String? validatePassword = validationService.validateUserPassword(password);
                   if (validatePassword != null) return validatePassword;
                 },
                 suffixIcon: GestureDetector(
@@ -224,8 +224,8 @@ class OBAuthSetNewPasswordPageState extends State<OBAuthSetNewPasswordPage> {
     });
   }
 
-  void _showErrorMessage(String message) {
-    toastService.error(message: message, context: context);
+  void _showErrorMessage(String? message) {
+    toastService.error(message: message ?? 'Unknown error', context: context);
   }
 
 

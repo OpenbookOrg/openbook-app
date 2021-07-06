@@ -16,38 +16,38 @@ class OBPostCommentUserMentionNotificationTile extends StatelessWidget {
   final OBNotification notification;
   final PostCommentUserMentionNotification postCommentUserMentionNotification;
   static final double postCommentImagePreviewSize = 40;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const OBPostCommentUserMentionNotificationTile(
-      {Key key,
-      @required this.notification,
-      @required this.postCommentUserMentionNotification,
+      {Key? key,
+      required this.notification,
+      required this.postCommentUserMentionNotification,
       this.onPressed})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     PostCommentUserMention postCommentUserMention =
-        postCommentUserMentionNotification.postCommentUserMention;
-    PostComment postComment = postCommentUserMention.postComment;
+        postCommentUserMentionNotification.postCommentUserMention!;
+    PostComment postComment = postCommentUserMention.postComment!;
 
     OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
     var utilsService = openbookProvider.utilsService;
 
-    Function navigateToMentionerProfile = () {
+    VoidCallback navigateToMentionerProfile = () {
       openbookProvider.navigationService.navigateToUserProfile(
-          user: postCommentUserMention.postComment.commenter, context: context);
+          user: postCommentUserMention.postComment!.commenter!, context: context);
     };
     LocalizationService _localizationService = openbookProvider.localizationService;
 
-    String postCommentText = postComment.text;
+    String postCommentText = postComment.text!;
     return OBNotificationTileSkeleton(
       onTap: () {
-        if (onPressed != null) onPressed();
+        if (onPressed != null) onPressed!();
         OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
 
-        PostComment parentComment = postComment.parentComment;
-        if(parentComment!=null){
+        PostComment? parentComment = postComment.parentComment;
+        if(parentComment != null){
           openbookProvider.navigationService.navigateToPostCommentRepliesLinked(
               postComment: postComment,
               context: context,
@@ -60,15 +60,15 @@ class OBPostCommentUserMentionNotificationTile extends StatelessWidget {
       leading: OBAvatar(
         onPressed: navigateToMentionerProfile,
         size: OBAvatarSize.medium,
-        avatarUrl: postCommentUserMention.postComment.commenter.getProfileAvatar(),
+        avatarUrl: postCommentUserMention.postComment!.commenter!.getProfileAvatar(),
       ),
       title: OBNotificationTileTitle(
         text: TextSpan(text: _localizationService.notifications__mentioned_in_post_comment_tile(postCommentText)),
         onUsernamePressed: navigateToMentionerProfile,
-        user: postCommentUserMention.postComment.commenter,
+        user: postCommentUserMention.postComment!.commenter,
       ),
       subtitle: OBSecondaryText(
-        utilsService.timeAgo(notification.created, _localizationService),
+        utilsService.timeAgo(notification.created!, _localizationService),
         size: OBTextSize.small,
       ),
     );

@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 
 class OBLoadingTile extends StatelessWidget {
   final bool isLoading;
-  final Widget title;
-  final Widget subtitle;
-  final Widget leading;
-  final Widget trailing;
-  final VoidCallback onTap;
+  final Widget? title;
+  final Widget? subtitle;
+  final Widget? leading;
+  final Widget? trailing;
+  final VoidCallback? onTap;
 
   const OBLoadingTile(
-      {Key key,
+      {Key? key,
       this.isLoading = false,
       this.title,
       this.subtitle,

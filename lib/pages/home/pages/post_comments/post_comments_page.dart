@@ -28,17 +28,17 @@ import 'package:Okuna/widgets/load_more.dart';
 import 'package:Okuna/services/httpie.dart';
 
 class OBPostCommentsPage extends StatefulWidget {
-  final PostComment linkedPostComment;
-  final Post post;
+  final PostComment? linkedPostComment;
+  final Post? post;
   final PostCommentsPageType pageType;
   final bool autofocusCommentInput;
-  final bool showPostPreview;
-  final PostComment postComment;
-  final ValueChanged<PostComment> onCommentDeleted;
-  final ValueChanged<PostComment> onCommentAdded;
+  final bool? showPostPreview;
+  final PostComment? postComment;
+  final ValueChanged<PostComment>? onCommentDeleted;
+  final ValueChanged<PostComment>? onCommentAdded;
 
   OBPostCommentsPage({
-    @required this.pageType,
+    required this.pageType,
     this.post,
     this.linkedPostComment,
     this.postComment,
@@ -57,33 +57,33 @@ class OBPostCommentsPage extends StatefulWidget {
 class OBPostCommentsPageState
     extends OBContextualSearchBoxState<OBPostCommentsPage>
     with SingleTickerProviderStateMixin {
-  UserService _userService;
-  UserPreferencesService _userPreferencesService;
-  ToastService _toastService;
-  ThemeService _themeService;
-  DraftService _draftService;
-  UtilsService _utilsService;
-  LocalizationService _localizationService;
-  ThemeValueParserService _themeValueParserService;
-  Post _post;
-  AnimationController _animationController;
-  Animation<double> _animation;
+  late UserService _userService;
+  late UserPreferencesService _userPreferencesService;
+  late ToastService _toastService;
+  late ThemeService _themeService;
+  late DraftService _draftService;
+  late UtilsService _utilsService;
+  late LocalizationService _localizationService;
+  late ThemeValueParserService _themeValueParserService;
+  late Post _post;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 
-  double _positionTopCommentSection;
-  ScrollController _postCommentsScrollController;
+  late double _positionTopCommentSection;
+  ScrollController? _postCommentsScrollController;
   List<PostComment> _postComments = [];
-  bool _noMoreBottomItemsToLoad;
-  bool _noMoreTopItemsToLoad;
-  bool _needsBootstrap;
-  bool _shouldHideStackedLoadingScreen;
-  bool _startScrollWasInitialised;
-  PostCommentsSortType _currentSort;
-  FocusNode _commentInputFocusNode;
-  GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
-  OBPostCommentsPageController _commentsPageController;
-  Map<String, String> _pageTextMap;
+  late bool _noMoreBottomItemsToLoad;
+  late bool _noMoreTopItemsToLoad;
+  late bool _needsBootstrap;
+  late bool _shouldHideStackedLoadingScreen;
+  late bool _startScrollWasInitialised;
+  late PostCommentsSortType _currentSort;
+  late FocusNode _commentInputFocusNode;
+  late GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
+  late OBPostCommentsPageController _commentsPageController;
+  late Map<String, String> _pageTextMap;
 
-  DraftTextEditingController _postCommenterTextController;
+  late DraftTextEditingController _postCommenterTextController;
 
   static const int MAX_POST_TEXT_LENGTH_LIMIT = 1300;
   static const int MAX_COMMENT_TEXT_LENGTH_LIMIT = 500;
@@ -108,14 +108,14 @@ class OBPostCommentsPageState
       HEIGHT_SIZED_BOX +
       HEIGHT_POST_DIVIDER;
 
-  CancelableOperation _refreshPostOperation;
-  CancelableOperation _refreshPostCommentOperation;
+  CancelableOperation? _refreshPostOperation;
+  CancelableOperation? _refreshPostCommentOperation;
 
   @override
   void initState() {
     super.initState();
-    if (widget.linkedPostComment != null) _post = widget.linkedPostComment.post;
-    if (widget.post != null) _post = widget.post;
+    if (widget.linkedPostComment != null) _post = widget.linkedPostComment!.post!;
+    if (widget.post != null) _post = widget.post!;
     _needsBootstrap = true;
     _postComments = [];
     _noMoreBottomItemsToLoad = true;
@@ -139,7 +139,7 @@ class OBPostCommentsPageState
     _bootstrapAsync();
 
     _postCommenterTextController = DraftTextEditingController.comment(
-        widget.post.id,
+        widget.post!.id!,
         commentId: widget.postComment?.id,
         draftService: _draftService);
 
@@ -218,7 +218,7 @@ class OBPostCommentsPageState
   void dispose() {
     super.dispose();
     _animation.removeStatusListener(_onAnimationStatusChanged);
-    if (_refreshPostOperation != null) _refreshPostOperation.cancel();
+    if (_refreshPostOperation != null) _refreshPostOperation!.cancel();
     _commentsPageController.dispose();
   }
 
@@ -366,7 +366,7 @@ class OBPostCommentsPageState
     _commentsPageController
         .refreshCommentsWithCreatedPostCommentVisible(createdPostComment);
     if (widget.onCommentAdded != null) {
-      widget.onCommentAdded(createdPostComment);
+      widget.onCommentAdded!(createdPostComment);
     }
   }
 
@@ -376,7 +376,7 @@ class OBPostCommentsPageState
         widget.showPostPreview == true) {
       Future.delayed(Duration(milliseconds: 0), () {
         if (_positionTopCommentSection == 0.0) _setPositionTopCommentSection();
-        _postCommentsScrollController.animateTo(
+        _postCommentsScrollController?.animateTo(
             _positionTopCommentSection - 100.0,
             duration: Duration(milliseconds: 5),
             curve: Curves.easeIn);
@@ -427,11 +427,11 @@ class OBPostCommentsPageState
     var postComment = _postComments[commentIndex];
     var onPostCommentDeletedCallback = (PostComment comment) {
       _removePostCommentAtIndex(commentIndex);
-      if (widget.onCommentDeleted != null) widget.onCommentDeleted(postComment);
+      if (widget.onCommentDeleted != null) widget.onCommentDeleted!(postComment);
     };
 
     if (widget.linkedPostComment != null &&
-        postComment.id == widget.linkedPostComment.id) {
+        postComment.id == widget.linkedPostComment!.id) {
       var theme = _themeService.getActiveTheme();
       var primaryColor =
           _themeValueParserService.parseColor(theme.primaryColor);
@@ -462,7 +462,7 @@ class OBPostCommentsPageState
   }
 
   Widget _getPostPreview() {
-    if (widget.post == null || !widget.showPostPreview) {
+    if (widget.post == null || !(widget.showPostPreview ?? false)) {
       return SizedBox();
     }
 
@@ -482,9 +482,9 @@ class OBPostCommentsPageState
   }
 
   void _scrollToTop() {
-    if (!_postCommentsScrollController.hasListeners) return;
+    if (!_postCommentsScrollController!.hasListeners) return;
     Future.delayed(Duration(milliseconds: 0), () {
-      _postCommentsScrollController.animateTo(
+      _postCommentsScrollController!.animateTo(
         0.0,
         curve: Curves.easeOut,
         duration: const Duration(milliseconds: 300),
@@ -499,13 +499,13 @@ class OBPostCommentsPageState
   }
 
   Future<void> _refreshPost() async {
-    if (_refreshPostOperation != null) _refreshPostOperation.cancel();
+    if (_refreshPostOperation != null) _refreshPostOperation!.cancel();
     try {
       // This will trigger the updateSubject of the post
       _refreshPostOperation = CancelableOperation.fromFuture(
-          _userService.getPostWithUuid(_post.uuid));
+          _userService.getPostWithUuid(_post.uuid!));
 
-      await _refreshPostOperation.value;
+      await _refreshPostOperation?.value;
     } catch (error) {
       _onError(error);
     } finally {
@@ -515,13 +515,13 @@ class OBPostCommentsPageState
 
   Future<void> _refreshPostComment() async {
     if (_refreshPostCommentOperation != null)
-      _refreshPostCommentOperation.cancel();
+      _refreshPostCommentOperation!.cancel();
     try {
       // This will trigger the updateSubject of the postComment
       _refreshPostCommentOperation = CancelableOperation.fromFuture(_userService
-          .getPostComment(post: widget.post, postComment: widget.postComment));
+          .getPostComment(post: widget.post!, postComment: widget.postComment!));
 
-      await _refreshPostCommentOperation.value;
+      await _refreshPostCommentOperation?.value;
       _setPositionTopCommentSection();
     } catch (error) {
       _onError(error);
@@ -588,7 +588,7 @@ class OBPostCommentsPageState
 
   void _showNoMoreTopItemsToLoadToast() {
     _toastService.info(
-        context: context, message: _pageTextMap['NO_MORE_TO_LOAD']);
+        context: context, message: _pageTextMap['NO_MORE_TO_LOAD']!);
   }
 
   void _setCurrentSortValue(PostCommentsSortType newSortValue) {
@@ -599,12 +599,12 @@ class OBPostCommentsPageState
 
   void _scrollToNewComment() {
     if (_currentSort == PostCommentsSortType.asc) {
-      _postCommentsScrollController.animateTo(
-          _postCommentsScrollController.position.maxScrollExtent,
+      _postCommentsScrollController?.animateTo(
+          _postCommentsScrollController!.position.maxScrollExtent,
           duration: const Duration(milliseconds: 50),
           curve: Curves.easeIn);
     } else if (_currentSort == PostCommentsSortType.dec) {
-      _postCommentsScrollController.animateTo(
+      _postCommentsScrollController?.animateTo(
           _positionTopCommentSection - 100.0,
           duration: Duration(milliseconds: 5),
           curve: Curves.easeIn);
@@ -616,8 +616,8 @@ class OBPostCommentsPageState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;
@@ -657,15 +657,15 @@ class OBPostCommentsPageState
 
     double screenWidth = MediaQuery.of(context).size.width;
 
-    if (widget.showPostPreview && widget.post != null) {
+    if (widget.showPostPreview == true && widget.post != null) {
       if (_post.hasMediaThumbnail()) {
-        aspectRatio = _post.mediaWidth / _post.mediaHeight;
+        aspectRatio = _post.mediaWidth! / _post.mediaHeight!;
         finalMediaScreenHeight = screenWidth / aspectRatio;
       }
 
       if (_post.hasText()) {
         TextStyle style = TextStyle(fontSize: 16.0);
-        String postText = _post.text;
+        String postText = _post.text ?? '';
         if (postText.length > MAX_POST_TEXT_LENGTH_LIMIT)
           postText = postText.substring(0, MAX_POST_TEXT_LENGTH_LIMIT);
         TextSpan text = new TextSpan(text: postText, style: style);
@@ -679,13 +679,13 @@ class OBPostCommentsPageState
             maxWidth: screenWidth - 40.0); //padding is 20 in OBPostBodyText
         finalTextHeight = textPainter.size.height + TOTAL_PADDING_POST_TEXT;
 
-        if (_post.text.length > MAX_POST_TEXT_LENGTH_LIMIT) {
+        if (_post.text!.length > MAX_POST_TEXT_LENGTH_LIMIT) {
           finalTextHeight = finalTextHeight + HEIGHT_SHOW_MORE_TEXT;
         }
       }
 
       if (_post.hasCircles() ||
-          (_post.isEncircled != null && _post.isEncircled)) {
+          (_post.isEncircled != null && _post.isEncircled!)) {
         finalPostHeight = finalPostHeight + HEIGHT_POST_CIRCLES;
       }
 
@@ -694,8 +694,8 @@ class OBPostCommentsPageState
           finalMediaScreenHeight +
           TOTAL_FIXED_OFFSET_Y;
 
-      if (widget.post.text != null &&
-          _utilsService.hasLinkToPreview(widget.post.text)) {
+      if (widget.post!.text != null &&
+          _utilsService.hasLinkToPreview(widget.post!.text)) {
         // Approx height of link preview without image..
         finalPostHeight += OBLinkPreviewState.linkPreviewHeight;
       }
@@ -705,7 +705,7 @@ class OBPostCommentsPageState
 
     if (widget.postComment != null) {
       TextStyle style = TextStyle(fontSize: 16.0);
-      String commentText = widget.postComment.text;
+      String commentText = widget.postComment?.text ?? '';
       if (commentText.length > MAX_COMMENT_TEXT_LENGTH_LIMIT)
         commentText = commentText.substring(0, MAX_COMMENT_TEXT_LENGTH_LIMIT);
 
@@ -722,7 +722,7 @@ class OBPostCommentsPageState
           COMMENTS_MIN_HEIGHT +
           HEIGHT_COMMENTS_RELATIVE_TIMESTAMP_TEXT;
 
-      if (widget.postComment.text.length > MAX_COMMENT_TEXT_LENGTH_LIMIT) {
+      if (widget.postComment!.text!.length > MAX_COMMENT_TEXT_LENGTH_LIMIT) {
         finalCommentHeight = finalCommentHeight + HEIGHT_SHOW_MORE_TEXT;
       }
     }
@@ -753,7 +753,7 @@ class OBInfinitePostCommentsLoadMoreDelegate extends LoadMoreDelegate {
             const SizedBox(
               width: 10.0,
             ),
-            Text(pageTextMap['TAP_TO_RETRY'])
+            Text(pageTextMap['TAP_TO_RETRY']!)
           ],
         ),
       );

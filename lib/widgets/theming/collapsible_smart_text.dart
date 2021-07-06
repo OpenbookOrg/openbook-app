@@ -12,18 +12,18 @@ import '../../provider.dart';
 import 'actionable_smart_text.dart';
 
 class OBCollapsibleSmartText extends StatefulWidget {
-  final String text;
-  final int maxlength;
+  final String? text;
+  final int? maxlength;
   final OBTextSize size;
   final TextOverflow overflow;
   final TextOverflow lengthOverflow;
-  final SmartTextElement trailingSmartTextElement;
-  final Function getChild;
-  final Map<String, Hashtag> hashtagsMap;
-  final List<PostLink> links;
+  final SmartTextElement? trailingSmartTextElement;
+  final Function? getChild;
+  final Map<String, Hashtag>? hashtagsMap;
+  final List<PostLink>? links;
 
   const OBCollapsibleSmartText(
-      {Key key,
+      {Key? key,
       this.text,
       this.maxlength,
       this.size = OBTextSize.medium,
@@ -42,7 +42,7 @@ class OBCollapsibleSmartText extends StatefulWidget {
 }
 
 class OBCollapsibleSmartTextState extends State<OBCollapsibleSmartText> {
-  ExpandableController _expandableController;
+  late ExpandableController _expandableController;
 
   @override
   void initState() {
@@ -52,7 +52,7 @@ class OBCollapsibleSmartTextState extends State<OBCollapsibleSmartText> {
 
   @override
   Widget build(BuildContext context) {
-    bool shouldBeCollapsed = widget.text.length > widget.maxlength;
+    bool shouldBeCollapsed = widget.text != null && widget.maxlength != null && widget.text!.length > widget.maxlength!;
     LocalizationService _localizationService =
         OpenbookProvider.of(context).localizationService;
 
@@ -75,7 +75,7 @@ class OBCollapsibleSmartTextState extends State<OBCollapsibleSmartText> {
           Builder(builder: (BuildContext context) {
             var exp = ExpandableController.of(context);
 
-            if (exp.expanded) return const SizedBox();
+            if (exp?.expanded == true) return const SizedBox();
 
             return GestureDetector(
                 onTap: _toggleExpandable,
@@ -84,7 +84,7 @@ class OBCollapsibleSmartTextState extends State<OBCollapsibleSmartText> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      widget.getChild(),
+                      widget.getChild!(),
                       Row(
                         children: <Widget>[
                           OBSecondaryText(
@@ -114,7 +114,7 @@ class OBCollapsibleSmartTextState extends State<OBCollapsibleSmartText> {
     _expandableController.toggle();
   }
 
-  Widget _buildActionableSmartText({int maxLength}) {
+  Widget _buildActionableSmartText({int? maxLength}) {
     Widget translateButton;
 
     if (maxLength != null) {
@@ -122,7 +122,7 @@ class OBCollapsibleSmartTextState extends State<OBCollapsibleSmartText> {
     } else {
       translateButton = Padding(
         padding: EdgeInsets.only(top: 10.0),
-        child: widget.getChild(),
+        child: widget.getChild!(),
       );
     }
 

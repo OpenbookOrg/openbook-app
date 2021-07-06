@@ -19,7 +19,7 @@ import 'package:flutter/material.dart';
 class OBCommunityMembersPage extends StatefulWidget {
   final Community community;
 
-  const OBCommunityMembersPage({Key key, @required this.community})
+  const OBCommunityMembersPage({Key? key, required this.community})
       : super(key: key);
 
   @override
@@ -29,12 +29,12 @@ class OBCommunityMembersPage extends StatefulWidget {
 }
 
 class OBCommunityMembersPageState extends State<OBCommunityMembersPage> {
-  UserService _userService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
 
-  OBHttpListController _httpListController;
-  bool _needsBootstrap;
+  late OBHttpListController _httpListController;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -98,7 +98,7 @@ class OBCommunityMembersPageState extends State<OBCommunityMembersPage> {
   Future<List<User>> _refreshCommunityMembers() async {
     UsersList communityMembers =
         await _userService.getMembersForCommunity(widget.community);
-    return communityMembers.users;
+    return communityMembers.users ?? [];
   }
 
   Future<List<User>> _loadMoreCommunityMembers(
@@ -111,13 +111,13 @@ class OBCommunityMembersPageState extends State<OBCommunityMembersPage> {
       count: 20,
     ))
         .users;
-    return moreCommunityMembers;
+    return moreCommunityMembers ?? [];
   }
 
   Future<List<User>> _searchCommunityMembers(String query) async {
     UsersList results = await _userService.searchCommunityMembers(
         query: query, community: widget.community);
 
-    return results.users;
+    return results.users ?? [];
   }
 }

@@ -19,22 +19,22 @@ class OBCommunityTile extends StatelessWidget {
   static const double normalSizeHeight = 80;
 
   final Community community;
-  final ValueChanged<Community> onCommunityTilePressed;
-  final ValueChanged<Community> onCommunityTileDeleted;
+  final ValueChanged<Community>? onCommunityTilePressed;
+  final ValueChanged<Community>? onCommunityTileDeleted;
   final OBCommunityTileSize size;
-  final Widget trailing;
+  final Widget? trailing;
 
   const OBCommunityTile(this.community,
       {this.onCommunityTilePressed,
       this.onCommunityTileDeleted,
-      Key key,
+      Key? key,
       this.size = OBCommunityTileSize.normal,
       this.trailing})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String communityHexColor = community.color;
+    String communityHexColor = community.color!;
     LocalizationService localizationService =
         OpenbookProvider.of(context).localizationService;
     ThemeService themeService = OpenbookProvider.of(context).themeService;
@@ -59,7 +59,7 @@ class OBCommunityTile extends StatelessWidget {
               fit: BoxFit.cover,
               colorFilter: new ColorFilter.mode(
                   Colors.black.withOpacity(0.60), BlendMode.darken),
-              image: AdvancedNetworkImage(community.cover,
+              image: AdvancedNetworkImage(community.cover!,
                   useDiskCache: true,
                   fallbackAssetImage: COVER_PLACEHOLDER,
                   retryLimit: 0)));
@@ -90,7 +90,7 @@ class OBCommunityTile extends StatelessWidget {
               ? TinyColor(communityColor).lighten(5).color
               : communityColor);
       communityAvatar = OBLetterAvatar(
-        letter: community.name[0],
+        letter: community.name![0],
         color: avatarColor,
         labelColor: textColor,
         size: isNormalSize ? OBAvatarSize.medium : OBAvatarSize.small,
@@ -101,8 +101,8 @@ class OBCommunityTile extends StatelessWidget {
         localizationService.community__member_capitalized;
     String usersAdjective = community.usersAdjective ??
         localizationService.community__members_capitalized;
-    String membersPrettyCount = community.membersCount != null
-        ? getPrettyCount(community.membersCount, localizationService)
+    String? membersPrettyCount = community.membersCount != null
+        ? getPrettyCount(community.membersCount!, localizationService)
         : null;
     String finalAdjective =
         community.membersCount == 1 ? userAdjective : usersAdjective;
@@ -122,14 +122,14 @@ class OBCommunityTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Text('c/' + community.name,
+                Text('c/' + community.name!,
                     style: TextStyle(
                       color: textColor,
                       fontSize: 16,
                     ),
                     overflow: TextOverflow.ellipsis),
                 Text(
-                  community.title,
+                  community.title!,
                   style: TextStyle(
                       color: textColor,
                       fontSize: 18,
@@ -164,7 +164,7 @@ class OBCommunityTile extends StatelessWidget {
         actionExtentRatio: 0.25,
         child: GestureDetector(
           onTap: () {
-            onCommunityTilePressed(community);
+            onCommunityTilePressed!(community);
           },
           child: communityTile,
         ),
@@ -176,14 +176,14 @@ class OBCommunityTile extends StatelessWidget {
               color: Colors.transparent,
               icon: Icons.delete,
               onTap: () {
-                onCommunityTileDeleted(community);
+                onCommunityTileDeleted!(community);
               }),
         ],
       );
     } else if (onCommunityTilePressed != null) {
       communityTile = GestureDetector(
         onTap: () {
-          onCommunityTilePressed(community);
+          onCommunityTilePressed!(community);
         },
         child: communityTile,
       );

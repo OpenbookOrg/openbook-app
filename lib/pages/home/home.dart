@@ -41,39 +41,39 @@ class OBHomePage extends StatefulWidget {
 class OBHomePageState extends State<OBHomePage>
     with WidgetsBindingObserver {
   static const String oneSignalAppId = '66074bf4-9943-4504-a011-531c2635698b';
-  UserService _userService;
-  ToastService _toastService;
-  PushNotificationsService _pushNotificationsService;
-  IntercomService _intercomService;
-  ModalService _modalService;
-  UserPreferencesService _userPreferencesService;
-  ShareService _shareService;
-  MediaService _mediaService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late PushNotificationsService _pushNotificationsService;
+  late IntercomService _intercomService;
+  late ModalService _modalService;
+  late UserPreferencesService _userPreferencesService;
+  late ShareService _shareService;
+  late MediaService _mediaService;
 
-  int _currentIndex;
-  int _lastIndex;
-  bool _needsBootstrap;
+  late int _currentIndex;
+  late int _lastIndex;
+  late bool _needsBootstrap;
 
-  StreamSubscription _loggedInUserChangeSubscription;
-  StreamSubscription _loggedInUserUpdateSubscription;
-  StreamSubscription _pushNotificationOpenedSubscription;
-  StreamSubscription _pushNotificationSubscription;
+  late StreamSubscription _loggedInUserChangeSubscription;
+  StreamSubscription? _loggedInUserUpdateSubscription;
+  StreamSubscription? _pushNotificationOpenedSubscription;
+  StreamSubscription? _pushNotificationSubscription;
 
-  OBTimelinePageController _timelinePageController;
-  OBOwnProfilePageController _ownProfilePageController;
-  OBMainSearchPageController _searchPageController;
-  OBMainMenuPageController _mainMenuPageController;
-  OBCommunitiesPageController _communitiesPageController;
-  OBNotificationsPageController _notificationsPageController;
+  late OBTimelinePageController _timelinePageController;
+  late OBOwnProfilePageController _ownProfilePageController;
+  late OBMainSearchPageController _searchPageController;
+  late OBMainMenuPageController _mainMenuPageController;
+  late OBCommunitiesPageController _communitiesPageController;
+  late OBNotificationsPageController _notificationsPageController;
 
-  int _loggedInUserUnreadNotifications;
-  String _loggedInUserAvatarUrl;
+  late int _loggedInUserUnreadNotifications;
+  String? _loggedInUserAvatarUrl;
 
   @override
   void initState() {
     super.initState();
     BackButtonInterceptor.add(_backButtonInterceptor);
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance?.addObserver(this);
     _needsBootstrap = true;
     _loggedInUserUnreadNotifications = 0;
     _lastIndex = 0;
@@ -90,15 +90,15 @@ class OBHomePageState extends State<OBHomePage>
   void dispose() {
     super.dispose();
     BackButtonInterceptor.remove(_backButtonInterceptor);
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance?.removeObserver(this);
     _loggedInUserChangeSubscription.cancel();
     if (_loggedInUserUpdateSubscription != null)
-      _loggedInUserUpdateSubscription.cancel();
+      _loggedInUserUpdateSubscription!.cancel();
     if (_pushNotificationOpenedSubscription != null) {
-      _pushNotificationOpenedSubscription.cancel();
+      _pushNotificationOpenedSubscription!.cancel();
     }
     if (_pushNotificationSubscription != null) {
-      _pushNotificationSubscription.cancel();
+      _pushNotificationSubscription!.cancel();
     }
   }
 
@@ -170,7 +170,7 @@ class OBHomePageState extends State<OBHomePage>
     return page;
   }
 
-  Widget _createTabBar() {
+  OBCupertinoTabBar _createTabBar() {
     return OBCupertinoTabBar(
       backgroundColor: Colors.white,
       currentIndex: _currentIndex,
@@ -319,7 +319,7 @@ class OBHomePageState extends State<OBHomePage>
         if (error is AuthTokenMissingError) {
           _logout();
         } else if (error is HttpieRequestError) {
-          HttpieResponse response = error.response;
+          HttpieResponse response = error.response as HttpieResponse;
           if (response.isForbidden() || response.isUnauthorized()) {
             _logout(unsubscribePushNotifications: true);
           } else {
@@ -386,7 +386,7 @@ class OBHomePageState extends State<OBHomePage>
     return preventCloseApp;
   }
 
-  void _onLoggedInUserChange(User newUser) async {
+  void _onLoggedInUserChange(User? newUser) async {
     if (newUser == null) {
       Navigator.pushReplacementNamed(context, '/auth');
     } else {
@@ -404,11 +404,11 @@ class OBHomePageState extends State<OBHomePage>
           .listen(_onPushNotification);
 
       if (newUser.areGuidelinesAccepted != null &&
-          !newUser.areGuidelinesAccepted) {
+          !(newUser.areGuidelinesAccepted!)) {
         _modalService.openAcceptGuidelines(context: context);
       }
 
-      if (newUser.language == null || !supportedLanguages.contains(newUser.language.code)) {
+      if (newUser.language == null || !supportedLanguages.contains(newUser.language!.code)) {
         _userService.setLanguageFromDefaults();
       }
       _userService.checkAndClearTempDirectories();
@@ -421,7 +421,7 @@ class OBHomePageState extends State<OBHomePage>
     if (currentTab != OBHomePageTabs.notifications) {
       // When a user taps in notifications, notifications count should be removed
       // Therefore if the user is already there, dont increment.
-      User loggedInUser = _userService.getLoggedInUser();
+      User? loggedInUser = _userService.getLoggedInUser();
       if (loggedInUser != null) {
         loggedInUser.incrementUnreadNotificationsCount();
       }
@@ -433,7 +433,7 @@ class OBHomePageState extends State<OBHomePage>
     //_navigateToTab(OBHomePageTabs.notifications);
   }
 
-  Future<bool> _onShare({String text, File image, File video}) async {
+  Future<bool> _onShare({String? text, File? image, File? video}) async {
     bool postCreated = await _timelinePageController.createPost(
         text: text, image: image, video: video);
 
@@ -470,11 +470,11 @@ class OBHomePageState extends State<OBHomePage>
     _setAvatarUrl(user.getProfileAvatar());
     OBHomePageTabs currentTab = _getCurrentTab();
     if (currentTab != OBHomePageTabs.notifications) {
-      _setUnreadNotifications(user.unreadNotificationsCount);
+      _setUnreadNotifications(user.unreadNotificationsCount ?? 0);
     }
   }
 
-  void _setAvatarUrl(String avatarUrl) {
+  void _setAvatarUrl(String? avatarUrl) {
     setState(() {
       _loggedInUserAvatarUrl = avatarUrl;
     });
@@ -491,7 +491,7 @@ class OBHomePageState extends State<OBHomePage>
   }
 
   void _resetLoggedInUserUnreadNotificationsCount() {
-    User loggedInUser = _userService.getLoggedInUser();
+    User? loggedInUser = _userService.getLoggedInUser();
     if (loggedInUser != null) {
       loggedInUser.resetUnreadNotificationsCount();
     }
@@ -502,8 +502,8 @@ class OBHomePageState extends State<OBHomePage>
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;

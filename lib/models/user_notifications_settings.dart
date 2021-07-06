@@ -1,19 +1,19 @@
 class UserNotificationsSettings {
-  final int id;
-  bool postCommentNotifications;
-  bool postCommentReactionNotifications;
-  bool postCommentReplyNotifications;
-  bool postCommentUserMentionNotifications;
-  bool postUserMentionNotifications;
-  bool postReactionNotifications;
-  bool followNotifications;
-  bool followRequestNotifications;
-  bool followRequestApprovedNotifications;
-  bool connectionRequestNotifications;
-  bool connectionConfirmedNotifications;
-  bool communityInviteNotifications;
-  bool communityNewPostNotifications;
-  bool userNewPostNotifications;
+  final int? id;
+  bool? postCommentNotifications;
+  bool? postCommentReactionNotifications;
+  bool? postCommentReplyNotifications;
+  bool? postCommentUserMentionNotifications;
+  bool? postUserMentionNotifications;
+  bool? postReactionNotifications;
+  bool? followNotifications;
+  bool? followRequestNotifications;
+  bool? followRequestApprovedNotifications;
+  bool? connectionRequestNotifications;
+  bool? connectionConfirmedNotifications;
+  bool? communityInviteNotifications;
+  bool? communityNewPostNotifications;
+  bool? userNewPostNotifications;
 
   UserNotificationsSettings(
       {this.id,

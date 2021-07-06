@@ -26,17 +26,17 @@ class ModeratedObject extends UpdatableModel<ModeratedObject> {
   static String statusApproved = 'A';
   static String statusRejected = 'R';
 
-  final int id;
-  final Community community;
+  final int? id;
+  final Community? community;
 
   dynamic contentObject;
-  ModeratedObjectType type;
-  ModeratedObjectStatus status;
-  ModerationCategory category;
+  ModeratedObjectType? type;
+  ModeratedObjectStatus? status;
+  ModerationCategory? category;
 
-  String description;
-  bool verified;
-  int reportsCount;
+  String? description;
+  bool? verified;
+  int? reportsCount;
 
   ModeratedObject(
       {this.id,
@@ -87,7 +87,7 @@ class ModeratedObject extends UpdatableModel<ModeratedObject> {
   }
 
   bool isVerified() {
-    return verified;
+    return verified ?? false;
   }
 
   void setIsApproved() {
@@ -106,15 +106,15 @@ class ModeratedObject extends UpdatableModel<ModeratedObject> {
 
 class ModeratedObjectFactory extends UpdatableModelFactory<ModeratedObject> {
   @override
-  SimpleCache<int, ModeratedObject> cache =
+  SimpleCache<int, ModeratedObject>? cache =
       SimpleCache(storage: UpdatableModelSimpleStorage(size: 120));
 
   @override
   ModeratedObject makeFromJson(Map json) {
-    ModeratedObjectType type = parseType(json['object_type']);
-    ModeratedObjectStatus status = parseStatus(json['status']);
-    ModerationCategory category = parseModerationCategory(json['category']);
-    Community community = parseCommunity(json['community']);
+    ModeratedObjectType? type = parseType(json['object_type']);
+    ModeratedObjectStatus? status = parseStatus(json['status']);
+    ModerationCategory? category = parseModerationCategory(json['category']);
+    Community? community = parseCommunity(json['community']);
 
     return ModeratedObject(
         id: json['id'],
@@ -129,20 +129,20 @@ class ModeratedObjectFactory extends UpdatableModelFactory<ModeratedObject> {
         verified: json['verified']);
   }
 
-  Community parseCommunity(Map communityData) {
+  Community? parseCommunity(Map<String, dynamic>? communityData) {
     if (communityData == null) return null;
     return Community.fromJSON(communityData);
   }
 
-  ModerationCategory parseModerationCategory(Map moderationCategoryData) {
+  ModerationCategory? parseModerationCategory(Map<String, dynamic>? moderationCategoryData) {
     if (moderationCategoryData == null) return null;
     return ModerationCategory.fromJson(moderationCategoryData);
   }
 
-  ModeratedObjectType parseType(String moderatedObjectTypeStr) {
+  ModeratedObjectType? parseType(String? moderatedObjectTypeStr) {
     if (moderatedObjectTypeStr == null) return null;
 
-    ModeratedObjectType moderatedObjectType;
+    ModeratedObjectType? moderatedObjectType;
     if (moderatedObjectTypeStr == ModeratedObject.objectTypeCommunity) {
       moderatedObjectType = ModeratedObjectType.community;
     } else if (moderatedObjectTypeStr == ModeratedObject.objectTypePost) {
@@ -162,10 +162,10 @@ class ModeratedObjectFactory extends UpdatableModelFactory<ModeratedObject> {
     return moderatedObjectType;
   }
 
-  ModeratedObjectStatus parseStatus(String moderatedObjectStatusStr) {
+  ModeratedObjectStatus? parseStatus(String? moderatedObjectStatusStr) {
     if (moderatedObjectStatusStr == null) return null;
 
-    ModeratedObjectStatus moderatedObjectStatus;
+    ModeratedObjectStatus? moderatedObjectStatus;
     if (moderatedObjectStatusStr == ModeratedObject.statusPending) {
       moderatedObjectStatus = ModeratedObjectStatus.pending;
     } else if (moderatedObjectStatusStr == ModeratedObject.statusApproved) {
@@ -180,7 +180,7 @@ class ModeratedObjectFactory extends UpdatableModelFactory<ModeratedObject> {
     return moderatedObjectStatus;
   }
 
-  String convertStatusToString(ModeratedObjectStatus moderatedObjectStatus) {
+  String? convertStatusToString(ModeratedObjectStatus? moderatedObjectStatus) {
     if (moderatedObjectStatus == null) return null;
 
     switch (moderatedObjectStatus) {
@@ -195,12 +195,12 @@ class ModeratedObjectFactory extends UpdatableModelFactory<ModeratedObject> {
     }
   }
 
-  String convertStatusToHumanReadableString(
-      ModeratedObjectStatus moderatedObjectStatus,
+  String? convertStatusToHumanReadableString(
+      ModeratedObjectStatus? moderatedObjectStatus,
       {capitalize = false}) {
     if (moderatedObjectStatus == null) return null;
 
-    String result;
+    late String result;
 
     switch (moderatedObjectStatus) {
       case ModeratedObjectStatus.approved:
@@ -218,7 +218,7 @@ class ModeratedObjectFactory extends UpdatableModelFactory<ModeratedObject> {
     return capitalize ? toCapital(result) : result;
   }
 
-  String convertTypeToString(ModeratedObjectType moderatedObjectType) {
+  String? convertTypeToString(ModeratedObjectType? moderatedObjectType) {
     if (moderatedObjectType == null) return null;
 
     switch (moderatedObjectType) {
@@ -237,8 +237,8 @@ class ModeratedObjectFactory extends UpdatableModelFactory<ModeratedObject> {
     }
   }
 
-  String convertTypeToHumanReadableString(
-      ModeratedObjectType moderatedObjectType,
+  String? convertTypeToHumanReadableString(
+      ModeratedObjectType? moderatedObjectType,
       {capitalize = false}) {
     if (moderatedObjectType == null) return null;
 
@@ -267,7 +267,7 @@ class ModeratedObjectFactory extends UpdatableModelFactory<ModeratedObject> {
   }
 
   dynamic parseContentObject(
-      {@required Map contentObjectData, @required ModeratedObjectType type}) {
+      {required Map<String, dynamic>? contentObjectData, required ModeratedObjectType? type}) {
     if (contentObjectData == null) return null;
 
     dynamic contentObject;

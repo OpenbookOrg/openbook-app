@@ -18,10 +18,10 @@ class UtilsService {
   String _trustedProxyUrl = '';
 
   static SimpleCache<String, bool> hexColorIsDarkCache =
-      SimpleCache(storage: SimpleStorage(size: 30));
+      SimpleCache(storage: new InMemoryStorage(30));
 
   static SimpleCache<String, Color> parseHexColorCache =
-      SimpleCache(storage: SimpleStorage(size: 30));
+      SimpleCache(storage: new InMemoryStorage(30));
 
   static RegExp hashtagsRegExp =
       RegExp(r"\B#\w*[a-zA-Z]+\w*", caseSensitive: false);
@@ -31,30 +31,28 @@ class UtilsService {
   }
 
   Future<bool> fileHasImageMimeType(File file) async {
-    String fileMimeType =
-        await getFileMimeType(file) ?? 'application/octet-stream';
+    String fileMimeType = await getFileMimeType(file);
     MediaType fileMediaType = MediaType.parse(fileMimeType);
 
     return fileMediaType.type == 'image';
   }
 
-  Future<String> getFileExtensionForFile(File file) async {
-    String fileMimeType =
-        await getFileMimeType(file) ?? 'application/octet-stream';
+  Future<String?> getFileExtensionForFile(File file) async {
+    String fileMimeType = await getFileMimeType(file);
 
     return getFileExtensionForMimeType(fileMimeType);
   }
 
-  String getFileExtensionForMimeType(String mimeType) {
+  String? getFileExtensionForMimeType(String mimeType) {
     return lookupExtension(mimeType);
   }
 
-  String geFileNameMimeType(String fileName) {
+  String? geFileNameMimeType(String fileName) {
     return lookupMimeType(fileName);
   }
 
   Future<String> getFileMimeType(File file) async {
-    String mimeType = lookupMimeType(file.path);
+    String? mimeType = lookupMimeType(file.path);
 
     if (mimeType == null) {
       mimeType = await _getFileMimeTypeFromMagicHeaders(file);
@@ -75,7 +73,7 @@ class UtilsService {
     return isDark;
   }
 
-  List<String> extractHashtagsInString(String str) {
+  List<String?> extractHashtagsInString(String str) {
     return hashtagsRegExp
         .allMatches(str)
         .map((match) => match.group(0))
@@ -150,7 +148,7 @@ class UtilsService {
     return initializeDateFormatting(localeName, null);
   }
 
-  Future<String> _getFileMimeTypeFromMagicHeaders(File file) async {
+  Future<String?> _getFileMimeTypeFromMagicHeaders(File file) async {
     // TODO When file uploads become larger, this needs to be turned into a stream
     List<int> fileBytes = file.readAsBytesSync();
 
@@ -163,7 +161,7 @@ class UtilsService {
       magicHeaderBytesLeft--;
     }
 
-    String mimetype = lookupMimeType(file.path, headerBytes: magicHeaders);
+    String? mimetype = lookupMimeType(file.path, headerBytes: magicHeaders);
 
     return mimetype;
   }
@@ -178,11 +176,11 @@ class UtilsService {
 
   /// Lookup file extension by a given MIME type.
   /// If no extension is found, `null` is returned.
-  String lookupExtension(String mimeType) {
+  String? lookupExtension(String mimeType) {
     if (_preferredExtensionsMap.containsKey(mimeType)) {
       return _preferredExtensionsMap[mimeType];
     }
-    String extension;
+    String? extension;
     defaultExtensionMap.forEach((String ext, String test) {
       if (mimeType.toLowerCase() == test) {
         extension = ext;
@@ -199,16 +197,16 @@ class UtilsService {
     return getLinkToPreviewFromText(text) != null;
   }
 
-  String getLinkToPreviewFromText(String text) {
+  String? getLinkToPreviewFromText(String text) {
     List matches = [];
-    String previewUrl;
+    String? previewUrl;
     matches.addAll(linkRegex.allMatches(text).map((match) {
       return match.group(0);
     }));
 
     if (matches.length > 0) {
       Uri url = Uri.parse(matches.first);
-      String urlMimeType = geFileNameMimeType(url.path);
+      String? urlMimeType = geFileNameMimeType(url.path);
       if (urlMimeType != null) {
         String urlFirstType = urlMimeType.split('/').first;
         if (urlFirstType != 'image' && urlFirstType != 'text') return null;

@@ -8,7 +8,7 @@ class PasswordResetLinkHandler extends UniversalLinkHandler {
   static const String passwordResetVerifyLink = '/api/auth/password/verify';
 
   @override
-  Future handle({BuildContext context, String link}) async{
+  Future handle({required BuildContext context, required String link}) async{
     if (link.indexOf(passwordResetVerifyLink) != -1) {
       final token = getPasswordResetVerificationTokenFromLink(link);
       OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
@@ -22,7 +22,7 @@ class PasswordResetLinkHandler extends UniversalLinkHandler {
     final params = Uri.parse(link).queryParametersAll;
     var token = '';
     if (params.containsKey('token')) {
-      token = params['token'][0];
+      token = params['token']![0];
     }
     return token;
   }

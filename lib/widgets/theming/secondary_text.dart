@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 
 class OBSecondaryText extends StatelessWidget {
   final String text;
-  final TextStyle style;
-  final OBTextSize size;
-  final TextOverflow overflow;
-  final TextAlign textAlign;
-  final int maxLines;
+  final TextStyle? style;
+  final OBTextSize? size;
+  final TextOverflow? overflow;
+  final TextAlign? textAlign;
+  final int? maxLines;
 
   const OBSecondaryText(this.text,
       {this.style, this.size, this.overflow, this.textAlign, this.maxLines});
@@ -26,10 +26,10 @@ class OBSecondaryText extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<OBTheme> snapshot) {
           var theme = snapshot.data;
 
-          TextStyle finalStyle = style;
+          TextStyle? finalStyle = style;
           TextStyle themedTextStyle = TextStyle(
               color:
-                  themeValueParserService.parseColor(theme.secondaryTextColor));
+                  themeValueParserService.parseColor(theme!.secondaryTextColor));
 
           if (finalStyle != null) {
             finalStyle = finalStyle.merge(themedTextStyle);
@@ -40,7 +40,7 @@ class OBSecondaryText extends StatelessWidget {
           return OBText(
             text,
             style: finalStyle,
-            size: size,
+            size: size ?? OBTextSize.medium,
             overflow: overflow,
             maxLines: maxLines,
             textAlign: textAlign,

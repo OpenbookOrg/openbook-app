@@ -7,18 +7,18 @@ enum OBIconSize { small, medium, large, extraLarge }
 
 class OBUserVisibilityIcon extends StatelessWidget {
   final UserVisibility visibility;
-  final OBIconSize size;
-  final double customSize;
-  final Color color;
-  final String semanticLabel;
+  final OBIconSize? size;
+  final double? customSize;
+  final Color? color;
+  final String? semanticLabel;
 
   const OBUserVisibilityIcon(
-      {Key key,
+      {Key? key,
       this.size,
       this.customSize,
       this.color,
       this.semanticLabel,
-      @required this.visibility})
+      required this.visibility})
       : super(key: key);
 
   @override

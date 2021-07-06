@@ -10,12 +10,12 @@ import 'package:flutter/material.dart';
 
 class OBModeratedObjectLogTile extends StatelessWidget {
   final ModeratedObjectLog log;
-  final ValueChanged<ModeratedObjectLog> onModeratedObjectLogTileDeleted;
-  final ValueChanged<ModeratedObjectLog> onPressed;
+  final ValueChanged<ModeratedObjectLog>? onModeratedObjectLogTileDeleted;
+  final ValueChanged<ModeratedObjectLog>? onPressed;
 
   const OBModeratedObjectLogTile(
-      {Key key,
-      @required this.log,
+      {Key? key,
+      required this.log,
       this.onModeratedObjectLogTileDeleted,
       this.onPressed})
       : super(key: key);
@@ -77,7 +77,7 @@ class OBModeratedObjectLogTile extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               OBModeratedObjectLogActor(
-                actor: log.actor,
+                actor: log.actor!,
               ),
               SizedBox(
                 height: 5,

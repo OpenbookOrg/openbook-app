@@ -16,7 +16,7 @@ class OBLinearProgressIndicator extends StatelessWidget {
           var theme = snapshot.data;
 
           var primaryColor =
-              themeValueParserService.parseColor(theme.primaryColor);
+              themeValueParserService.parseColor(theme!.primaryColor);
           final bool isDarkPrimaryColor =
               primaryColor.computeLuminance() < 0.179;
 

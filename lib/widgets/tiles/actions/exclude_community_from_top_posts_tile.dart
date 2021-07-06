@@ -12,12 +12,12 @@ import 'package:async/async.dart';
 
 class OBExcludeCommunityFromTopPostsTile extends StatefulWidget {
   final Post post;
-  final VoidCallback onExcludedPostCommunity;
-  final VoidCallback onUndoExcludedPostCommunity;
+  final VoidCallback? onExcludedPostCommunity;
+  final VoidCallback? onUndoExcludedPostCommunity;
 
   const OBExcludeCommunityFromTopPostsTile({
-    Key key,
-    @required this.post,
+    Key? key,
+    required this.post,
     this.onExcludedPostCommunity,
     this.onUndoExcludedPostCommunity,
   }) : super(key: key);
@@ -30,13 +30,13 @@ class OBExcludeCommunityFromTopPostsTile extends StatefulWidget {
 
 class OBExcludeCommunityFromTopPostsTileState
     extends State<OBExcludeCommunityFromTopPostsTile> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  CancelableOperation _excludeCommunityOperation;
-  CancelableOperation _undoExcludeCommunityOperation;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  CancelableOperation? _excludeCommunityOperation;
+  CancelableOperation? _undoExcludeCommunityOperation;
 
-  bool _requestInProgress;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class OBExcludeCommunityFromTopPostsTileState
       stream: widget.post.updateSubject,
       initialData: widget.post,
       builder: (BuildContext context, AsyncSnapshot<Post> snapshot) {
-        var post = snapshot.data;
+        var post = snapshot.data!;
 
         bool isExcluded = post.isExcludedFromTopPosts;
 
@@ -76,9 +76,9 @@ class OBExcludeCommunityFromTopPostsTileState
   @override
   void dispose() {
     super.dispose();
-    if (_excludeCommunityOperation != null) _excludeCommunityOperation.cancel();
+    if (_excludeCommunityOperation != null) _excludeCommunityOperation!.cancel();
     if (_undoExcludeCommunityOperation != null)
-      _undoExcludeCommunityOperation.cancel();
+      _undoExcludeCommunityOperation!.cancel();
   }
 
   void _excludePostCommunity() async {
@@ -86,10 +86,10 @@ class OBExcludeCommunityFromTopPostsTileState
     _setRequestInProgress(true);
     try {
       _excludeCommunityOperation = CancelableOperation.fromFuture(
-          _userService.excludeCommunityFromTopPosts(widget.post.community));
-      String message = await _excludeCommunityOperation.value;
+          _userService.excludeCommunityFromTopPosts(widget.post.community!));
+      String message = await _excludeCommunityOperation!.value;
       if (widget.onExcludedPostCommunity != null)
-        widget.onExcludedPostCommunity();
+        widget.onExcludedPostCommunity!();
       widget.post.updateIsExcludedFromTopPosts(true);
       _toastService.success(message: message, context: context);
     } catch (e) {
@@ -105,10 +105,10 @@ class OBExcludeCommunityFromTopPostsTileState
     _setRequestInProgress(true);
     try {
       _undoExcludeCommunityOperation = CancelableOperation.fromFuture(
-          _userService.undoExcludeCommunityFromTopPosts(widget.post.community));
-      await _undoExcludeCommunityOperation.value;
+          _userService.undoExcludeCommunityFromTopPosts(widget.post.community!));
+      await _undoExcludeCommunityOperation!.value;
       if (widget.onUndoExcludedPostCommunity != null)
-        widget.onUndoExcludedPostCommunity();
+        widget.onUndoExcludedPostCommunity!();
       _toastService.success(message: _localizationService.post__exclude_community_from_profile_posts_success, context: context);
       widget.post.updateIsExcludedFromTopPosts(false);
     } catch (e) {
@@ -124,8 +124,8 @@ class OBExcludeCommunityFromTopPostsTileState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);

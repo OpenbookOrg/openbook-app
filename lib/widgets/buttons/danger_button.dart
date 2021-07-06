@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 
 class OBDangerButton extends StatelessWidget {
   final Widget child;
-  final Widget icon;
+  final Widget? icon;
   final VoidCallback onPressed;
   final bool isDisabled;
   final bool isLoading;
   final Color textColor;
   final OBButtonSize size;
-  final double minWidth;
-  final EdgeInsets padding;
+  final double? minWidth;
+  final EdgeInsets? padding;
 
   const OBDangerButton(
-      {@required this.child,
-      @required this.onPressed,
+      {required this.child,
+      required this.onPressed,
       this.size = OBButtonSize.medium,
       this.textColor = Colors.white,
       this.icon,

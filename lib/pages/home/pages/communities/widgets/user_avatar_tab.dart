@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 class OBUserAvatarTab extends StatelessWidget {
   final User user;
 
-  const OBUserAvatarTab({Key key, @required this.user}) : super(key: key);
+  const OBUserAvatarTab({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

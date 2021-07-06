@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class OBProgressIndicator extends StatelessWidget {
 
-  final Color color;
+  final Color? color;
   final double size;
 
-  const OBProgressIndicator({Key key, this.color, this.size = 20.0}) : super(key: key);
+  const OBProgressIndicator({Key? key, this.color, this.size = 20.0}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class OBProgressIndicator extends StatelessWidget {
       ),
       child: CircularProgressIndicator(
         strokeWidth: 2.0,
-        valueColor: AlwaysStoppedAnimation<Color>(color),
+        valueColor: AlwaysStoppedAnimation<Color?>(color),
       ),
     );
   }

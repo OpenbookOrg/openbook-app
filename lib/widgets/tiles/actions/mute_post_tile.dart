@@ -11,12 +11,12 @@ import 'package:flutter/material.dart';
 
 class OBMutePostTile extends StatefulWidget {
   final Post post;
-  final VoidCallback onMutedPost;
-  final VoidCallback onUnmutedPost;
+  final VoidCallback? onMutedPost;
+  final VoidCallback? onUnmutedPost;
 
   const OBMutePostTile({
-    Key key,
-    @required this.post,
+    Key? key,
+    required this.post,
     this.onMutedPost,
     this.onUnmutedPost,
   }) : super(key: key);
@@ -28,11 +28,11 @@ class OBMutePostTile extends StatefulWidget {
 }
 
 class OBMutePostTileState extends State<OBMutePostTile> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
 
-  bool _requestInProgress;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -53,7 +53,7 @@ class OBMutePostTileState extends State<OBMutePostTile> {
       builder: (BuildContext context, AsyncSnapshot<Post> snapshot) {
         var post = snapshot.data;
 
-        bool isMuted = post.isMuted;
+        bool isMuted = post?.isMuted ?? false;
 
         return OBLoadingTile(
           isLoading: _requestInProgress,
@@ -71,7 +71,7 @@ class OBMutePostTileState extends State<OBMutePostTile> {
     _setRequestInProgress(true);
     try {
       await _userService.mutePost(widget.post);
-      if (widget.onMutedPost != null) widget.onMutedPost();
+      if (widget.onMutedPost != null) widget.onMutedPost!();
     } catch (e) {
       _onError(e);
     } finally {
@@ -83,7 +83,7 @@ class OBMutePostTileState extends State<OBMutePostTile> {
     _setRequestInProgress(true);
     try {
       await _userService.unmutePost(widget.post);
-      if (widget.onUnmutedPost != null) widget.onUnmutedPost();
+      if (widget.onUnmutedPost != null) widget.onUnmutedPost!();
     } catch (e) {
       _onError(e);
     } finally {
@@ -96,8 +96,8 @@ class OBMutePostTileState extends State<OBMutePostTile> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

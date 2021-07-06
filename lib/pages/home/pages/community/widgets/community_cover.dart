@@ -14,7 +14,7 @@ class OBCommunityCover extends StatelessWidget {
       initialData: community,
       builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
         var community = snapshot.data;
-        String communityCover = community?.cover;
+        String? communityCover = community?.cover;
 
         return OBCover(
           coverUrl: communityCover,

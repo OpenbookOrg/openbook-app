@@ -5,7 +5,7 @@ import 'package:Okuna/widgets/buttons/success_button.dart';
 import 'package:flutter/material.dart';
 
 class WaitlistSubscribeArguments {
-  int count;
+  int? count;
 
   WaitlistSubscribeArguments({this.count});
 
@@ -14,7 +14,7 @@ class WaitlistSubscribeArguments {
 class OBWaitlistSubscribeDoneStep extends StatefulWidget {
   final int count;
 
-  OBWaitlistSubscribeDoneStep({@required this.count});
+  OBWaitlistSubscribeDoneStep({required this.count});
 
   @override
   State<StatefulWidget> createState() {
@@ -23,7 +23,7 @@ class OBWaitlistSubscribeDoneStep extends StatefulWidget {
 }
 
 class OBWaitlistSubscribeDoneStepState extends State<OBWaitlistSubscribeDoneStep> {
-  LocalizationService localizationService;
+  late LocalizationService localizationService;
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +93,7 @@ class OBWaitlistSubscribeDoneStepState extends State<OBWaitlistSubscribeDoneStep
     );
   }
 
-  Widget _buildNextButton({@required BuildContext context}) {
+  Widget _buildNextButton({required BuildContext context}) {
 
     return OBSuccessButton(
       minWidth: double.infinity,

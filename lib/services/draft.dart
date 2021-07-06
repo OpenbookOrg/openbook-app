@@ -5,10 +5,10 @@ class DraftService {
 
   Map<String, String> _drafts = LinkedHashMap();
 
-  String getCommentDraft(int postId, [int commentId]) =>
+  String getCommentDraft(int postId, [int? commentId]) =>
       _drafts[_buildCommentKey(postId, commentId)] ?? '';
 
-  String getPostDraft([int communityId]) =>
+  String getPostDraft([int? communityId]) =>
       _drafts[_buildPostKey(communityId)] ?? '';
 
   void _set(String key, String text) {
@@ -16,7 +16,7 @@ class DraftService {
     _trimDraftsIfNeeded();
   }
 
-  void setCommentDraft(String text, int postId, [int commentId]) {
+  void setCommentDraft(String text, int postId, [int? commentId]) {
     if (text.trim().isNotEmpty) {
       _set(_buildCommentKey(postId, commentId), text);
     } else {
@@ -24,7 +24,7 @@ class DraftService {
     }
   }
 
-  void setPostDraft(String text, [int communityId]) {
+  void setPostDraft(String text, [int? communityId]) {
     if (text.trim().isNotEmpty) {
       _set(_buildPostKey(communityId), text);
     } else {
@@ -35,7 +35,7 @@ class DraftService {
   void removeCommentDraft(int postId, [commentId]) =>
       _drafts.remove(_buildCommentKey(postId, commentId));
 
-  void removePostDraft([int communityId]) =>
+  void removePostDraft([int? communityId]) =>
       _drafts.remove(_buildPostKey(communityId));
 
   void _trimDraftsIfNeeded() {
@@ -48,8 +48,8 @@ class DraftService {
     _drafts.clear();
   }
 
-  String _buildCommentKey(int postId, int commentId) =>
+  String _buildCommentKey(int postId, int? commentId) =>
       'c|$postId|${commentId ?? "-1"}';
 
-  String _buildPostKey(int communityId) => 'p|${communityId ?? "-1"}';
+  String _buildPostKey(int? communityId) => 'p|${communityId ?? "-1"}';
 }

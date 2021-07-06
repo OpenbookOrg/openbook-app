@@ -92,9 +92,9 @@ class OBCupertinoTabScaffold extends StatefulWidget {
   /// The [currentTabIndex] argument can be used to programmatically change the
   /// currently selected tab.
   const OBCupertinoTabScaffold({
-    Key key,
-    @required this.tabBar,
-    @required this.tabBuilder,
+    Key? key,
+    required this.tabBar,
+    required this.tabBuilder,
   })  : assert(tabBar != null),
         assert(tabBuilder != null),
         super(key: key);
@@ -141,7 +141,7 @@ class OBCupertinoTabScaffold extends StatefulWidget {
 }
 
 class _OBCupertinoTabScaffoldState extends State<OBCupertinoTabScaffold> {
-  int _currentPage;
+  late int _currentPage;
 
   @override
   void initState() {
@@ -210,7 +210,7 @@ class _OBCupertinoTabScaffoldState extends State<OBCupertinoTabScaffold> {
               var changeIndex = true;
               // Chain the user's original callback.
               if (widget.tabBar.onTap != null) {
-                bool changeIndexAllowed = widget.tabBar.onTap(newIndex);
+                bool? changeIndexAllowed = widget.tabBar.onTap!(newIndex);
                 if (changeIndexAllowed != null && !changeIndexAllowed)
                   changeIndex = false;
               }
@@ -236,9 +236,9 @@ class _OBCupertinoTabScaffoldState extends State<OBCupertinoTabScaffold> {
 /// at a time and on stage. Off stage tabs' animations are stopped.
 class _TabSwitchingView extends StatefulWidget {
   const _TabSwitchingView({
-    @required this.currentTabIndex,
-    @required this.tabNumber,
-    @required this.tabBuilder,
+    required this.currentTabIndex,
+    required this.tabNumber,
+    required this.tabBuilder,
   })  : assert(currentTabIndex != null),
         assert(tabNumber != null && tabNumber > 0),
         assert(tabBuilder != null);
@@ -252,13 +252,13 @@ class _TabSwitchingView extends StatefulWidget {
 }
 
 class _TabSwitchingViewState extends State<_TabSwitchingView> {
-  List<Widget> tabs;
-  List<FocusScopeNode> tabFocusNodes;
+  late List<Widget?> tabs;
+  late List<FocusScopeNode> tabFocusNodes;
 
   @override
   void initState() {
     super.initState();
-    tabs = List<Widget>(widget.tabNumber);
+    tabs = List.filled(widget.tabNumber, null);
     tabFocusNodes = List<FocusScopeNode>.generate(
       widget.tabNumber,
       (int index) => FocusScopeNode(),

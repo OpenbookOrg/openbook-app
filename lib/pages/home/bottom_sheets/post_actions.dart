@@ -25,16 +25,16 @@ class OBPostActionsBottomSheet extends StatefulWidget {
   final Post post;
   final ValueChanged<Post> onPostReported;
   final OnPostDeleted onPostDeleted;
-  final Function onCommunityExcluded;
-  final Function onUndoCommunityExcluded;
-  final OBPostDisplayContext displayContext;
-  final ValueChanged<Community> onPostCommunityExcludedFromProfilePosts;
+  final Function? onCommunityExcluded;
+  final Function? onUndoCommunityExcluded;
+  final OBPostDisplayContext? displayContext;
+  final ValueChanged<Community>? onPostCommunityExcludedFromProfilePosts;
 
   const OBPostActionsBottomSheet(
-      {Key key,
-      @required this.post,
-      @required this.onPostReported,
-      @required this.onPostDeleted,
+      {Key? key,
+      required this.post,
+      required this.onPostReported,
+      required this.onPostDeleted,
       this.onCommunityExcluded,
       this.onUndoCommunityExcluded,
       this.displayContext = OBPostDisplayContext.timelinePosts,
@@ -48,11 +48,11 @@ class OBPostActionsBottomSheet extends StatefulWidget {
 }
 
 class OBPostActionsBottomSheetState extends State<OBPostActionsBottomSheet> {
-  UserService _userService;
-  ModalService _modalService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  BottomSheetService _bottomSheetService;
+  late UserService _userService;
+  late ModalService _modalService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late BottomSheetService _bottomSheetService;
 
   @override
   Widget build(BuildContext context) {
@@ -63,13 +63,13 @@ class OBPostActionsBottomSheetState extends State<OBPostActionsBottomSheet> {
     _localizationService = openbookProvider.localizationService;
     _bottomSheetService = openbookProvider.bottomSheetService;
 
-    User loggedInUser = _userService.getLoggedInUser();
+    User loggedInUser = _userService.getLoggedInUser()!;
 
     return StreamBuilder(
         stream: widget.post.updateSubject,
         initialData: widget.post,
         builder: (BuildContext context, AsyncSnapshot<Post> snapshot) {
-          Post post = snapshot.data;
+          Post post = snapshot.data!;
           List<Widget> postActions = [];
 
           if (widget.displayContext == OBPostDisplayContext.topPosts) {
@@ -77,13 +77,13 @@ class OBPostActionsBottomSheetState extends State<OBPostActionsBottomSheet> {
               post: post,
               onExcludedPostCommunity: () {
                 if (widget.onCommunityExcluded != null) {
-                  widget.onCommunityExcluded(post.community);
+                  widget.onCommunityExcluded!(post.community);
                 }
                 _dismiss();
               },
               onUndoExcludedPostCommunity: () {
                 if (widget.onUndoCommunityExcluded != null) {
-                  widget.onUndoCommunityExcluded(post.community);
+                  widget.onUndoCommunityExcluded!(post.community);
                 }
                 _dismiss();
               },
@@ -93,7 +93,7 @@ class OBPostActionsBottomSheetState extends State<OBPostActionsBottomSheet> {
             postActions.add(OBExcludeCommunityFromProfilePostsTile(
                 post: post,
                 onPostCommunityExcludedFromProfilePosts:
-                    widget.onPostCommunityExcludedFromProfilePosts));
+                    widget.onPostCommunityExcludedFromProfilePosts!));
           }
 
           postActions.add(OBMutePostTile(
@@ -180,8 +180,8 @@ class OBPostActionsBottomSheetState extends State<OBPostActionsBottomSheet> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);

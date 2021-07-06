@@ -34,7 +34,7 @@ class OBUserActionsBottomSheet extends StatelessWidget {
       stream: user.updateSubject,
       initialData: user,
       builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
-        var user = snapshot.data;
+        var user = snapshot.data!;
 
         List<Widget> moreTiles = [];
 
@@ -77,15 +77,15 @@ class OBUserActionsBottomSheet extends StatelessWidget {
           },
         ));
 
-        if (user.isConnected &&
-            !user.isFullyConnected &&
-            !user.isPendingConnectionConfirmation) {
+        if (user.isConnected! &&
+            !user.isFullyConnected! &&
+            !user.isPendingConnectionConfirmation!) {
           moreTiles.add(OBDisconnectFromUserTile(user,
               onDisconnectedFromUser: _dismissModalBottomSheet,
               title:
                   localizationService.user__profile_action_cancel_connection));
           moreTiles.add(OBUpdateConnectionWithUserTile(user));
-        } else if (user.isPendingConnectionConfirmation) {
+        } else if (user.isPendingConnectionConfirmation!) {
           moreTiles.add(OBConfirmConnectionWithUserTile(
             user,
             onWillShowModalBottomSheet: _dismissModalBottomSheet,
@@ -93,7 +93,7 @@ class OBUserActionsBottomSheet extends StatelessWidget {
           moreTiles.add(OBDisconnectFromUserTile(user,
               onDisconnectedFromUser: _dismissModalBottomSheet,
               title: localizationService.user__profile_action_deny_connection));
-        } else if (user.isFullyConnected) {
+        } else if (user.isFullyConnected!) {
           moreTiles.add(OBUpdateConnectionWithUserTile(user));
           moreTiles.add(OBDisconnectFromUserTile(user,
               onDisconnectedFromUser: _dismissModalBottomSheet));
@@ -104,7 +104,7 @@ class OBUserActionsBottomSheet extends StatelessWidget {
           ));
         }
 
-        User loggedInUser = openbookProvider.userService.getLoggedInUser();
+        User loggedInUser = openbookProvider.userService.getLoggedInUser()!;
 
         if (loggedInUser.canBlockOrUnblockUser(user)) {
           moreTiles.add(OBBlockUserTile(

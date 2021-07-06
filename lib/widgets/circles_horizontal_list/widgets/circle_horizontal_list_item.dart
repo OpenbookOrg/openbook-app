@@ -13,18 +13,18 @@ class OBCircleHorizontalListItem extends StatelessWidget {
   final bool isSelected;
   final bool isDisabled;
   final Circle circle;
-  final OnCirclePressed onCirclePressed;
+  final OnCirclePressed? onCirclePressed;
   final bool wasPreviouslySelected;
 
   OBCircleHorizontalListItem(this.circle,
-      {@required this.onCirclePressed,
-      this.isSelected,
-      this.isDisabled,
+      {required this.onCirclePressed,
+      this.isSelected = false,
+      this.isDisabled = false,
       this.wasPreviouslySelected = false});
 
   @override
   Widget build(BuildContext context) {
-    int usersCount = circle.usersCount;
+    int usersCount = circle.usersCount!;
     LocalizationService localizationService = OpenbookProvider.of(context).localizationService;
 
     if (wasPreviouslySelected) {
@@ -39,7 +39,7 @@ class OBCircleHorizontalListItem extends StatelessWidget {
     Widget item = GestureDetector(
       onTap: () {
         if (this.onCirclePressed != null && !isDisabled) {
-          this.onCirclePressed(circle);
+          this.onCirclePressed!(circle);
         }
       },
       child: ConstrainedBox(
@@ -67,7 +67,7 @@ class OBCircleHorizontalListItem extends StatelessWidget {
               height: 10,
             ),
             OBText(
-              circle.name,
+              circle.name!,
               maxLines: 1,
               style: TextStyle(
                   fontSize: 14,

@@ -10,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBSuggestedCommunities extends StatefulWidget {
-  final VoidCallback onNoSuggestions;
+  final VoidCallback? onNoSuggestions;
 
   const OBSuggestedCommunities({this.onNoSuggestions});
 
@@ -22,12 +22,12 @@ class OBSuggestedCommunities extends StatefulWidget {
 
 class OBSuggestedCommunitiesState extends State<OBSuggestedCommunities>
     with AutomaticKeepAliveClientMixin {
-  bool _needsBootstrap;
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  List<Community> _suggestedCommunities;
-  bool _requestInProgress;
+  late bool _needsBootstrap;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late List<Community> _suggestedCommunities;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -106,7 +106,7 @@ class OBSuggestedCommunitiesState extends State<OBSuggestedCommunities>
       await _userService.getSuggestedCommunities();
       _setSuggestedCommunities(suggestedCommunitiesList.communities);
       if (widget.onNoSuggestions != null &&
-          suggestedCommunitiesList.communities.isEmpty) widget.onNoSuggestions();
+          suggestedCommunitiesList.communities?.isEmpty == true) widget.onNoSuggestions!();
     } catch (error) {
       _onError(error);
     } finally {
@@ -119,8 +119,8 @@ class OBSuggestedCommunitiesState extends State<OBSuggestedCommunities>
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);
@@ -128,9 +128,9 @@ class OBSuggestedCommunitiesState extends State<OBSuggestedCommunities>
     }
   }
 
-  void _setSuggestedCommunities(List<Community> communities) {
+  void _setSuggestedCommunities(List<Community>? communities) {
     setState(() {
-      _suggestedCommunities = communities;
+      _suggestedCommunities = communities ?? [];
     });
   }
 

@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class OBVideoDialog extends StatelessWidget {
-  final File video;
-  final String videoUrl;
-  final ChewieController chewieController;
-  final VideoPlayerController videoPlayerController;
+  final File? video;
+  final String? videoUrl;
+  final ChewieController? chewieController;
+  final VideoPlayerController? videoPlayerController;
   final bool autoPlay;
 
   const OBVideoDialog(
-      {Key key,
+      {Key? key,
       this.video,
       this.videoUrl,
       this.autoPlay = false,

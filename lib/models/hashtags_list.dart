@@ -1,7 +1,7 @@
 import 'package:Okuna/models/hashtag.dart';
 
 class HashtagsList {
-  final List<Hashtag> hashtags;
+  final List<Hashtag>? hashtags;
 
   HashtagsList({
     this.hashtags,

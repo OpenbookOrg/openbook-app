@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 class OBModeratedObjectPreview extends StatelessWidget {
   final ModeratedObject moderatedObject;
 
-  const OBModeratedObjectPreview({Key key, @required this.moderatedObject})
+  const OBModeratedObjectPreview({Key? key, required this.moderatedObject})
       : super(key: key);
 
   @override

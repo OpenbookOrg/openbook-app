@@ -4,12 +4,12 @@ import 'package:Okuna/widgets/theming/text.dart';
 import 'package:flutter/material.dart';
 
 class OBFadingHighlightedBox extends StatefulWidget {
-  final Widget child;
-  final EdgeInsets padding;
-  final BorderRadius borderRadius;
+  final Widget? child;
+  final EdgeInsets? padding;
+  final BorderRadius? borderRadius;
 
   const OBFadingHighlightedBox(
-      {Key key, this.child, this.padding, this.borderRadius})
+      {Key? key, this.child, this.padding, this.borderRadius})
       : super(key: key);
 
   @override
@@ -20,7 +20,7 @@ class OBFadingHighlightedBox extends StatefulWidget {
 
 class OBFadingHighlightedBoxState extends State<OBFadingHighlightedBox>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   @override
   void initState() {
@@ -51,7 +51,7 @@ class OBFadingHighlightedBoxState extends State<OBFadingHighlightedBox>
           var theme = snapshot.data;
 
           var primaryColor =
-              themeValueParserService.parseColor(theme.primaryColor);
+              themeValueParserService.parseColor(theme!.primaryColor);
           final bool isDarkPrimaryColor =
               primaryColor.computeLuminance() < 0.179;
 
@@ -59,7 +59,7 @@ class OBFadingHighlightedBoxState extends State<OBFadingHighlightedBox>
               ? Color.fromARGB(30, 255, 255, 255)
               : Color.fromARGB(10, 0, 0, 0);
 
-          Animatable<Color> background = TweenSequence<Color>(
+          Animatable<Color?> background = TweenSequence<Color?>(
             [
               TweenSequenceItem(
                 weight: 1.0,
@@ -74,7 +74,7 @@ class OBFadingHighlightedBoxState extends State<OBFadingHighlightedBox>
           return AnimatedBuilder(
               animation: _controller,
               builder: (context, child) {
-                Color color = background
+                Color? color = background
                     .evaluate(AlwaysStoppedAnimation(_controller.value));
 
                 return Container(

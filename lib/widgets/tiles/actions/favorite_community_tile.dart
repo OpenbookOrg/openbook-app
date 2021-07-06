@@ -10,14 +10,14 @@ import 'package:flutter/material.dart';
 
 class OBFavoriteCommunityTile extends StatefulWidget {
   final Community community;
-  final VoidCallback onFavoritedCommunity;
-  final VoidCallback onUnfavoritedCommunity;
-  final Widget favoriteSubtitle;
-  final Widget unfavoriteSubtitle;
+  final VoidCallback? onFavoritedCommunity;
+  final VoidCallback? onUnfavoritedCommunity;
+  final Widget? favoriteSubtitle;
+  final Widget? unfavoriteSubtitle;
 
   const OBFavoriteCommunityTile(
-      {Key key,
-      @required this.community,
+      {Key? key,
+      required this.community,
       this.onFavoritedCommunity,
       this.onUnfavoritedCommunity,
       this.favoriteSubtitle,
@@ -31,10 +31,10 @@ class OBFavoriteCommunityTile extends StatefulWidget {
 }
 
 class OBFavoriteCommunityTileState extends State<OBFavoriteCommunityTile> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  bool _requestInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class OBFavoriteCommunityTileState extends State<OBFavoriteCommunityTile> {
       builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
         var community = snapshot.data;
 
-        bool isFavorite = community.isFavorite;
+        bool isFavorite = community?.isFavorite ?? false;
 
         return ListTile(
           enabled: !_requestInProgress,
@@ -76,7 +76,7 @@ class OBFavoriteCommunityTileState extends State<OBFavoriteCommunityTile> {
     _setRequestInProgress(true);
     try {
       await _userService.favoriteCommunity(widget.community);
-      if (widget.onFavoritedCommunity != null) widget.onFavoritedCommunity();
+      if (widget.onFavoritedCommunity != null) widget.onFavoritedCommunity!();
     } catch (e) {
       _onError(e);
     } finally {
@@ -89,7 +89,7 @@ class OBFavoriteCommunityTileState extends State<OBFavoriteCommunityTile> {
     try {
       await _userService.unfavoriteCommunity(widget.community);
       if (widget.onUnfavoritedCommunity != null)
-        widget.onUnfavoritedCommunity();
+        widget.onUnfavoritedCommunity!();
     } catch (e) {
       _onError(e);
     } finally {
@@ -102,8 +102,8 @@ class OBFavoriteCommunityTileState extends State<OBFavoriteCommunityTile> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

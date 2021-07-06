@@ -8,12 +8,12 @@ import 'moderated_object_log_actor.dart';
 class OBModeratedObjectVerifiedChangedLogTile extends StatelessWidget {
   final ModeratedObjectLog log;
   final ModeratedObjectVerifiedChangedLog moderatedObjectVerifiedChangedLog;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const OBModeratedObjectVerifiedChangedLogTile(
-      {Key key,
-      @required this.log,
-      @required this.moderatedObjectVerifiedChangedLog,
+      {Key? key,
+      required this.log,
+      required this.moderatedObjectVerifiedChangedLog,
       this.onPressed})
       : super(key: key);
 

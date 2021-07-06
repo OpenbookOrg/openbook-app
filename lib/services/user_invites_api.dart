@@ -3,10 +3,10 @@ import 'package:Okuna/services/string_template.dart';
 import 'package:meta/meta.dart';
 
 class UserInvitesApiService {
-  HttpieService _httpService;
-  StringTemplateService _stringTemplateService;
+  late HttpieService _httpService;
+  late StringTemplateService _stringTemplateService;
 
-  String apiURL;
+  late String apiURL;
 
   static const GET_USER_INVITES_PATH = 'api/invites/';
   static const SEARCH_USER_INVITES_PATH = 'api/invites/search/';
@@ -29,7 +29,7 @@ class UserInvitesApiService {
   }
 
   Future<HttpieStreamedResponse> createUserInvite(
-      {@required String nickname}) {
+      {required String nickname}) {
     Map<String, dynamic> body = {};
 
     if (nickname != null) {
@@ -41,7 +41,7 @@ class UserInvitesApiService {
   }
 
   Future<HttpieStreamedResponse> updateUserInvite(
-      {@required String nickname, @required int userInviteId}) {
+      {required String? nickname, required int userInviteId}) {
     Map<String, dynamic> body = {};
 
     if (nickname != null) {
@@ -53,9 +53,9 @@ class UserInvitesApiService {
   }
 
   Future<HttpieResponse> getUserInvites(
-      { int offset,
-        int count,
-        bool isStatusPending}) {
+      { int? offset,
+        int? count,
+        bool? isStatusPending}) {
     Map<String, dynamic> queryParams = {};
 
     if (count != null) queryParams['count'] = count;
@@ -68,9 +68,9 @@ class UserInvitesApiService {
   }
 
   Future<HttpieResponse> searchUserInvites(
-      { int count,
-        bool isStatusPending,
-        String query}) {
+      { int? count,
+        bool? isStatusPending,
+        String? query}) {
     Map<String, dynamic> queryParams = {};
 
     if (count != null) queryParams['count'] = count;
@@ -89,7 +89,7 @@ class UserInvitesApiService {
   }
 
   Future<HttpieResponse> emailUserInvite(
-      {@required int userInviteId, @required String email}) {
+      {required int userInviteId, required String email}) {
     String path = _stringTemplateService.parse(EMAIL_INVITE_PATH, {'userInviteId': userInviteId});
     Map<String, dynamic> body = {};
 

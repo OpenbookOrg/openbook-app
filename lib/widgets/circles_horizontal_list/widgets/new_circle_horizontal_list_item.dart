@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class OBNewCircleHorizontalListItem extends StatelessWidget {
   final VoidCallback onPressed;
 
-  OBNewCircleHorizontalListItem({@required this.onPressed});
+  OBNewCircleHorizontalListItem({required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

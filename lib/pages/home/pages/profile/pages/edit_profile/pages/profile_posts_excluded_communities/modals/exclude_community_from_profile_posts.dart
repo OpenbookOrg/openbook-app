@@ -21,11 +21,11 @@ class OBExcludeCommunitiesFromProfilePostsModal extends StatefulWidget {
 
 class OBProfilePostsExcludedCommunitiesState
     extends State<OBExcludeCommunitiesFromProfilePostsModal> {
-  UserService _userService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
 
-  OBHttpListController _httpListController;
-  bool _needsBootstrap;
+  late OBHttpListController _httpListController;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -91,7 +91,7 @@ class OBProfilePostsExcludedCommunitiesState
   Future<List<Community>> _refreshJoinedCommunities() async {
     CommunitiesList joinedCommunities = await _userService.getJoinedCommunities(
         excludedFromProfilePosts: false);
-    return joinedCommunities.communities;
+    return joinedCommunities.communities ?? [];
   }
 
   Future<List<Community>> _loadMoreJoinedCommunities(
@@ -101,13 +101,13 @@ class OBProfilePostsExcludedCommunitiesState
     ))
         .communities;
 
-    return moreJoinedCommunities;
+    return moreJoinedCommunities ?? [];
   }
 
   Future<List<Community>> _searchCommunities(String query) async {
     CommunitiesList results = await _userService
         .searchCommunitiesWithQuery(query, excludedFromProfilePosts: false);
 
-    return results.communities;
+    return results.communities ?? [];
   }
 }

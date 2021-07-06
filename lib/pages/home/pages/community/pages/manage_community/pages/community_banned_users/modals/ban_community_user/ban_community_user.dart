@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 class OBBanCommunityUserModal extends StatefulWidget {
   final Community community;
 
-  const OBBanCommunityUserModal({Key key, @required this.community})
+  const OBBanCommunityUserModal({Key? key, required this.community})
       : super(key: key);
 
   @override
@@ -29,11 +29,11 @@ class OBBanCommunityUserModal extends StatefulWidget {
 
 class OBBanCommunityUserModalState
     extends State<OBBanCommunityUserModal> {
-  UserService _userService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -82,7 +82,7 @@ class OBBanCommunityUserModalState
       CommunityMembersExclusion.administrators,
       CommunityMembersExclusion.moderators
     ]);
-    return communityMembers.users;
+    return communityMembers.users ?? [];
   }
 
   Future<List<User>> _loadMoreCommunityMembers(
@@ -98,7 +98,7 @@ class OBBanCommunityUserModalState
           CommunityMembersExclusion.moderators
         ]))
         .users;
-    return moreCommunityMembers;
+    return moreCommunityMembers ?? [];
   }
 
   Future<List<User>> _searchCommunityMembers(String query) async {
@@ -110,7 +110,7 @@ class OBBanCommunityUserModalState
           CommunityMembersExclusion.moderators
         ]);
 
-    return results.users;
+    return results.users ?? [];
   }
 
   void _onWantsToAddNewBannedUser(User user) async {

@@ -3,8 +3,8 @@ import 'package:Okuna/services/toast.dart';
 import 'package:flutter/material.dart';
 
 class PermissionsService {
-  ToastService _toastService;
-  LocalizationService _localizationService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
 
   void setToastService(toastService) {
     _toastService = toastService;
@@ -15,7 +15,7 @@ class PermissionsService {
   }
 
   Future<bool> requestStoragePermissions(
-      {@required BuildContext context}) async {
+      {required BuildContext context}) async {
     return _requestPermissionWithErrorMessage(
         permission: null,
         errorMessage:
@@ -24,7 +24,7 @@ class PermissionsService {
   }
 
   Future<bool> requestCameraPermissions(
-      {@required BuildContext context}) async {
+      {required BuildContext context}) async {
     return _requestPermissionWithErrorMessage(
         permission: null,
         errorMessage:
@@ -33,9 +33,9 @@ class PermissionsService {
   }
 
   Future<bool> _requestPermissionWithErrorMessage(
-      {@required dynamic permission,
-      @required String errorMessage,
-      @required BuildContext context}) async {
+      {required dynamic permission,
+      required String errorMessage,
+      required BuildContext context}) async {
     return true;
   }
 }

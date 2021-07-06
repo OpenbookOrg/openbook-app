@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 
 class ConnectivityService {
-  StreamSubscription _connectivityChangeSubscription;
-  ConnectivityResult _connectivity;
+  late StreamSubscription _connectivityChangeSubscription;
+  late ConnectivityResult _connectivity;
 
   Future bootstrap() async {
     _connectivity = await Connectivity().checkConnectivity();

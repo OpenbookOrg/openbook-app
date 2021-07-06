@@ -3,15 +3,15 @@ import 'package:Okuna/provider.dart';
 import 'package:flutter/material.dart';
 
 class OBAlert extends StatefulWidget {
-  final Widget child;
-  final double height;
-  final double width;
-  final EdgeInsets padding;
-  final BorderRadiusGeometry borderRadius;
-  final Color color;
+  final Widget? child;
+  final double? height;
+  final double? width;
+  final EdgeInsets? padding;
+  final BorderRadiusGeometry? borderRadius;
+  final Color? color;
 
   const OBAlert(
-      {Key key,
+      {Key? key,
       this.child,
       this.height,
       this.width,
@@ -27,7 +27,7 @@ class OBAlert extends StatefulWidget {
 }
 
 class OBAlertState extends State<OBAlert> {
-  bool isVisible;
+  late bool isVisible;
 
   @override
   void initState() {
@@ -47,7 +47,7 @@ class OBAlertState extends State<OBAlert> {
         builder: (BuildContext context, AsyncSnapshot<OBTheme> snapshot) {
           var theme = snapshot.data;
           var primaryColor =
-              themeValueParserService.parseColor(theme.primaryColor);
+              themeValueParserService.parseColor(theme!.primaryColor);
           final bool isDarkPrimaryColor =
               primaryColor.computeLuminance() < 0.179;
 

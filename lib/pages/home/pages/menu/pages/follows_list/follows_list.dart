@@ -25,12 +25,12 @@ class OBFollowsListPage extends StatefulWidget {
 }
 
 class OBFollowsListPageState extends State<OBFollowsListPage> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
 
-  GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
-  bool _needsBootstrap;
+  late GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -87,7 +87,7 @@ class OBFollowsListPageState extends State<OBFollowsListPage> {
 
   Future<void> _refreshFollowsList() async {
     try {
-      await _userService.getFollowsListWithId(widget.followsList.id);
+      await _userService.getFollowsListWithId(widget.followsList.id!);
     } catch (error) {
       _onError(error);
     }
@@ -98,8 +98,8 @@ class OBFollowsListPageState extends State<OBFollowsListPage> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

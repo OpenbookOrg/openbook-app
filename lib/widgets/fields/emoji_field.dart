@@ -8,14 +8,14 @@ import 'package:flutter/material.dart';
 import '../../provider.dart';
 
 class OBEmojiField extends StatelessWidget {
-  final Emoji emoji;
-  final String subtitle;
-  final String labelText;
-  final String errorText;
-  final OnEmojiFieldTapped onEmojiFieldTapped;
+  final Emoji? emoji;
+  final String? subtitle;
+  final String? labelText;
+  final String? errorText;
+  final OnEmojiFieldTapped? onEmojiFieldTapped;
 
   const OBEmojiField(
-      {Key key,
+      {Key? key,
       this.emoji,
       this.subtitle,
       this.labelText,
@@ -31,15 +31,15 @@ class OBEmojiField extends StatelessWidget {
         MergeSemantics(
           child: ListTile(
               title: OBText(
-                labelText,
+                labelText ?? '',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
               subtitle: errorText != null
-                  ? Text(errorText, style: TextStyle(color: Colors.red))
+                  ? Text(errorText!, style: TextStyle(color: Colors.red))
                   : null,
-              trailing: emoji == null ? OBText(_localizationService.user__emoji_field_none_selected) : OBEmoji(emoji),
+              trailing: emoji == null ? OBText(_localizationService.user__emoji_field_none_selected) : OBEmoji(emoji!),
               onTap: () {
-                if (onEmojiFieldTapped != null) onEmojiFieldTapped(emoji);
+                if (onEmojiFieldTapped != null) onEmojiFieldTapped!(emoji);
               }),
         ),
         OBDivider(),
@@ -48,4 +48,4 @@ class OBEmojiField extends StatelessWidget {
   }
 }
 
-typedef void OnEmojiFieldTapped(Emoji currentEmoji);
+typedef void OnEmojiFieldTapped(Emoji? currentEmoji);

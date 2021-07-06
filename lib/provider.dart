@@ -54,7 +54,7 @@ import 'package:sentry/sentry.dart';
 class OpenbookProvider extends StatefulWidget {
   final Widget child;
 
-  const OpenbookProvider({Key key, @required this.child}) : super(key: key);
+  const OpenbookProvider({Key? key, required this.child}) : super(key: key);
 
   @override
   OpenbookProviderState createState() {
@@ -64,7 +64,7 @@ class OpenbookProvider extends StatefulWidget {
   static OpenbookProviderState of(BuildContext context) {
     return (context.dependOnInheritedWidgetOfExactType<_OpenbookProvider>()
             as _OpenbookProvider)
-        .data;
+        .data!;
   }
 }
 
@@ -105,7 +105,7 @@ class OpenbookProviderState extends State<OpenbookProvider> {
   NavigationService navigationService = NavigationService();
   WaitlistApiService waitlistApiService = WaitlistApiService();
 
-  LocalizationService localizationService;
+  late LocalizationService localizationService;
   UniversalLinksService universalLinksService = UniversalLinksService();
   BottomSheetService bottomSheetService = BottomSheetService();
   PushNotificationsService pushNotificationsService =
@@ -120,13 +120,13 @@ class OpenbookProviderState extends State<OpenbookProvider> {
   ConnectivityService connectivityService = ConnectivityService();
   DraftService draftService = DraftService();
 
-  SentryClient sentryClient;
+  late SentryClient sentryClient;
 
   @override
   void initState() {
     super.initState();
     initAsyncState();
-    imageCache.maximumSize = 200 << 20; // 200MB
+    imageCache?.maximumSize = 200 << 20; // 200MB
     userPreferencesService.setStorageService(storageService);
     userPreferencesService.setConnectivityService(connectivityService);
     exploreTimelinePreferencesService.setStorageService(storageService);
@@ -232,7 +232,9 @@ class OpenbookProviderState extends State<OpenbookProvider> {
         iosApiKey: environment.intercomIosKey,
         androidApiKey: environment.intercomAndroidKey,
         appId: environment.intercomAppId);
-    sentryClient = SentryClient(SentryOptions(dsn: environment.sentryDsn));
+    if (environment.sentryDsn.isNotEmpty == true) {
+      sentryClient = SentryClient(SentryOptions(dsn: environment.sentryDsn));
+    }
     utilsService.setTrustedProxyUrl(environment.linkPreviewsTrustedProxyUrl);
 
     await connectivityService.bootstrap();
@@ -275,9 +277,9 @@ class OpenbookProviderState extends State<OpenbookProvider> {
 }
 
 class _OpenbookProvider extends InheritedWidget {
-  final OpenbookProviderState data;
+  final OpenbookProviderState? data;
 
-  _OpenbookProvider({Key key, this.data, Widget child})
+  _OpenbookProvider({Key? key, this.data, required Widget child})
       : super(key: key, child: child);
 
   @override

@@ -9,27 +9,32 @@ import '../../provider.dart';
 
 class OBCircleSelectableTile extends StatelessWidget {
   final Circle circle;
-  final OnCirclePressed onCirclePressed;
-  final bool isSelected;
+  final OnCirclePressed? onCirclePressed;
+  final bool? isSelected;
   final bool isDisabled;
 
   const OBCircleSelectableTile(this.circle,
-      {Key key, this.onCirclePressed, this.isSelected, this.isDisabled = false})
+      {Key? key, this.onCirclePressed, this.isSelected, this.isDisabled = false})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    int usersCount = circle.usersCount;
+    int? usersCount = circle.usersCount;
     LocalizationService localizationService = OpenbookProvider.of(context).localizationService;
-    String prettyCount =  getPrettyCount(usersCount, localizationService);
+    String? prettyCount = usersCount != null
+      ? getPrettyCount(usersCount, localizationService)
+      : null;
+
     return OBCheckboxField(
       isDisabled: isDisabled,
-      value: isSelected,
-      title: circle.name,
+      value: isSelected ?? false,
+      title: circle.name!,
       subtitle:
-          usersCount != null ? localizationService.user__circle_peoples_count(prettyCount) : null,
+          usersCount != null ? localizationService.user__circle_peoples_count(prettyCount!) : null,
       onTap: () {
-        onCirclePressed(circle);
+        if (onCirclePressed != null) {
+          onCirclePressed!(circle);
+        }
       },
       leading: SizedBox(
         height: 40,

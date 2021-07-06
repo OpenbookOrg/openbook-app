@@ -9,13 +9,13 @@ import 'package:flutter/material.dart';
 
 class OBReportUserTile extends StatefulWidget {
   final User user;
-  final ValueChanged<dynamic> onUserReported;
-  final VoidCallback onWantsToReportUser;
+  final ValueChanged<dynamic>? onUserReported;
+  final VoidCallback? onWantsToReportUser;
 
   const OBReportUserTile({
-    Key key,
+    Key? key,
     this.onUserReported,
-    @required this.user,
+    required this.user,
     this.onWantsToReportUser,
   }) : super(key: key);
 
@@ -26,8 +26,8 @@ class OBReportUserTile extends StatefulWidget {
 }
 
 class OBReportUserTileState extends State<OBReportUserTile> {
-  NavigationService _navigationService;
-  bool _requestInProgress;
+  late NavigationService _navigationService;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -47,7 +47,7 @@ class OBReportUserTileState extends State<OBReportUserTile> {
       builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
         var user = snapshot.data;
 
-        bool isReported = user.isReported ?? false;
+        bool isReported = user?.isReported ?? false;
 
         return OBLoadingTile(
           isLoading: _requestInProgress || isReported,
@@ -61,7 +61,7 @@ class OBReportUserTileState extends State<OBReportUserTile> {
   }
 
   void _reportUser() {
-    if (widget.onWantsToReportUser != null) widget.onWantsToReportUser();
+    if (widget.onWantsToReportUser != null) widget.onWantsToReportUser!();
     _navigationService.navigateToReportObject(
         context: context,
         object: widget.user,

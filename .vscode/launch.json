@@ -8,13 +8,13 @@
       "name": "dev-okuna-app",
       "request": "launch",
       "type": "dart",
-      "args": ["--flavor", "development"]
+      "args": ["--flavor", "development", "--no-sound-null-safety"]
     },
     {
       "name": "prod-okuna-app",
       "request": "launch",
       "type": "dart",
-      "args": ["--flavor", "production"]
+      "args": ["--flavor", "production", "--no-sound-null-safety"]
     }
   ]
 }

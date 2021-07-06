@@ -17,7 +17,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBCreateUserInviteModal extends StatefulWidget {
-  final UserInvite userInvite;
+  final UserInvite? userInvite;
   final bool autofocusNameTextField;
 
   OBCreateUserInviteModal(
@@ -30,22 +30,22 @@ class OBCreateUserInviteModal extends StatefulWidget {
 }
 
 class OBCreateUserInviteModalState extends State<OBCreateUserInviteModal> {
-  UserService _userService;
-  ToastService _toastService;
-  NavigationService _navigationService;
-  ValidationService _validationService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late NavigationService _navigationService;
+  late ValidationService _validationService;
+  late LocalizationService _localizationService;
 
-  bool _requestInProgress;
-  bool _formWasSubmitted;
-  bool _formValid;
-  bool _hasExistingUserInvite;
+  late bool _requestInProgress;
+  late bool _formWasSubmitted;
+  late bool _formValid;
+  late bool _hasExistingUserInvite;
 
-  GlobalKey<FormState> _formKey;
+  late GlobalKey<FormState> _formKey;
 
-  TextEditingController _nicknameController;
+  late TextEditingController _nicknameController;
 
-  CancelableOperation _createUpdateOperation;
+  CancelableOperation? _createUpdateOperation;
 
   @override
   void initState() {
@@ -57,7 +57,7 @@ class OBCreateUserInviteModalState extends State<OBCreateUserInviteModal> {
     _formKey = GlobalKey<FormState>();
     _hasExistingUserInvite = widget.userInvite != null;
     if (_hasExistingUserInvite) {
-      _nicknameController.text = widget.userInvite.nickname;
+      _nicknameController.text = widget.userInvite!.nickname ?? '';
     }
 
     _nicknameController.addListener(_updateFormValid);
@@ -66,7 +66,7 @@ class OBCreateUserInviteModalState extends State<OBCreateUserInviteModal> {
   @override
   void dispose() {
     super.dispose();
-    if (_createUpdateOperation != null) _createUpdateOperation.cancel();
+    if (_createUpdateOperation != null) _createUpdateOperation?.cancel();
   }
 
   @override
@@ -101,7 +101,7 @@ class OBCreateUserInviteModalState extends State<OBCreateUserInviteModal> {
                                 decoration: InputDecoration(
                                     labelText: _localizationService.user__invites_create_name_title,
                                     hintText: _localizationService.user__invites_create_name_hint),
-                                validator: (String userInviteNickname) {
+                                validator: (String? userInviteNickname) {
                                   if (!_formWasSubmitted) return null;
                                   return _validationService
                                       .validateUserProfileName(
@@ -115,7 +115,7 @@ class OBCreateUserInviteModalState extends State<OBCreateUserInviteModal> {
         ));
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
         leading: GestureDetector(
           child: const OBIcon(OBIcons.close),
@@ -136,7 +136,7 @@ class OBCreateUserInviteModalState extends State<OBCreateUserInviteModal> {
   }
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   bool _updateFormValid() {
@@ -155,15 +155,15 @@ class OBCreateUserInviteModalState extends State<OBCreateUserInviteModal> {
       _createUpdateOperation = CancelableOperation.fromFuture(
           _hasExistingUserInvite
               ? _userService.updateUserInvite(
-                  userInvite: widget.userInvite,
+                  userInvite: widget.userInvite!,
                   nickname:
-                      _nicknameController.text != widget.userInvite.nickname
+                      _nicknameController.text != widget.userInvite!.nickname
                           ? _nicknameController.text
                           : null)
               : _userService.createUserInvite(
                   nickname: _nicknameController.text));
 
-      UserInvite userInvite = await _createUpdateOperation.value;
+      UserInvite userInvite = await _createUpdateOperation?.value;
       if (!_hasExistingUserInvite) {
         _navigateToShareInvite(userInvite);
       } else {
@@ -188,8 +188,8 @@ class OBCreateUserInviteModalState extends State<OBCreateUserInviteModal> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

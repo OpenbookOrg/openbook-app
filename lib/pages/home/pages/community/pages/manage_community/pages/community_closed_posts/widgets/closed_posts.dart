@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 class OBCommunityClosedPosts extends StatefulWidget {
   final Community community;
 
-  const OBCommunityClosedPosts({this.community});
+  const OBCommunityClosedPosts({required this.community});
 
   @override
   OBCommunityClosedPostsState createState() {
@@ -27,18 +27,18 @@ class OBCommunityClosedPosts extends StatefulWidget {
 }
 
 class OBCommunityClosedPostsState extends State<OBCommunityClosedPosts> {
-  List<Post> _posts;
-  bool _needsBootstrap;
-  bool _isFirstLoad;
-  UserService _userService;
-  ToastService _toastService;
-  ScrollController _postsScrollController;
+  late List<Post> _posts;
+  late bool _needsBootstrap;
+  late bool _isFirstLoad;
+  late UserService _userService;
+  late ToastService _toastService;
+  late ScrollController _postsScrollController;
 
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
-  OBCommunityClosedPostsStatus _status;
-  CancelableOperation _postsRequest;
+  late OBCommunityClosedPostsStatus _status;
+  CancelableOperation? _postsRequest;
 
   @override
   void initState() {
@@ -191,7 +191,7 @@ class OBCommunityClosedPostsState extends State<OBCommunityClosedPosts> {
   void scrollToTop() {
     if (_postsScrollController.hasClients) {
       if (_postsScrollController.offset == 0) {
-        _refreshIndicatorKey.currentState.show();
+        _refreshIndicatorKey.currentState?.show();
       }
 
       _postsScrollController.animateTo(
@@ -213,7 +213,7 @@ class OBCommunityClosedPostsState extends State<OBCommunityClosedPosts> {
 
   void _cancelPreviousPostsRequest() {
     if (_postsRequest != null) {
-      _postsRequest.cancel();
+      _postsRequest!.cancel();
       _postsRequest = null;
     }
   }
@@ -221,8 +221,8 @@ class OBCommunityClosedPostsState extends State<OBCommunityClosedPosts> {
   Future _bootstrap() async {
     PostsList closedPosts =
         await _userService.getClosedPostsForCommunity(widget.community);
-    if (closedPosts.posts != null) _setPosts(closedPosts.posts);
-    _refreshIndicatorKey.currentState.show();
+    if (closedPosts.posts != null) _setPosts(closedPosts.posts!);
+    _refreshIndicatorKey.currentState?.show();
   }
 
   Future<void> _refreshPosts() async {
@@ -234,16 +234,16 @@ class OBCommunityClosedPostsState extends State<OBCommunityClosedPosts> {
 
       _postsRequest = CancelableOperation.fromFuture(postsListFuture);
 
-      List<Post> posts = (await postsListFuture).posts;
+      List<Post>? posts = (await postsListFuture).posts;
 
       if (_isFirstLoad) _isFirstLoad = false;
 
-      if (posts.length == 0) {
+      if (posts?.length == 0) {
         _setStatus(OBCommunityClosedPostsStatus.noMorePostsToLoad);
       } else {
         _setStatus(OBCommunityClosedPostsStatus.idle);
       }
-      _setPosts(posts);
+      _setPosts(posts ?? []);
     } catch (error) {
       _setStatus(OBCommunityClosedPostsStatus.loadingMorePostsFailed);
       _onError(error);
@@ -267,13 +267,13 @@ class OBCommunityClosedPostsState extends State<OBCommunityClosedPosts> {
 
       _postsRequest = CancelableOperation.fromFuture(morePostsListFuture);
 
-      List<Post> morePosts = (await morePostsListFuture).posts;
+      List<Post>? morePosts = (await morePostsListFuture).posts;
 
-      if (morePosts.length == 0) {
+      if (morePosts?.length == 0) {
         _setStatus(OBCommunityClosedPostsStatus.noMorePostsToLoad);
       } else {
         _setStatus(OBCommunityClosedPostsStatus.idle);
-        _addPosts(morePosts);
+        _addPosts(morePosts ?? []);
       }
     } catch (error) {
       _setStatus(OBCommunityClosedPostsStatus.loadingMorePostsFailed);
@@ -294,8 +294,8 @@ class OBCommunityClosedPostsState extends State<OBCommunityClosedPosts> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;

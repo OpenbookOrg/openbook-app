@@ -4,22 +4,23 @@ import 'package:flutter/material.dart';
 
 class OBLanguageSelectableTile extends StatelessWidget {
   final Language language;
-  final OnLanguagePressed onLanguagePressed;
-  final bool isSelected;
+  final OnLanguagePressed? onLanguagePressed;
+  final bool? isSelected;
   static double circleSize = 15;
 
   const OBLanguageSelectableTile(this.language,
-      {Key key, this.onLanguagePressed, this.isSelected})
+      {Key? key, this.onLanguagePressed, this.isSelected})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     return OBCheckboxField(
-      value: isSelected,
-      title: language.name,
+      value: isSelected ?? false,
+      title: language.name!,
       onTap: () {
-        onLanguagePressed(language);
+        if (onLanguagePressed != null) {
+          onLanguagePressed!(language);
+        }
       },
     );
   }

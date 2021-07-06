@@ -1,8 +1,8 @@
 import 'package:Okuna/models/post_comment_user_mention.dart';
 
 class PostCommentUserMentionNotification {
-  final int id;
-  final PostCommentUserMention postCommentUserMention;
+  final int? id;
+  final PostCommentUserMention? postCommentUserMention;
 
   PostCommentUserMentionNotification({this.id, this.postCommentUserMention});
 
@@ -15,7 +15,7 @@ class PostCommentUserMentionNotification {
   }
 
   static PostCommentUserMention _parsePostCommentUserMention(
-      Map postCommentUserMentionData) {
+      Map<String, dynamic> postCommentUserMentionData) {
     return PostCommentUserMention.fromJSON(postCommentUserMentionData);
   }
 }

@@ -14,12 +14,12 @@ import 'package:Okuna/widgets/load_more.dart';
 
 class OBPostReactionList extends StatefulWidget {
   // The emoji to show reactions of
-  final Emoji emoji;
+  final Emoji? emoji;
 
   // The post to show reactions of
-  final Post post;
+  final Post? post;
 
-  const OBPostReactionList({Key key, this.emoji, this.post}) : super(key: key);
+  const OBPostReactionList({Key? key, this.emoji, this.post}) : super(key: key);
 
   @override
   OBPostReactionListState createState() {
@@ -28,15 +28,15 @@ class OBPostReactionList extends StatefulWidget {
 }
 
 class OBPostReactionListState extends State<OBPostReactionList> {
-  UserService _userService;
-  ToastService _toastService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
 
-  List<PostReaction> _postReactions;
+  late List<PostReaction> _postReactions;
 
-  bool _needsBootstrap;
-  bool _loadMoreFinished;
+  late bool _needsBootstrap;
+  late bool _loadMoreFinished;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
@@ -89,7 +89,7 @@ class OBPostReactionListState extends State<OBPostReactionList> {
   }
 
   Future<void> _refreshPostReactions() async {
-    var reactionsList = await _userService.getReactionsForPost(widget.post,
+    var reactionsList = await _userService.getReactionsForPost(widget.post!,
         emoji: widget.emoji);
 
     _setPostReactions(reactionsList.reactions);
@@ -99,14 +99,14 @@ class OBPostReactionListState extends State<OBPostReactionList> {
     var lastReaction = _postReactions.last;
     var lastReactionId = lastReaction.id;
     try {
-      var moreReactions = (await _userService.getReactionsForPost(widget.post,
+      var moreReactions = (await _userService.getReactionsForPost(widget.post!,
               maxId: lastReactionId, emoji: widget.emoji))
           .reactions;
 
-      if (moreReactions.length == 0) {
+      if (moreReactions != null && moreReactions.length == 0) {
         _setLoadMoreFinished(true);
       } else {
-        _addPostReactions(moreReactions);
+        _addPostReactions(moreReactions ?? []);
       }
       return true;
     } catch (error) {
@@ -121,20 +121,28 @@ class OBPostReactionListState extends State<OBPostReactionList> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(message: _localizationService.trans('error__unknown_error'), context: context);
       throw error;
     }
   }
 
-  void _onPostReactionTilePressed(PostReaction postReaction) {
+  void _onPostReactionTilePressed(PostReaction? postReaction) {
+    if (postReaction == null) {
+      return;
+    }
+
     _navigationService.navigateToUserProfile(
-        user: postReaction.reactor, context: context);
+        user: postReaction.reactor!, context: context);
   }
 
-  void _setPostReactions(List<PostReaction> reactions) {
+  void _setPostReactions(List<PostReaction>? reactions) {
+    if (reactions == null) {
+      return;
+    }
+
     setState(() {
       _postReactions = reactions;
     });

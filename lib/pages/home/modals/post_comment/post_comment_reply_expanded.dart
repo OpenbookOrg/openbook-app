@@ -24,13 +24,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBPostCommentReplyExpandedModal extends StatefulWidget {
-  final Post post;
-  final PostComment postComment;
-  final Function(PostComment) onReplyAdded;
-  final Function(PostComment) onReplyDeleted;
+  final Post? post;
+  final PostComment? postComment;
+  final Function(PostComment)? onReplyAdded;
+  final Function(PostComment)? onReplyDeleted;
 
   const OBPostCommentReplyExpandedModal(
-      {Key key,
+      {Key? key,
       this.post,
       this.postComment,
       this.onReplyAdded,
@@ -45,21 +45,21 @@ class OBPostCommentReplyExpandedModal extends StatefulWidget {
 
 class OBPostCommentReplyExpandedModalState
     extends OBContextualSearchBoxState<OBPostCommentReplyExpandedModal> {
-  ValidationService _validationService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  UserService _userService;
-  DraftService _draftService;
+  late ValidationService _validationService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late UserService _userService;
+  late DraftService _draftService;
 
-  DraftTextEditingController _textController;
-  int _charactersCount;
-  bool _isPostCommentTextAllowedLength;
-  List<Widget> _postCommentItemsWidgets;
-  ScrollController _scrollController;
+  late DraftTextEditingController _textController;
+  late int _charactersCount;
+  late bool _isPostCommentTextAllowedLength;
+  late List<Widget> _postCommentItemsWidgets;
+  late ScrollController _scrollController;
 
-  CancelableOperation _postCommentReplyOperation;
-  bool _requestInProgress;
-  bool _needsBootstrap;
+  CancelableOperation? _postCommentReplyOperation;
+  late bool _requestInProgress;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -74,7 +74,7 @@ class OBPostCommentReplyExpandedModalState
   @override
   void dispose() {
     super.dispose();
-    if (_postCommentReplyOperation != null) _postCommentReplyOperation.cancel();
+    if (_postCommentReplyOperation != null) _postCommentReplyOperation!.cancel();
     _textController.removeListener(_onPostCommentTextChanged);
   }
 
@@ -82,8 +82,8 @@ class OBPostCommentReplyExpandedModalState
   void bootstrap() {
     super.bootstrap();
 
-    _textController = DraftTextEditingController.comment(widget.post.id,
-        commentId: widget.postComment != null ? widget.postComment.id : null,
+    _textController = DraftTextEditingController.comment(widget.post!.id!,
+        commentId: widget.postComment != null ? widget.postComment!.id : null,
         draftService: _draftService);
     _textController.addListener(_onPostCommentTextChanged);
     setAutocompleteTextController(_textController);
@@ -138,7 +138,7 @@ class OBPostCommentReplyExpandedModalState
                 Column(mainAxisSize: MainAxisSize.max, children: bodyItems)));
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     bool isPrimaryActionButtonIsEnabled =
         (_isPostCommentTextAllowedLength && _charactersCount > 0);
 
@@ -155,9 +155,9 @@ class OBPostCommentReplyExpandedModalState
     );
   }
 
-  Widget _buildPrimaryActionButton({bool isEnabled}) {
+  Widget _buildPrimaryActionButton({bool? isEnabled}) {
     return OBButton(
-      isDisabled: !isEnabled,
+      isDisabled: !(isEnabled ?? false),
       isLoading: _requestInProgress,
       size: OBButtonSize.small,
       onPressed: _onWantsToReplyComment,
@@ -171,12 +171,12 @@ class OBPostCommentReplyExpandedModalState
     try {
       _postCommentReplyOperation = CancelableOperation.fromFuture(
           _userService.replyPostComment(
-              post: widget.post,
-              postComment: widget.postComment,
+              post: widget.post!,
+              postComment: widget.postComment!,
               text: _textController.text));
 
-      PostComment comment = await _postCommentReplyOperation.value;
-      if (widget.onReplyAdded != null) widget.onReplyAdded(comment);
+      PostComment comment = await _postCommentReplyOperation?.value;
+      if (widget.onReplyAdded != null) widget.onReplyAdded!(comment);
       Navigator.pop(context, comment);
     } catch (error) {
       _onError(error);
@@ -253,8 +253,8 @@ class OBPostCommentReplyExpandedModalState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);

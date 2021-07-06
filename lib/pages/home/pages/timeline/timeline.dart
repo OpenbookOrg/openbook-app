@@ -29,7 +29,7 @@ class OBTimelinePage extends StatefulWidget {
   final OBTimelinePageController controller;
 
   OBTimelinePage({
-    @required this.controller,
+    required this.controller,
   });
 
   @override
@@ -40,27 +40,27 @@ class OBTimelinePage extends StatefulWidget {
 
 class OBTimelinePageState extends State<OBTimelinePage>
     with TickerProviderStateMixin {
-  OBPostsStreamController _timelinePostsStreamController;
-  ScrollController _timelinePostsStreamScrollController;
-  ModalService _modalService;
-  UserService _userService;
-  LocalizationService _localizationService;
-  ThemeService _themeService;
-  ThemeValueParserService _themeValueParserService;
+  late OBPostsStreamController _timelinePostsStreamController;
+  late ScrollController _timelinePostsStreamScrollController;
+  late ModalService _modalService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
+  late ThemeService _themeService;
+  late ThemeValueParserService _themeValueParserService;
 
-  List<Post> _initialPosts;
-  List<OBNewPostData> _newPostsData;
-  List<Circle> _filteredCircles;
-  List<FollowsList> _filteredFollowsLists;
+  List<Post>? _initialPosts;
+  late List<OBNewPostData> _newPostsData;
+  late List<Circle> _filteredCircles;
+  late List<FollowsList> _filteredFollowsLists;
 
-  StreamSubscription _loggedInUserChangeSubscription;
+  late StreamSubscription _loggedInUserChangeSubscription;
 
-  bool _needsBootstrap;
-  bool _loggedInUserBootstrapped;
+  late bool _needsBootstrap;
+  late bool _loggedInUserBootstrapped;
 
   double _hideFloatingButtonTolerance = 10;
-  AnimationController _hideFloatingButtonAnimation;
-  double _previousScrollPixels;
+  late AnimationController _hideFloatingButtonAnimation;
+  late double _previousScrollPixels;
 
   @override
   void initState() {
@@ -199,9 +199,9 @@ class OBTimelinePageState extends State<OBTimelinePage>
     );
   }
 
-  void _onLoggedInUserChange(User newUser) async {
+  void _onLoggedInUserChange(User? newUser) async {
     if (newUser == null) return;
-    List<Post> initialPosts = (await _userService.getStoredFirstPosts()).posts;
+    List<Post>? initialPosts = (await _userService.getStoredFirstPosts()).posts;
     setState(() {
       _loggedInUserBootstrapped = true;
       _initialPosts = initialPosts;
@@ -212,32 +212,32 @@ class OBTimelinePageState extends State<OBTimelinePage>
   Future<List<Post>> _postsStreamRefresher() async {
     bool cachePosts = _filteredCircles.isEmpty && _filteredFollowsLists.isEmpty;
 
-    List<Post> posts = (await _userService.getTimelinePosts(
+    List<Post>? posts = (await _userService.getTimelinePosts(
             count: 10,
             circles: _filteredCircles,
             followsLists: _filteredFollowsLists,
             cachePosts: cachePosts))
         .posts;
 
-    return posts;
+    return posts ?? [];
   }
 
   Future<List<Post>> _postsStreamOnScrollLoader(List<Post> posts) async {
     Post lastPost = posts.last;
-    int lastPostId = lastPost.id;
+    int lastPostId = lastPost.id!;
 
-    List<Post> morePosts = (await _userService.getTimelinePosts(
+    List<Post>? morePosts = (await _userService.getTimelinePosts(
             maxId: lastPostId,
             circles: _filteredCircles,
             count: 10,
             followsLists: _filteredFollowsLists))
         .posts;
 
-    return morePosts;
+    return morePosts ?? [];
   }
 
-  Future<bool> _onCreatePost({String text, File image, File video}) async {
-    OBNewPostData createPostData = await _modalService.openCreatePost(
+  Future<bool> _onCreatePost({String? text, File? image, File? video}) async {
+    OBNewPostData? createPostData = await _modalService.openCreatePost(
         text: text, image: image, video: video, context: context);
     if (createPostData != null) {
       addNewPostData(createPostData);
@@ -250,13 +250,19 @@ class OBTimelinePageState extends State<OBTimelinePage>
   }
 
   Future<void> setFilters(
-      {List<Circle> circles, List<FollowsList> followsLists}) async {
-    _filteredCircles = circles;
-    _filteredFollowsLists = followsLists;
+      {List<Circle>? circles, List<FollowsList>? followsLists}) async {
+    if (circles != null) {
+      _filteredCircles = circles;
+    }
+
+    if (followsLists != null) {
+      _filteredFollowsLists = followsLists;
+    }
+
     return _timelinePostsStreamController.refreshPosts();
   }
 
-  Future<void> clearFilters() {
+  Future<void>? clearFilters() {
     _filteredCircles = [];
     _filteredFollowsLists = [];
     return _timelinePostsStreamController.refreshPosts();
@@ -307,36 +313,40 @@ class OBTimelinePageState extends State<OBTimelinePage>
 }
 
 class OBTimelinePageController extends PoppablePageController {
-  OBTimelinePageState _state;
+  OBTimelinePageState? _state;
 
-  void attach({@required BuildContext context, OBTimelinePageState state}) {
+  void attach({required BuildContext context, OBTimelinePageState? state}) {
     super.attach(context: context);
     _state = state;
   }
 
   Future<void> setPostFilters(
-      {List<Circle> circles, List<FollowsList> followsLists}) async {
-    return _state.setFilters(circles: circles, followsLists: followsLists);
+      {List<Circle>? circles, List<FollowsList>? followsLists}) async {
+    return _state?.setFilters(circles: circles, followsLists: followsLists);
   }
 
   Future<void> clearPostFilters(
-      {List<Circle> circles, List<FollowsList> followsLists}) async {
-    return _state.setFilters(circles: circles, followsLists: followsLists);
+      {List<Circle>? circles, List<FollowsList>? followsLists}) async {
+    return _state?.setFilters(circles: circles, followsLists: followsLists);
   }
 
   List<Circle> getFilteredCircles() {
-    return _state.getFilteredCircles();
+    return _state?.getFilteredCircles() ?? [];
   }
 
   List<FollowsList> getFilteredFollowsLists() {
-    return _state.getFilteredFollowsLists();
+    return _state?.getFilteredFollowsLists() ?? [];
   }
 
-  Future<bool> createPost({String text, File image, File video}) {
-    return _state._onCreatePost(text: text, image: image, video: video);
+  Future<bool> createPost({String? text, File? image, File? video}) {
+    if (_state == null) {
+      return Future.value(false);
+    }
+
+    return _state!._onCreatePost(text: text, image: image, video: video);
   }
 
   void scrollToTop() {
-    _state.scrollToTop();
+    _state?.scrollToTop();
   }
 }

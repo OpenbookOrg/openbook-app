@@ -15,7 +15,7 @@ class OBClearApplicationPreferencesTile extends StatefulWidget {
 
 class OBClearApplicationPreferencesTileState
     extends State<OBClearApplicationPreferencesTile> {
-  bool _inProgress;
+  late bool _inProgress;
 
   @override
   initState() {

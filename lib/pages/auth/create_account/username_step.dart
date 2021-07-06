@@ -17,14 +17,14 @@ class OBAuthUsernameStepPage extends StatefulWidget {
 }
 
 class OBAuthUsernameStepPageState extends State<OBAuthUsernameStepPage> {
-  bool _usernameCheckInProgress;
-  bool _usernameTaken;
+  late bool _usernameCheckInProgress;
+  bool? _usernameTaken;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  CreateAccountBloc _createAccountBloc;
-  LocalizationService _localizationService;
-  ValidationService _validationService;
-  ToastService _toastService;
+  late CreateAccountBloc _createAccountBloc;
+  late LocalizationService _localizationService;
+  late ValidationService _validationService;
+  late ToastService _toastService;
 
   TextEditingController _usernameController = TextEditingController();
 
@@ -80,7 +80,7 @@ class OBAuthUsernameStepPageState extends State<OBAuthUsernameStepPage> {
 
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   void _setUsernameTaken(bool isUsernameTaken) {
@@ -107,7 +107,7 @@ class OBAuthUsernameStepPageState extends State<OBAuthUsernameStepPage> {
   void onPressedNextStep(BuildContext context) async {
     await _checkUsernameAvailable(_usernameController.text.trim(), context);
     bool isUsernameValid = _validateForm();
-    if (isUsernameValid && !_usernameTaken) {
+    if (isUsernameValid && !(_usernameTaken ?? true)) {
       setState(() {
         _createAccountBloc.setUsername(_usernameController.text.trim());
         Navigator.pushNamed(context, '/auth/password_step');
@@ -129,7 +129,7 @@ class OBAuthUsernameStepPageState extends State<OBAuthUsernameStepPage> {
     );
   }
 
-  Widget _buildPreviousButton({@required BuildContext context}) {
+  Widget _buildPreviousButton({required BuildContext context}) {
     String buttonText = _localizationService.trans('auth__create_acc__previous');
 
     return OBSecondaryButton(
@@ -156,7 +156,7 @@ class OBAuthUsernameStepPageState extends State<OBAuthUsernameStepPage> {
     );
   }
 
-  Widget _buildWhatsYourUsername({@required BuildContext context}) {
+  Widget _buildWhatsYourUsername({required BuildContext context}) {
     String whatsUsernameText =
         _localizationService.auth__create_acc__what_username;
 
@@ -193,11 +193,11 @@ class OBAuthUsernameStepPageState extends State<OBAuthUsernameStepPage> {
               child: OBAuthTextField(
                 autocorrect: false,
                 hintText: usernameInputPlaceholder,
-                validator: (String username) {
-                  String validateUsernameResult = _validationService.validateUserUsername(username.trim());
+                validator: (String? username) {
+                  String? validateUsernameResult = _validationService.validateUserUsername(username?.trim());
                   if (validateUsernameResult != null) return validateUsernameResult;
-                  if (_usernameTaken != null && _usernameTaken) {
-                    return errorUsernameTaken.replaceFirst('%s', username);
+                  if (_usernameTaken != null && _usernameTaken!) {
+                    return errorUsernameTaken.replaceFirst('%s', username ?? '<unknown>');
                   }
                 },
                 controller: _usernameController,

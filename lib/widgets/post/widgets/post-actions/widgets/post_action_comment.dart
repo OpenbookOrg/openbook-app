@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 class OBPostActionComment extends StatelessWidget {
   final Post _post;
-  final VoidCallback onWantsToCommentPost;
+  final VoidCallback? onWantsToCommentPost;
 
   OBPostActionComment(this._post, {this.onWantsToCommentPost});
 
@@ -35,7 +35,7 @@ class OBPostActionComment extends StatelessWidget {
         ),
         onPressed: () {
           if (onWantsToCommentPost != null) {
-            onWantsToCommentPost();
+            onWantsToCommentPost!();
           } else {
             navigationService.navigateToCommentPost(
                 post: _post, context: context);

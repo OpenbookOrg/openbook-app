@@ -6,11 +6,11 @@ enum OBIconSize { small, medium, large, extraLarge }
 
 class OBIcon extends StatelessWidget {
   final OBIconData iconData;
-  final OBIconSize size;
-  final double customSize;
-  final Color color;
-  final OBIconThemeColor themeColor;
-  final String semanticLabel;
+  final OBIconSize? size;
+  final double? customSize;
+  final Color? color;
+  final OBIconThemeColor? themeColor;
+  final String? semanticLabel;
 
   static const double EXTRA_LARGE = 45.0;
   static const double LARGE_SIZE = 30.0;
@@ -18,7 +18,7 @@ class OBIcon extends StatelessWidget {
   static const double SMALL_SIZE = 15.0;
 
   const OBIcon(this.iconData,
-      {Key key,
+      {Key? key,
       this.size,
       this.customSize,
       this.color,
@@ -29,10 +29,10 @@ class OBIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double iconSize;
+    late double iconSize;
 
     if (this.customSize != null) {
-      iconSize = this.customSize;
+      iconSize = this.customSize!;
     } else {
       var finalSize = size ?? OBIconSize.medium;
       switch (finalSize) {
@@ -65,35 +65,35 @@ class OBIcon extends StatelessWidget {
           Widget icon;
 
           if (iconData.nativeIcon != null) {
-            Color iconColor;
-            Gradient iconGradient;
+            Color? iconColor;
+            Gradient? iconGradient;
 
             if (color != null) {
-              iconColor = color;
+              iconColor = color!;
             } else {
               switch (themeColor) {
                 case OBIconThemeColor.primary:
-                  iconColor = themeValueParser.parseColor(theme.primaryColor);
+                  iconColor = themeValueParser.parseColor(theme!.primaryColor);
                   break;
                 case OBIconThemeColor.primaryText:
                   iconColor =
-                      themeValueParser.parseColor(theme.primaryTextColor);
+                      themeValueParser.parseColor(theme!.primaryTextColor);
                   break;
                 case OBIconThemeColor.secondaryText:
                   iconColor =
-                      themeValueParser.parseColor(theme.secondaryTextColor);
+                      themeValueParser.parseColor(theme!.secondaryTextColor);
                   break;
                 case OBIconThemeColor.primaryAccent:
                   iconGradient =
-                      themeValueParser.parseGradient(theme.primaryAccentColor);
+                      themeValueParser.parseGradient(theme!.primaryAccentColor);
                   break;
                 case OBIconThemeColor.danger:
                   iconGradient =
-                      themeValueParser.parseGradient(theme.dangerColor);
+                      themeValueParser.parseGradient(theme!.dangerColor);
                   break;
                 default:
                   iconColor =
-                      themeValueParser.parseColor(theme.primaryTextColor);
+                      themeValueParser.parseColor(theme!.primaryTextColor);
               }
             }
 
@@ -108,7 +108,7 @@ class OBIcon extends StatelessWidget {
               icon = ShaderMask(
                 blendMode: BlendMode.srcIn,
                 shaderCallback: (Rect bounds) {
-                  return iconGradient.createShader(bounds);
+                  return iconGradient!.createShader(bounds);
                 },
                 child: Icon(
                   iconData.nativeIcon,
@@ -118,7 +118,7 @@ class OBIcon extends StatelessWidget {
               );
             }
           } else {
-            String iconName = iconData.filename;
+            String iconName = iconData.filename!;
             icon =
                 Image.asset('assets/images/icons/$iconName', height: iconSize);
           }
@@ -292,8 +292,8 @@ class OBIcons {
 
 @immutable
 class OBIconData {
-  final String filename;
-  final IconData nativeIcon;
+  final String? filename;
+  final IconData? nativeIcon;
 
   const OBIconData({
     this.nativeIcon,

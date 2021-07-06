@@ -15,11 +15,11 @@ import 'package:flutter/services.dart';
 class OBPostCommentText extends StatefulWidget {
   final PostComment postComment;
   final Post post;
-  final VoidCallback onUsernamePressed;
+  final VoidCallback? onUsernamePressed;
   final int postCommentMaxVisibleLength = 500;
 
   OBPostCommentText(this.postComment, this.post,
-      {Key key, this.onUsernamePressed})
+      {Key? key, this.onUsernamePressed})
       : super(key: key);
 
   @override
@@ -29,11 +29,11 @@ class OBPostCommentText extends StatefulWidget {
 }
 
 class OBPostCommentTextState extends State<OBPostCommentText> {
-  String _translatedText;
-  bool _requestInProgress;
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
+  String? _translatedText;
+  late bool _requestInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
 
   @override
   void initState() {
@@ -66,7 +66,7 @@ class OBPostCommentTextState extends State<OBPostCommentText> {
                       context: context,
                       type: ToastType.info);
                 },
-                child: _getActionableSmartText(widget.postComment.isEdited),
+                child: _getActionableSmartText(widget.postComment.isEdited ?? false),
               ),
             ),
           ],
@@ -86,7 +86,7 @@ class OBPostCommentTextState extends State<OBPostCommentText> {
           ));
     }
 
-    User loggedInUser = _userService.getLoggedInUser();
+    User? loggedInUser = _userService.getLoggedInUser();
     if (loggedInUser != null &&
         loggedInUser.canTranslatePostComment(widget.postComment, widget.post)) {
       return GestureDetector(
@@ -135,7 +135,7 @@ class OBPostCommentTextState extends State<OBPostCommentText> {
         maxlength: widget.postCommentMaxVisibleLength,
         getChild: _getPostCommentTranslateButton,
         hashtagsMap: widget.postComment.hashtagsMap,
-        links: widget.post.postLinksList.postLinks,
+        links: widget.post.postLinksList?.postLinks,
       );
     } else {
       return OBCollapsibleSmartText(
@@ -144,7 +144,7 @@ class OBPostCommentTextState extends State<OBPostCommentText> {
         maxlength: widget.postCommentMaxVisibleLength,
         getChild: _getPostCommentTranslateButton,
         hashtagsMap: widget.postComment.hashtagsMap,
-        links: widget.post.postLinksList.postLinks,
+        links: widget.post.postLinksList?.postLinks,
       );
     }
   }
@@ -154,8 +154,8 @@ class OBPostCommentTextState extends State<OBPostCommentText> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;
@@ -168,7 +168,7 @@ class OBPostCommentTextState extends State<OBPostCommentText> {
     });
   }
 
-  void _setPostCommentTranslatedText(String newText) {
+  void _setPostCommentTranslatedText(String? newText) {
     setState(() {
       _translatedText = newText;
     });

@@ -9,13 +9,13 @@ import 'package:flutter/material.dart';
 
 class OBReportHashtagTile extends StatefulWidget {
   final Hashtag hashtag;
-  final ValueChanged<Hashtag> onHashtagReported;
-  final VoidCallback onWantsToReportHashtag;
+  final ValueChanged<Hashtag>? onHashtagReported;
+  final VoidCallback? onWantsToReportHashtag;
 
   const OBReportHashtagTile({
-    Key key,
+    Key? key,
     this.onHashtagReported,
-    @required this.hashtag,
+    required this.hashtag,
     this.onWantsToReportHashtag,
   }) : super(key: key);
 
@@ -26,9 +26,9 @@ class OBReportHashtagTile extends StatefulWidget {
 }
 
 class OBReportHashtagTileState extends State<OBReportHashtagTile> {
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
-  bool _requestInProgress;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -63,13 +63,13 @@ class OBReportHashtagTileState extends State<OBReportHashtagTile> {
   }
 
   void _reportHashtag() {
-    if (widget.onWantsToReportHashtag != null) widget.onWantsToReportHashtag();
+    if (widget.onWantsToReportHashtag != null) widget.onWantsToReportHashtag!();
     _navigationService.navigateToReportObject(
         context: context,
         object: widget.hashtag,
         onObjectReported: (dynamic reportedObject) {
           if (reportedObject != null && widget.onHashtagReported != null)
-            widget.onHashtagReported(reportedObject as Hashtag);
+            widget.onHashtagReported!(reportedObject as Hashtag);
         });
   }
 }

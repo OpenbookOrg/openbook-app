@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 class OBHashtagsDisplaySettingPickerBottomSheet extends StatefulWidget {
   final ValueChanged<HashtagsDisplaySetting> onTypeChanged;
 
-  final HashtagsDisplaySetting initialValue;
+  final HashtagsDisplaySetting? initialValue;
 
   const OBHashtagsDisplaySettingPickerBottomSheet(
-      {Key key, @required this.onTypeChanged, this.initialValue})
+      {Key? key, required this.onTypeChanged, this.initialValue})
       : super(key: key);
 
   @override
@@ -22,8 +22,8 @@ class OBHashtagsDisplaySettingPickerBottomSheet extends StatefulWidget {
 
 class OBHashtagsDisplaySettingPickerBottomSheetState
     extends State<OBHashtagsDisplaySettingPickerBottomSheet> {
-  FixedExtentScrollController _cupertinoPickerController;
-  List<HashtagsDisplaySetting> allHashtagsDisplaySettings;
+  late FixedExtentScrollController _cupertinoPickerController;
+  late List<HashtagsDisplaySetting> allHashtagsDisplaySettings;
 
   @override
   void initState() {
@@ -31,8 +31,8 @@ class OBHashtagsDisplaySettingPickerBottomSheetState
     allHashtagsDisplaySettings = HashtagsDisplaySetting.values();
     _cupertinoPickerController = FixedExtentScrollController(
         initialItem: widget.initialValue != null
-            ? allHashtagsDisplaySettings.indexOf(widget.initialValue)
-            : null);
+            ? allHashtagsDisplaySettings.indexOf(widget.initialValue!)
+            : 0);
   }
 
   @override
@@ -57,7 +57,7 @@ class OBHashtagsDisplaySettingPickerBottomSheetState
           itemExtent: 32,
           children: allHashtagsDisplaySettings.map((HashtagsDisplaySetting setting) {
             return Center(
-              child: OBText(localizationMap[setting]),
+              child: OBText(localizationMap[setting]!),
             );
           }).toList(),
         ),

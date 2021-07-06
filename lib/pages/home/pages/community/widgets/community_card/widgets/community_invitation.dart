@@ -15,8 +15,8 @@ class OBCommunityInvitation extends StatelessWidget {
       stream: community.updateSubject,
       initialData: community,
       builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
-        Community community = snapshot.data;
-        bool isInvited = community?.isInvited;
+        Community? community = snapshot.data;
+        bool? isInvited = community?.isInvited;
 
         if (isInvited == null) return const SizedBox();
 
@@ -40,7 +40,7 @@ class OBCommunityInvitation extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      OBJoinCommunityButton(community),
+                      OBJoinCommunityButton(community!),
                     ],
                   )
                 ],

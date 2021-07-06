@@ -8,7 +8,7 @@ class CreateAccountLinkHandler extends UniversalLinkHandler {
   static const String createAccountLink = '/api/auth/invite';
 
   @override
-  Future<void> handle({BuildContext context, String link}) {
+  Future<void> handle({required BuildContext context, required String link}) async {
     if (link.indexOf(createAccountLink) != -1) {
       OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
       UserService userService = openbookProvider.userService;
@@ -30,7 +30,7 @@ class CreateAccountLinkHandler extends UniversalLinkHandler {
     final params = Uri.parse(link).queryParametersAll;
     var token = '';
     if (params.containsKey('token')) {
-      token = params['token'][0];
+      token = params['token']![0];
     }
     return token;
   }

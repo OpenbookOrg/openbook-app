@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class OBModeratedObjectLogActor extends StatelessWidget {
   final User actor;
 
-  const OBModeratedObjectLogActor({Key key, @required this.actor})
+  const OBModeratedObjectLogActor({Key? key, required this.actor})
       : super(key: key);
 
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class OBModeratedObjectLogActor extends StatelessWidget {
               width: 6,
             ),
             OBSecondaryText(
-              '@' + actor.username,
+              '@' + actor.username!,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ],

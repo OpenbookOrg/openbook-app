@@ -9,9 +9,9 @@ import 'package:rxdart/rxdart.dart';
 import 'dart:io';
 
 class CreateAccountBloc {
-  LocalizationService _localizationService;
-  AuthApiService _authApiService;
-  UserService _userService;
+  late LocalizationService _localizationService;
+  late AuthApiService _authApiService;
+  late UserService _userService;
 
   // Serves as a snapshot to the data
   final userRegistrationData = UserRegistrationData();
@@ -28,20 +28,20 @@ class CreateAccountBloc {
 
   // Create account begins
 
-  Stream<bool> get createAccountInProgress =>
+  Stream<bool?> get createAccountInProgress =>
       _createAccountInProgressSubject.stream;
 
-  final _createAccountInProgressSubject = ReplaySubject<bool>();
+  final _createAccountInProgressSubject = ReplaySubject<bool?>();
 
-  Stream<String> get createAccountErrorFeedback =>
+  Stream<String?> get createAccountErrorFeedback =>
       _createAccountErrorFeedbackSubject.stream;
 
-  final _createAccountErrorFeedbackSubject = ReplaySubject<String>();
+  final _createAccountErrorFeedbackSubject = ReplaySubject<String?>();
 
-  Stream<String> get tokenValidationErrorFeedback =>
+  Stream<String?> get tokenValidationErrorFeedback =>
       _tokenValidationErrorFeedbackSubject.stream;
 
-  final _tokenValidationErrorFeedbackSubject = ReplaySubject<String>();
+  final _tokenValidationErrorFeedbackSubject = ReplaySubject<String?>();
 
   // Create account ends
 
@@ -81,7 +81,7 @@ class CreateAccountBloc {
   // Legal Age Confirmation
 
   bool isOfLegalAge() {
-    return userRegistrationData.isOfLegalAge;
+    return userRegistrationData.isOfLegalAge ?? false;
   }
 
   void _onLegalAgeConfirmationChange(bool isOfLegalAge) {
@@ -95,8 +95,7 @@ class CreateAccountBloc {
   // Legal Age Confirmation
 
   bool areGuidelinesAccepted() {
-    if (userRegistrationData.areGuidelinesAccepted == null) return false;
-    return userRegistrationData.areGuidelinesAccepted;
+    return userRegistrationData.areGuidelinesAccepted ?? false;
   }
 
   void setAreGuidelinesAcceptedConfirmation(bool areGuidelinesAccepted) {
@@ -109,7 +108,7 @@ class CreateAccountBloc {
     return userRegistrationData.name != null;
   }
 
-  String getName() {
+  String? getName() {
     return userRegistrationData.name;
   }
 
@@ -117,7 +116,7 @@ class CreateAccountBloc {
     _nameSubject.add(name);
   }
 
-  void _onNameChange(String name) {
+  void _onNameChange(String? name) {
     if (name == null) return;
     userRegistrationData.name = name;
   }
@@ -134,11 +133,11 @@ class CreateAccountBloc {
     return userRegistrationData.username != null;
   }
 
-  String getUsername() {
+  String? getUsername() {
     return userRegistrationData.username;
   }
 
-  void setUsername(String username) async {
+  void setUsername(String? username) async {
     if (username == null) return;
     userRegistrationData.username = username;
   }
@@ -155,7 +154,7 @@ class CreateAccountBloc {
     return userRegistrationData.email != null;
   }
 
-  String getEmail() {
+  String? getEmail() {
     return userRegistrationData.email;
   }
 
@@ -163,7 +162,7 @@ class CreateAccountBloc {
     _emailSubject.add(email);
   }
 
-  void _onEmailChange(String email) {
+  void _onEmailChange(String? email) {
     if (email == null) return;
     userRegistrationData.email = email;
   }
@@ -180,11 +179,11 @@ class CreateAccountBloc {
     return userRegistrationData.password != null;
   }
 
-  String getPassword() {
+  String? getPassword() {
     return userRegistrationData.password;
   }
 
-  void _onPasswordChange(String password) {
+  void _onPasswordChange(String? password) {
     if (password == null) return;
     userRegistrationData.password = password;
   }
@@ -205,7 +204,7 @@ class CreateAccountBloc {
     return userRegistrationData.avatar != null;
   }
 
-  File getAvatar() {
+  File? getAvatar() {
     return userRegistrationData.avatar;
   }
 
@@ -213,7 +212,7 @@ class CreateAccountBloc {
     _avatarSubject.add(avatar);
   }
 
-  void _onAvatarChange(File avatar) {
+  void _onAvatarChange(File? avatar) {
     if (avatar == null) {
       // Avatar is optional, therefore no feedback to user.
       return;
@@ -232,7 +231,7 @@ class CreateAccountBloc {
     return userRegistrationData.token != null;
   }
 
-  String getToken() {
+  String? getToken() {
     return userRegistrationData.token;
   }
 
@@ -240,7 +239,7 @@ class CreateAccountBloc {
     registrationTokenSubject.add(token);
   }
 
-  void _onTokenChange(String token) {
+  void _onTokenChange(String? token) {
     if (token == null) return;
     userRegistrationData.token = token;
   }
@@ -256,7 +255,7 @@ class CreateAccountBloc {
     return passwordResetData.passwordResetToken != null;
   }
 
-  String getPasswordResetToken() {
+  String? getPasswordResetToken() {
     return passwordResetData.passwordResetToken;
   }
 
@@ -264,7 +263,7 @@ class CreateAccountBloc {
     _passwordResetTokenSubject.add(passwordResetToken);
   }
 
-  void _onPasswordResetTokenChange(String passwordResetToken) {
+  void _onPasswordResetTokenChange(String? passwordResetToken) {
     if (passwordResetToken == null) return;
     passwordResetData.passwordResetToken = passwordResetToken;
   }
@@ -286,13 +285,13 @@ class CreateAccountBloc {
 
     try {
       HttpieStreamedResponse response = await _authApiService.createUser(
-          email: userRegistrationData.email,
-          isOfLegalAge: true,
-          name: userRegistrationData.name,
-          username: userRegistrationData.username,
-          token: userRegistrationData.token,
-          password: userRegistrationData.password,
-          areGuidelinesAccepted: true,
+          email: userRegistrationData.email ?? '',
+          isOfLegalAge: true, // TODO: probably shouldn't always be true
+          name: userRegistrationData.name ?? '',
+          username: userRegistrationData.username ?? '',
+          token: userRegistrationData.token ?? '',
+          password: userRegistrationData.password ?? '',
+          areGuidelinesAccepted: true, // TODO: probably shouldn't always be true
           avatar: userRegistrationData.avatar);
 
       if (!response.isCreated()) throw HttpieRequestError(response);
@@ -305,8 +304,8 @@ class CreateAccountBloc {
       if (error is HttpieConnectionRefusedError) {
         _onCreateAccountValidationError(error.toHumanReadableMessage());
       } else if (error is HttpieRequestError) {
-        String errorMessage = await error.toHumanReadableMessage();
-        _onCreateAccountValidationError(errorMessage);
+        String? errorMessage = await error.toHumanReadableMessage();
+        _onCreateAccountValidationError(errorMessage ?? 'Unknown error');
       } else {
         _onCreateAccountValidationError('Unknown error');
         rethrow;
@@ -344,16 +343,16 @@ class CreateAccountBloc {
 }
 
 class UserRegistrationData {
-  String token;
-  String name;
-  bool isOfLegalAge;
-  bool areGuidelinesAccepted;
-  String username;
-  String email;
-  String password;
-  File avatar;
+  String? token;
+  String? name;
+  bool? isOfLegalAge;
+  bool? areGuidelinesAccepted;
+  String? username;
+  String? email;
+  String? password;
+  File? avatar;
 }
 
 class PasswordResetData {
-  String passwordResetToken;
+  String? passwordResetToken;
 }

@@ -18,8 +18,8 @@ import 'package:flutter/material.dart';
 import 'package:throttling/throttling.dart';
 
 class OBTopPosts extends StatefulWidget {
-  final OBTopPostsController controller;
-  final Function(ScrollPosition) onScrollCallback;
+  final OBTopPostsController? controller;
+  final Function(ScrollPosition)? onScrollCallback;
   final double extraTopPadding;
 
   OBTopPosts({
@@ -36,20 +36,20 @@ class OBTopPosts extends StatefulWidget {
 
 class OBTopPostsState extends State<OBTopPosts>
     with AutomaticKeepAliveClientMixin {
-  UserService _userService;
-  LocalizationService _localizationService;
-  NavigationService _navigationService;
-  ExploreTimelinePreferencesService _exploreTimelinePreferencesService;
-  OBPostsStreamController _obPostsStreamController;
-  StreamSubscription _excludeJoinedCommunitiesChangeSubscription;
+  late UserService _userService;
+  late LocalizationService _localizationService;
+  late NavigationService _navigationService;
+  late ExploreTimelinePreferencesService _exploreTimelinePreferencesService;
+  late OBPostsStreamController _obPostsStreamController;
+  StreamSubscription? _excludeJoinedCommunitiesChangeSubscription;
 
-  bool _needsBootstrap;
-  bool _excludeJoinedCommunitiesEnabled;
-  List<TopPost> _currentTopPosts;
-  List<Post> _currentPosts;
+  late bool _needsBootstrap;
+  late bool _excludeJoinedCommunitiesEnabled;
+  List<TopPost> _currentTopPosts = [];
+  List<Post>? _currentPosts;
   List<int> _excludedCommunities = [];
-  int _topPostLastViewedId;
-  Debouncing _storeLastViewedIdAndCachablePostsDebouncer;
+  int? _topPostLastViewedId;
+  late Debouncing _storeLastViewedIdAndCachablePostsDebouncer;
 
   @override
   void initState() {
@@ -58,7 +58,7 @@ class OBTopPostsState extends State<OBTopPosts>
     _storeLastViewedIdAndCachablePostsDebouncer =
         new Debouncing(duration: Duration(milliseconds: 500));
     _obPostsStreamController = OBPostsStreamController();
-    if (widget.controller != null) widget.controller.attach(this);
+    if (widget.controller != null) widget.controller!.attach(this);
   }
 
   @override
@@ -68,7 +68,7 @@ class OBTopPostsState extends State<OBTopPosts>
     _excludeJoinedCommunitiesChangeSubscription?.cancel();
   }
 
-  Future refresh() {
+  Future? refresh() {
     return _obPostsStreamController.refresh();
   }
 
@@ -134,11 +134,11 @@ class OBTopPostsState extends State<OBTopPosts>
             .listen(_onExcludeJoinedCommunitiesEnabledChanged);
 
     _topPostLastViewedId = await _userService.getStoredTopPostsLastViewedId();
-    TopPostsList topPostsList = await _userService.getStoredTopPosts();
+    TopPostsList? topPostsList = await _userService.getStoredTopPosts();
     if (topPostsList.posts != null) {
-      _currentTopPosts = topPostsList.posts;
+      _currentTopPosts = topPostsList.posts!;
       List<Post> posts =
-          topPostsList.posts.map((topPost) => topPost.post).toList();
+          topPostsList.posts!.map((topPost) => topPost.post!).toList();
       _currentPosts = posts;
     }
 
@@ -157,12 +157,16 @@ class OBTopPostsState extends State<OBTopPosts>
   }
 
   Widget _topPostBuilder(
-      {BuildContext context,
-      Post post,
-      OBPostDisplayContext displayContext,
-      String postIdentifier,
-      ValueChanged<Post> onPostDeleted}) {
-    if (_excludedCommunities.contains(post.community.id)) {
+      {BuildContext? context,
+      Post? post,
+      OBPostDisplayContext? displayContext,
+      String? postIdentifier,
+      ValueChanged<Post>? onPostDeleted}) {
+    if (post == null || displayContext == null || postIdentifier == null || onPostDeleted == null) {
+      return SizedBox();
+    }
+
+    if (post.community != null && _excludedCommunities.contains(post.community!.id)) {
       post.updateIsExcludedFromTopPosts(true);
     } else {
       post.updateIsExcludedFromTopPosts(false);
@@ -188,14 +192,14 @@ class OBTopPostsState extends State<OBTopPosts>
   void _storeLastViewedIdAndCachedPosts(Post post) async {
     List<TopPost> _cachablePosts = [];
     int indexTopPost = _currentTopPosts.indexWhere((topPost) {
-      return topPost.post.id == post.id;
+      return topPost.post!.id == post.id;
     });
     int lastIndexTopPosts = _currentTopPosts.length - 1;
     int cacheFromIndex = 0;
     int cacheToIndex = min(indexTopPost + 2, lastIndexTopPosts);
     if (indexTopPost >= 4) cacheFromIndex = indexTopPost - 4;
     _cachablePosts = _currentTopPosts.sublist(cacheFromIndex, cacheToIndex);
-    _userService.setTopPostsLastViewedId(post.id);
+    _userService.setTopPostsLastViewedId(post.id!);
     _userService.setStoredTopPosts(_cachablePosts);
   }
 
@@ -209,9 +213,9 @@ class OBTopPostsState extends State<OBTopPosts>
   }
 
   void _onCommunityExcluded(Community community) {
-    _excludedCommunities.add(community.id);
-    _currentPosts.forEach((post) {
-      if (post.community.id == community.id) {
+    _excludedCommunities.add(community.id!);
+    _currentPosts?.forEach((post) {
+      if (post.community?.id == community.id) {
         post.updateIsExcludedFromTopPosts(true);
       }
     });
@@ -219,8 +223,8 @@ class OBTopPostsState extends State<OBTopPosts>
 
   void _onUndoCommunityExcluded(Community community) {
     _excludedCommunities.remove(community.id);
-    _currentPosts.forEach((post) {
-      if (post.community.id == community.id) {
+    _currentPosts?.forEach((post) {
+      if (post.community?.id == community.id) {
         post.updateIsExcludedFromTopPosts(false);
       }
     });
@@ -230,8 +234,8 @@ class OBTopPostsState extends State<OBTopPosts>
     List<TopPost> topPosts = (await _userService.getTopPosts(
             count: 10,
             excludeJoinedCommunities: _excludeJoinedCommunitiesEnabled))
-        .posts;
-    List<Post> posts = topPosts.map((topPost) => topPost.post).toList();
+        .posts ?? [];
+    List<Post> posts = topPosts.map((topPost) => topPost.post!).toList();
     _setTopPosts(topPosts);
     _setPosts(posts);
     _clearExcludedCommunities();
@@ -241,15 +245,15 @@ class OBTopPostsState extends State<OBTopPosts>
 
   Future<List<Post>> _postsStreamOnScrollLoader(List<Post> posts) async {
     TopPost lastTopPost = _currentTopPosts.last;
-    int lastTopPostId = lastTopPost.id;
+    int lastTopPostId = lastTopPost.id!;
 
     List<TopPost> moreTopPosts = (await _userService.getTopPosts(
             maxId: lastTopPostId,
             excludeJoinedCommunities: _excludeJoinedCommunitiesEnabled,
             count: 10))
-        .posts;
+        .posts ?? [];
 
-    List<Post> morePosts = moreTopPosts.map((topPost) => topPost.post).toList();
+    List<Post> morePosts = moreTopPosts.map((topPost) => topPost.post!).toList();
 
     _appendCurrentTopPosts(moreTopPosts);
     _appendCurrentPosts(morePosts);
@@ -281,7 +285,7 @@ class OBTopPostsState extends State<OBTopPosts>
   }
 
   void _appendCurrentPosts(List<Post> posts) {
-    List<Post> newPosts = _currentPosts + posts;
+    List<Post> newPosts = (_currentPosts ?? []) + posts;
     setState(() {
       _currentPosts = newPosts;
     });
@@ -292,17 +296,17 @@ class OBTopPostsState extends State<OBTopPosts>
 }
 
 class OBTopPostsController {
-  OBTopPostsState _state;
+  OBTopPostsState? _state;
 
-  void attach(OBTopPostsState state) {
+  void attach(OBTopPostsState? state) {
     _state = state;
   }
 
-  Future<void> refresh() {
-    return _state.refresh();
+  Future<void>? refresh() {
+    return _state?.refresh();
   }
 
   void scrollToTop() {
-    _state.scrollToTop();
+    _state?.scrollToTop();
   }
 }

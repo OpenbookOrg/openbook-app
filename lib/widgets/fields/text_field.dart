@@ -3,16 +3,16 @@ import 'package:Okuna/provider.dart';
 import 'package:flutter/material.dart';
 
 class OBTextField extends StatelessWidget {
-  final TextStyle style;
-  final FocusNode focusNode;
-  final TextEditingController controller;
-  final InputDecoration decoration;
+  final TextStyle? style;
+  final FocusNode? focusNode;
+  final TextEditingController? controller;
+  final InputDecoration? decoration;
   final bool autocorrect;
   final bool autofocus;
   final TextInputAction textInputAction;
-  final TextInputType keyboardType;
-  final int maxLines;
-  final FormFieldValidator<String> validator;
+  final TextInputType? keyboardType;
+  final int? maxLines;
+  final FormFieldValidator<String>? validator;
   final bool obscureText;
   final TextCapitalization textCapitalization;
 
@@ -44,7 +44,7 @@ class OBTextField extends StatelessWidget {
 
           TextStyle themedTextStyle = TextStyle(
               color:
-                  themeValueParserService.parseColor(theme.primaryTextColor));
+                  themeValueParserService.parseColor(theme!.primaryTextColor));
 
           if (style != null) {
             themedTextStyle = themedTextStyle.merge(style);
@@ -54,8 +54,8 @@ class OBTextField extends StatelessWidget {
               color:
                   themeValueParserService.parseColor(theme.secondaryTextColor));
 
-          if (decoration != null && decoration.hintStyle != null) {
-            hintTextStyle = hintTextStyle.merge(decoration.hintStyle);
+          if (decoration != null && decoration!.hintStyle != null) {
+            hintTextStyle = hintTextStyle.merge(decoration!.hintStyle);
           }
 
           var primaryColor =
@@ -76,10 +76,10 @@ class OBTextField extends StatelessWidget {
                 isDarkPrimaryColor ? Brightness.dark : Brightness.light,
             decoration: InputDecoration(
                 isDense: true,
-                hintText: decoration.hintText,
+                hintText: decoration?.hintText,
                 hintStyle: hintTextStyle,
-                contentPadding: decoration.contentPadding,
-                border: decoration.border),
+                contentPadding: decoration?.contentPadding,
+                border: decoration?.border),
             autocorrect: autocorrect,
             autofocus: autofocus,
           );

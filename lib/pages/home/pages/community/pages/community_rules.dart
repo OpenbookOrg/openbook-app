@@ -13,7 +13,7 @@ import '../../../../../provider.dart';
 class OBCommunityRulesPage extends StatelessWidget {
   final Community community;
 
-  const OBCommunityRulesPage({Key key, @required this.community})
+  const OBCommunityRulesPage({Key? key, required this.community})
       : super(key: key);
 
   @override
@@ -31,8 +31,8 @@ class OBCommunityRulesPage extends StatelessWidget {
           builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
             var community = snapshot.data;
 
-            String communityRules = community?.rules;
-            String communityColor = community?.color;
+            String? communityRules = community?.rules;
+            String? communityColor = community?.color;
 
             if (communityRules == null ||
                 communityRules.isEmpty ||
@@ -66,7 +66,7 @@ class OBCommunityRulesPage extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    OBActionableSmartText(text: community.rules)
+                    OBActionableSmartText(text: community!.rules)
                   ],
                 ),
               ),

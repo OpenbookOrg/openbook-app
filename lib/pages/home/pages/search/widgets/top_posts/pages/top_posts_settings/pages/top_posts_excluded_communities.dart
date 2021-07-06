@@ -23,13 +23,13 @@ class OBTopPostsExcludedCommunitiesPage extends StatefulWidget {
 }
 
 class OBTopPostsExcludedCommunitiesState extends State<OBTopPostsExcludedCommunitiesPage> {
-  UserService _userService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
-  ToastService _toastService;
+  late UserService _userService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
+  late ToastService _toastService;
 
-  OBHttpListController _httpListController;
-  bool _needsBootstrap;
+  late OBHttpListController _httpListController;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -100,8 +100,8 @@ class OBTopPostsExcludedCommunitiesState extends State<OBTopPostsExcludedCommuni
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;
@@ -110,7 +110,7 @@ class OBTopPostsExcludedCommunitiesState extends State<OBTopPostsExcludedCommuni
 
   Future<List<Community>> _refreshExcludedCommunities() async {
     CommunitiesList excludedCommunities = await _userService.getTopPostsExcludedCommunities();
-    return excludedCommunities.communities;
+    return excludedCommunities.communities ?? [];
   }
 
   Future<List<Community>> _loadMoreExcludedCommunities(List<Community> excludedCommunitiesList) async {
@@ -121,12 +121,12 @@ class OBTopPostsExcludedCommunitiesState extends State<OBTopPostsExcludedCommuni
       count: 10,
     )).communities;
 
-    return moreExcludedCommunities;
+    return moreExcludedCommunities ?? [];
   }
 
   Future<List<Community>> _searchExcludedCommunities(String query) async {
     CommunitiesList results = await _userService.searchTopPostsExcludedCommunities(query: query);
 
-    return results.communities;
+    return results.communities ?? [];
   }
 }

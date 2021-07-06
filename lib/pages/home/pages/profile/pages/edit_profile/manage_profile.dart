@@ -18,12 +18,12 @@ import 'package:flutter/material.dart';
 
 class OBManageProfilePage extends StatefulWidget {
   final User user;
-  final VoidCallback onUserProfileUpdated;
-  final ValueChanged<Community> onExcludedCommunityRemoved;
-  final ValueChanged<List<Community>> onExcludedCommunitiesAdded;
+  final VoidCallback? onUserProfileUpdated;
+  final ValueChanged<Community>? onExcludedCommunityRemoved;
+  final ValueChanged<List<Community>>? onExcludedCommunitiesAdded;
 
   const OBManageProfilePage(this.user,
-      {Key key,
+      {Key? key,
       this.onUserProfileUpdated,
       this.onExcludedCommunityRemoved,
       this.onExcludedCommunitiesAdded})
@@ -40,12 +40,12 @@ class OBManageProfilePageState extends State<OBManageProfilePage> {
   static EdgeInsetsGeometry inputContentPadding =
       EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0);
 
-  LocalizationService _localizationService;
-  NavigationService _navigationService;
-  UserService _userService;
+  late LocalizationService _localizationService;
+  late NavigationService _navigationService;
+  late UserService _userService;
 
-  bool _communityPostsVisible;
-  bool _isFirstBuild;
+  late bool _communityPostsVisible;
+  late bool _isFirstBuild;
 
   @override
   void initState() {
@@ -54,7 +54,7 @@ class OBManageProfilePageState extends State<OBManageProfilePage> {
 
     _communityPostsVisible = widget.user.getProfileCommunityPostsVisible();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _isFirstBuild = false);
+    WidgetsBinding.instance?.addPostFrameCallback((_) => _isFirstBuild = false);
   }
 
   @override
@@ -110,7 +110,7 @@ class OBManageProfilePageState extends State<OBManageProfilePage> {
                     height: 20,
                   ),
                   StreamBuilder(
-                      stream: _userService.getLoggedInUser().updateSubject,
+                      stream: _userService.getLoggedInUser()?.updateSubject,
                       builder:
                           (BuildContext context, AsyncSnapshot<User> snapshot) {
                         if (snapshot.data?.visibility != UserVisibility.private)
@@ -144,7 +144,7 @@ class OBManageProfilePageState extends State<OBManageProfilePage> {
     });
   }
 
-  Widget _buildNavigationBar() {
+  PreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
       title: _localizationService.user__manage_profile_title,
     );

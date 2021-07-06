@@ -4,10 +4,10 @@ import 'package:Okuna/services/string_template.dart';
 import 'package:meta/meta.dart';
 
 class ConnectionsCirclesApiService {
-  HttpieService _httpService;
-  StringTemplateService _stringTemplateService;
+  late HttpieService _httpService;
+  late StringTemplateService _stringTemplateService;
 
-  String apiURL;
+  late String apiURL;
 
   static const GET_CIRCLES_PATH = 'api/circles/';
   static const CREATE_CIRCLE_PATH = 'api/circles/';
@@ -33,7 +33,7 @@ class ConnectionsCirclesApiService {
     return _httpService.get(url, appendAuthorizationToken: true);
   }
 
-  Future<HttpieResponse> createCircle({@required String name, String color}) {
+  Future<HttpieResponse> createCircle({required String name, String? color}) {
     String url = _makeApiUrl(CREATE_CIRCLE_PATH);
     Map<String, dynamic> body = {'name': name};
 
@@ -44,7 +44,7 @@ class ConnectionsCirclesApiService {
   }
 
   Future<HttpieResponse> updateCircleWithId(int circleId,
-      {String name, String color, List<String> usernames}) {
+      {String? name, String? color, List<String>? usernames}) {
     Map<String, dynamic> body = {};
 
     if (color != null) body['color'] = color;
@@ -68,7 +68,7 @@ class ConnectionsCirclesApiService {
     return _httpService.get(url, appendAuthorizationToken: true);
   }
 
-  Future<HttpieResponse> checkNameIsAvailable({@required String name}) {
+  Future<HttpieResponse> checkNameIsAvailable({required String name}) {
     return _httpService.postJSON('$apiURL$CHECK_NAME_PATH',
         body: {'name': name}, appendAuthorizationToken: true);
   }

@@ -9,14 +9,14 @@ import 'package:flutter/material.dart';
 
 class OBNewPostNotificationsForCommunityTile extends StatefulWidget {
   final Community community;
-  final VoidCallback onSubscribed;
-  final VoidCallback onUnsubscribed;
-  final Widget title;
-  final Widget subtitle;
+  final VoidCallback? onSubscribed;
+  final VoidCallback? onUnsubscribed;
+  final Widget? title;
+  final Widget? subtitle;
 
   const OBNewPostNotificationsForCommunityTile({
-    Key key,
-    @required this.community,
+    Key? key,
+    required this.community,
     this.onSubscribed,
     this.onUnsubscribed,
     this.title,
@@ -30,10 +30,10 @@ class OBNewPostNotificationsForCommunityTile extends StatefulWidget {
 }
 
 class OBNewPostNotificationsForCommunityTileState extends State<OBNewPostNotificationsForCommunityTile> {
-  bool _requestInProgress;
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
+  late bool _requestInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
 
   @override
   void initState() {
@@ -54,7 +54,7 @@ class OBNewPostNotificationsForCommunityTileState extends State<OBNewPostNotific
       builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
         var community = snapshot.data;
 
-        bool areNotificationsEnabled = community.areNewPostNotificationsEnabled ?? false;
+        bool areNotificationsEnabled = community?.areNewPostNotificationsEnabled ?? false;
 
         return ListTile(
           enabled: !_requestInProgress,
@@ -78,7 +78,7 @@ class OBNewPostNotificationsForCommunityTileState extends State<OBNewPostNotific
       _onError(e);
     } finally {
       _setRequestInProgress(false);
-      if (widget.onSubscribed != null) widget.onSubscribed();
+      if (widget.onSubscribed != null) widget.onSubscribed!();
     }
   }
 
@@ -91,7 +91,7 @@ class OBNewPostNotificationsForCommunityTileState extends State<OBNewPostNotific
       _onError(e);
     } finally {
       _setRequestInProgress(false);
-      if (widget.onUnsubscribed != null) widget.onUnsubscribed();
+      if (widget.onUnsubscribed != null) widget.onUnsubscribed!();
     }
   }
 
@@ -106,8 +106,8 @@ class OBNewPostNotificationsForCommunityTileState extends State<OBNewPostNotific
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

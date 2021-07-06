@@ -1,7 +1,7 @@
 import 'package:Okuna/models/post_link.dart';
 
 class PostLinksList {
-  final List<PostLink> postLinks;
+  final List<PostLink>? postLinks;
 
   PostLinksList({
     this.postLinks,

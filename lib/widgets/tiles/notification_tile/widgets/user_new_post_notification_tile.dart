@@ -15,20 +15,20 @@ class OBUserNewPostNotificationTile extends StatelessWidget {
   final OBNotification notification;
   final UserNewPostNotification userNewPostNotification;
   static final double postImagePreviewSize = 40;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const OBUserNewPostNotificationTile(
-      {Key key,
-      @required this.notification,
-      @required this.userNewPostNotification,
+      {Key? key,
+      required this.notification,
+      required this.userNewPostNotification,
       this.onPressed})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Post post = userNewPostNotification.post;
+    Post post = userNewPostNotification.post!;
 
-    Widget postImagePreview;
+    Widget? postImagePreview;
     if (post.hasMediaThumbnail()) {
       postImagePreview = OBNotificationTilePostMediaPreview(
         post: post,
@@ -37,34 +37,34 @@ class OBUserNewPostNotificationTile extends StatelessWidget {
     OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
     var utilsService = openbookProvider.utilsService;
 
-    Function navigateToCreatorProfile = () {
+    VoidCallback navigateToCreatorProfile = () {
       openbookProvider.navigationService.navigateToUserProfile(
-          user: userNewPostNotification.post.creator, context: context);
+          user: userNewPostNotification.post!.creator!, context: context);
     };
     LocalizationService _localizationService =
         openbookProvider.localizationService;
 
-    Function onTileTapped = () {
-      if (onPressed != null) onPressed();
+    VoidCallback onTileTapped = () {
+      if (onPressed != null) onPressed!();
       OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
       openbookProvider.navigationService
-          .navigateToPost(post: userNewPostNotification.post, context: context);
+          .navigateToPost(post: userNewPostNotification.post!, context: context);
     };
     return OBNotificationTileSkeleton(
       onTap: onTileTapped,
       leading: OBAvatar(
         onPressed: navigateToCreatorProfile,
         size: OBAvatarSize.medium,
-        avatarUrl: userNewPostNotification.post.creator.getProfileAvatar(),
+        avatarUrl: userNewPostNotification.post!.creator!.getProfileAvatar(),
       ),
       title: OBNotificationTileTitle(
         onUsernamePressed: navigateToCreatorProfile,
-        user: userNewPostNotification.post.creator,
+        user: userNewPostNotification.post!.creator,
         text: TextSpan(text: _localizationService.notifications__user_new_post_tile),
       ),
       trailing: postImagePreview,
       subtitle: OBSecondaryText(
-          utilsService.timeAgo(notification.created, _localizationService)),
+          utilsService.timeAgo(notification.created!, _localizationService)),
     );
   }
 }

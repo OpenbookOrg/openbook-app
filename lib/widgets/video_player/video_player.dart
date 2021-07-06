@@ -17,21 +17,21 @@ import '../progress_indicator.dart';
 var rng = new Random();
 
 class OBVideoPlayer extends StatefulWidget {
-  final File video;
-  final String videoUrl;
-  final String thumbnailUrl;
-  final Key visibilityKey;
-  final ChewieController chewieController;
-  final VideoPlayerController videoPlayerController;
-  final bool isInDialog;
+  final File? video;
+  final String? videoUrl;
+  final String? thumbnailUrl;
+  final Key? visibilityKey;
+  final ChewieController? chewieController;
+  final VideoPlayerController? videoPlayerController;
+  final bool? isInDialog;
   final bool autoPlay;
-  final OBVideoPlayerController controller;
-  final double height;
-  final double width;
-  final bool isConstrained;
+  final OBVideoPlayerController? controller;
+  final double? height;
+  final double? width;
+  final bool? isConstrained;
 
   const OBVideoPlayer(
-      {Key key,
+      {Key? key,
       this.video,
       this.videoUrl,
       this.thumbnailUrl,
@@ -53,33 +53,33 @@ class OBVideoPlayer extends StatefulWidget {
 }
 
 class OBVideoPlayerState extends State<OBVideoPlayer> {
-  VideoPlayerController _playerController;
-  ChewieController _chewieController;
-  OBVideoPlayerControlsController _obVideoPlayerControlsController;
-  UserPreferencesService _userPreferencesService;
-  OBVideoPlayerController _controller;
+  VideoPlayerController? _playerController;
+  ChewieController? _chewieController;
+  late OBVideoPlayerControlsController _obVideoPlayerControlsController;
+  late UserPreferencesService _userPreferencesService;
+  late OBVideoPlayerController _controller;
 
-  bool _videoInitialized;
-  bool _needsChewieBootstrap;
+  late bool _videoInitialized;
+  late bool _needsChewieBootstrap;
 
-  bool _isVideoHandover;
-  bool _hasVideoOpenedInDialog;
-  bool _isPausedDueToInvisibility;
-  bool _isPausedByUser;
-  bool _needsBootstrap;
+  late bool _isVideoHandover;
+  late bool _hasVideoOpenedInDialog;
+  late bool _isPausedDueToInvisibility;
+  late bool _isPausedByUser;
+  late bool _needsBootstrap;
 
-  Key _visibilityKey;
+  late Key _visibilityKey;
 
-  StreamSubscription _videosSoundSettingsChangeSubscription;
+  StreamSubscription? _videosSoundSettingsChangeSubscription;
 
-  Future _videoPreparationFuture;
+  late Future _videoPreparationFuture;
 
   @override
   void initState() {
     super.initState();
     _controller = widget.controller == null
         ? OBVideoPlayerController()
-        : widget.controller;
+        : widget.controller!;
     _controller.attach(this);
     _obVideoPlayerControlsController = OBVideoPlayerControlsController();
     _hasVideoOpenedInDialog = widget.isInDialog ?? false;
@@ -95,11 +95,11 @@ class OBVideoPlayerState extends State<OBVideoPlayer> {
     String visibilityKeyFallback;
 
     if (widget.videoUrl != null) {
-      visibilityKeyFallback = widget.videoUrl;
+      visibilityKeyFallback = widget.videoUrl!;
     } else if (widget.video != null) {
-      visibilityKeyFallback = widget.video.path;
+      visibilityKeyFallback = widget.video!.path;
     } else if (widget.videoPlayerController != null) {
-      visibilityKeyFallback = widget.videoPlayerController.dataSource;
+      visibilityKeyFallback = widget.videoPlayerController!.dataSource!;
     } else {
       throw Exception(
           'Video dialog requires video, videoUrl or videoPlayerController.');
@@ -108,7 +108,7 @@ class OBVideoPlayerState extends State<OBVideoPlayer> {
     visibilityKeyFallback += '-${rng.nextInt(1000)}';
 
     _visibilityKey = widget.visibilityKey != null
-        ? widget.visibilityKey
+        ? widget.visibilityKey!
         : Key(visibilityKeyFallback);
 
     _videoPreparationFuture = _prepareVideo();
@@ -119,17 +119,17 @@ class OBVideoPlayerState extends State<OBVideoPlayer> {
     super.dispose();
     if (!_isVideoHandover && mounted && !_hasVideoOpenedInDialog) {
       _videosSoundSettingsChangeSubscription?.cancel();
-      if (_playerController != null) _playerController.dispose();
-      if (_chewieController != null) _chewieController.dispose();
+      if (_playerController != null) _playerController!.dispose();
+      if (_chewieController != null) _chewieController!.dispose();
     }
   }
 
   void _onUserPreferencesVideosSoundSettingsChange(
-      VideosSoundSetting newVideosSoundSettings) {
+      VideosSoundSetting? newVideosSoundSettings) {
     if (newVideosSoundSettings == VideosSoundSetting.enabled) {
-      _playerController.setVolume(100);
+      _playerController?.setVolume(100);
     } else {
-      _playerController.setVolume(0);
+      _playerController?.setVolume(0);
     }
   }
 
@@ -159,7 +159,7 @@ class OBVideoPlayerState extends State<OBVideoPlayer> {
     if (widget.videoUrl != null) {
       _playerController = VideoPlayerController.network(widget.videoUrl);
     } else if (widget.video != null) {
-      _playerController = VideoPlayerController.file(widget.video);
+      _playerController = VideoPlayerController.file(widget.video!);
     } else if (widget.videoPlayerController != null) {
       _playerController = widget.videoPlayerController;
     } else {
@@ -167,16 +167,16 @@ class OBVideoPlayerState extends State<OBVideoPlayer> {
           'Failed to initialize video. Video dialog requires video, videoUrl or videoPlayerController.');
     }
 
-    _playerController.setVolume(0);
+    _playerController?.setVolume(0);
 
     debugLog('Initializing video player');
-    await _playerController.initialize().timeout(Duration(seconds: 2));
-    if (_playerController.value?.hasError == true) {
+    await _playerController?.initialize().timeout(Duration(seconds: 2));
+    if (_playerController?.value.hasError == true) {
       debugLog('Player controller has error');
       throw OBVideoPlayerInitializationException('Player controller had error');
     }
 
-    if (_controller._attemptedToPlayWhileNotReady) _playerController.play();
+    if (_controller._attemptedToPlayWhileNotReady) _playerController?.play();
 
     if (mounted) {
       setState(() {
@@ -187,7 +187,7 @@ class OBVideoPlayerState extends State<OBVideoPlayer> {
 
   void _bootstrap() async {
     await _videoPreparationFuture;
-    VideosSoundSetting videosSoundSetting =
+    VideosSoundSetting? videosSoundSetting =
         await _userPreferencesService.getVideosSoundSetting();
     _onUserPreferencesVideosSoundSettingsChange(videosSoundSetting);
 
@@ -221,7 +221,7 @@ class OBVideoPlayerState extends State<OBVideoPlayer> {
           height: widget.height,
           width: widget.width,
           controller: _chewieController,
-          isConstrained: widget.isConstrained),
+          isConstrained: widget.isConstrained ?? false),
     );
   }
 
@@ -233,7 +233,7 @@ class OBVideoPlayerState extends State<OBVideoPlayer> {
                 decoration: BoxDecoration(
                     image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: AdvancedNetworkImage(widget.thumbnailUrl,
+                  image: AdvancedNetworkImage(widget.thumbnailUrl!,
                       useDiskCache: true),
                 )),
               )
@@ -293,11 +293,11 @@ class OBVideoPlayerState extends State<OBVideoPlayer> {
   // Return back to config
 
   ChewieController _getChewieController() {
-    if (widget.chewieController != null) return widget.chewieController;
-    double aspectRatio = _playerController.value.aspectRatio;
+    if (widget.chewieController != null) return widget.chewieController!;
+    double aspectRatio = _playerController!.value.aspectRatio;
     return ChewieController(
         autoInitialize: false,
-        videoPlayerController: _playerController,
+        videoPlayerController: _playerController!,
         showControlsOnInitialize: false,
         customControls: OBVideoPlayerControls(
           controller: _obVideoPlayerControlsController,
@@ -319,15 +319,15 @@ class OBVideoPlayerState extends State<OBVideoPlayer> {
     debugLog(
         'isVisible: ${isVisible.toString()} with fraction ${visibilityInfo.visibleFraction}');
 
-    if (!isVisible && _playerController.value.isPlaying && mounted) {
+    if (!isVisible && _playerController!.value.isPlaying && mounted) {
       debugLog('Its not visible and the video is playing. Now pausing. .');
       _isPausedDueToInvisibility = true;
-      _playerController.pause();
+      _playerController!.pause();
     }
   }
 
   void _pause() {
-    _playerController.pause();
+    _playerController!.pause();
     _isPausedByUser = false;
     _isPausedDueToInvisibility = false;
   }
@@ -335,17 +335,18 @@ class OBVideoPlayerState extends State<OBVideoPlayer> {
   void _play() {
     _isPausedDueToInvisibility = false;
     _isPausedByUser = false;
-    _playerController.play();
+    _playerController!.play();
   }
 
   void debugLog(String log) {
-    ValueKey<String> key = _visibilityKey;
-    debugPrint('OBVideoPlayer:${key.value}: $log');
+    // ValueKey<String> key = _visibilityKey;
+    Key key = _visibilityKey;
+    debugPrint('OBVideoPlayer:$key: $log');
   }
 }
 
 class OBVideoPlayerController {
-  OBVideoPlayerState _state;
+  late OBVideoPlayerState _state;
   bool _attemptedToPlayWhileNotReady = false;
 
   void attach(state) {
@@ -372,7 +373,7 @@ class OBVideoPlayerController {
 
   bool isPlaying() {
     if (!isReady()) return false;
-    return _state._playerController.value.isPlaying;
+    return _state._playerController!.value.isPlaying;
   }
 
   bool isReady() {
@@ -401,7 +402,7 @@ class OBVideoPlayerController {
       return 'unknown';
     }
 
-    return _state._playerController.dataSource;
+    return _state._playerController!.dataSource!;
   }
 
   void debugLog(String log) {

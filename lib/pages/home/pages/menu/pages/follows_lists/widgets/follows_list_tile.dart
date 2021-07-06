@@ -11,10 +11,10 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 class OBFollowsListTile extends StatefulWidget {
   final FollowsList followsList;
-  final VoidCallback onFollowsListDeletedCallback;
+  final VoidCallback? onFollowsListDeletedCallback;
 
   OBFollowsListTile(
-      {@required this.followsList, Key key, this.onFollowsListDeletedCallback})
+      {required this.followsList, Key? key, this.onFollowsListDeletedCallback})
       : super(key: key);
 
   @override
@@ -24,9 +24,9 @@ class OBFollowsListTile extends StatefulWidget {
 }
 
 class OBFollowsListTileState extends State<OBFollowsListTile> {
-  bool _requestInProgress;
-  UserService _userService;
-  ToastService _toastService;
+  late bool _requestInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
 
   @override
   void initState() {
@@ -49,9 +49,9 @@ class OBFollowsListTileState extends State<OBFollowsListTile> {
             navigationService.navigateToFollowsList(
                 followsList: widget.followsList, context: context);
           },
-          leading: OBEmoji(widget.followsList.emoji),
+          leading: OBEmoji(widget.followsList.emoji!),
           title: OBText(
-            widget.followsList.name,
+            widget.followsList.name!,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: OBSecondaryText(
@@ -78,7 +78,7 @@ class OBFollowsListTileState extends State<OBFollowsListTile> {
       // widget.post.decreaseCommentsCount();
       _setRequestInProgress(false);
       if (widget.onFollowsListDeletedCallback != null) {
-        widget.onFollowsListDeletedCallback();
+        widget.onFollowsListDeletedCallback!();
       }
     } catch (error) {
       _onError(error);
@@ -92,8 +92,8 @@ class OBFollowsListTileState extends State<OBFollowsListTile> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;

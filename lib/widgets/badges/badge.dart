@@ -4,10 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBBadge extends StatelessWidget {
-  final int count;
-  final double size;
+  final int? count;
+  final double? size;
 
-  const OBBadge({Key key, this.count, this.size=19}) : super(key: key);
+  const OBBadge({Key? key, this.count, this.size=19}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class OBBadge extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<OBTheme> snapshot) {
           var theme = snapshot.data;
           var primaryAccentColor =
-              themeValueParserService.parseGradient(theme.primaryAccentColor);
+              themeValueParserService.parseGradient(theme!.primaryAccentColor);
           return Container(
             width: size,
             height: size,
@@ -35,7 +35,7 @@ class OBBadge extends StatelessWidget {
                 count.toString(),
                 style: TextStyle(
                     color: Colors.white,
-                    fontSize: count < 10 ? 12 : 10,
+                    fontSize: count! < 10 ? 12 : 10,
                     fontWeight: FontWeight.bold),
               ) : const SizedBox()
             ),

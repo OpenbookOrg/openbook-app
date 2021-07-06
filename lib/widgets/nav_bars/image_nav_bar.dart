@@ -9,15 +9,15 @@ import 'package:flutter_advanced_networkimage/provider.dart';
 class OBImageNavBar extends StatelessWidget
     implements ObstructingPreferredSizeWidget {
   final String imageSrc;
-  final Color textColor;
-  final Widget leading;
-  final Widget middle;
-  final Widget trailing;
-  final String title;
+  final Color? textColor;
+  final Widget? leading;
+  final Widget? middle;
+  final Widget? trailing;
+  final String? title;
 
   const OBImageNavBar(
-      {Key key,
-      @required this.imageSrc,
+      {Key? key,
+      required this.imageSrc,
       this.leading,
       this.trailing,
       this.title,
@@ -45,12 +45,11 @@ class OBImageNavBar extends StatelessWidget
           ),
         ),
         OBCupertinoNavigationBar(
-            border: null,
             leading: leading,
             actionsForegroundColor: Colors.white,
             middle: middle ??
                 Text(
-                  title,
+                  title ?? '',
                   style: TextStyle(color: textColor ?? Colors.white),
                 ),
             transitionBetweenRoutes: false,

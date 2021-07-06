@@ -3,21 +3,20 @@ import 'package:Okuna/models/updatable_model.dart';
 import 'package:dcache/dcache.dart';
 
 class TopPost extends UpdatableModel<TopPost> {
-  final int id;
-  Post post;
-  DateTime created;
+  final int? id;
+  Post? post;
+  DateTime? created;
 
   static final factory = TopPostFactory();
 
   factory TopPost.fromJson(Map<String, dynamic> json) {
-    if (json == null) return null;
     return factory.fromJson(json);
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'post': post.toJson(),
+      'post': post?.toJson(),
       'created': created?.toString()
     };
   }
@@ -44,7 +43,7 @@ class TopPost extends UpdatableModel<TopPost> {
 
 class TopPostFactory extends UpdatableModelFactory<TopPost> {
   @override
-  SimpleCache<int, TopPost> cache =
+  SimpleCache<int, TopPost>? cache =
       SimpleCache(storage: UpdatableModelSimpleStorage(size: 50));
 
   @override
@@ -55,12 +54,12 @@ class TopPostFactory extends UpdatableModelFactory<TopPost> {
         created: parseCreated(json['created']),);
   }
 
-  Post parsePost(Map postData) {
+  Post? parsePost(Map<String, dynamic>? postData) {
     if (postData == null) return null;
     return Post.fromJson(postData);
   }
 
-  DateTime parseCreated(String created) {
+  DateTime? parseCreated(String? created) {
     if (created == null) return null;
     return DateTime.parse(created).toLocal();
   }

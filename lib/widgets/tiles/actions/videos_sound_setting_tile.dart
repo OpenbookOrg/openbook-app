@@ -24,7 +24,7 @@ class OBVideosSoundSettingTile extends StatelessWidget {
     return FutureBuilder(
       future: userPreferencesService.getVideosSoundSetting(),
       builder:
-          (BuildContext context, AsyncSnapshot<VideosSoundSetting> snapshot) {
+          (BuildContext context, AsyncSnapshot<VideosSoundSetting?> snapshot) {
         if (snapshot.data == null) return const SizedBox();
 
         return StreamBuilder(
@@ -32,7 +32,7 @@ class OBVideosSoundSettingTile extends StatelessWidget {
           initialData: snapshot.data,
           builder: (BuildContext context,
               AsyncSnapshot<VideosSoundSetting> snapshot) {
-            VideosSoundSetting currentVideosSoundSetting = snapshot.data;
+            VideosSoundSetting currentVideosSoundSetting = snapshot.data!;
 
             return MergeSemantics(
               child: ListTile(
@@ -47,7 +47,7 @@ class OBVideosSoundSettingTile extends StatelessWidget {
                     children: <Widget>[
                       OBPrimaryAccentText(
                         videosSoundSettingsLocalizationMap[
-                            currentVideosSoundSetting],
+                            currentVideosSoundSetting]!,
                         style: TextStyle(fontSize: 16),
                       ),
                     ],

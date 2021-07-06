@@ -21,11 +21,11 @@ class OBConfirmConnectionButton extends StatefulWidget {
 }
 
 class OBConfirmConnectionButtonState extends State<OBConfirmConnectionButton> {
-  UserService _userService;
-  ToastService _toastService;
-  BottomSheetService _bottomSheetService;
-  LocalizationService _localizationService;
-  bool _requestInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late BottomSheetService _bottomSheetService;
+  late LocalizationService _localizationService;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -47,10 +47,10 @@ class OBConfirmConnectionButtonState extends State<OBConfirmConnectionButton> {
       builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
         var user = snapshot.data;
 
-        if (user?.isPendingConnectionConfirmation == null || !user.isConnected)
+        if (user?.isPendingConnectionConfirmation == null || user?.isConnected == false)
           return const SizedBox();
 
-        return user.isPendingConnectionConfirmation
+        return user?.isPendingConnectionConfirmation == true
             ? _buildConfirmConnectionButton()
             : _buildDisconnectButton();
       },
@@ -94,9 +94,9 @@ class OBConfirmConnectionButtonState extends State<OBConfirmConnectionButton> {
     _setRequestInProgress(true);
     try {
       await _userService.confirmConnectionWithUserWithUsername(
-          widget.user.username,
+          widget.user.username!,
           circles: circles);
-      if (!widget.user.isFollowing) widget.user.incrementFollowersCount();
+      if (!widget.user.isFollowing!) widget.user.incrementFollowersCount();
       _toastService.success(message: 'Connection confirmed', context: context);
     } catch (error) {
       _onError(error);
@@ -110,8 +110,8 @@ class OBConfirmConnectionButtonState extends State<OBConfirmConnectionButton> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;
@@ -122,7 +122,7 @@ class OBConfirmConnectionButtonState extends State<OBConfirmConnectionButton> {
     if (_requestInProgress) return;
     _setRequestInProgress(true);
     try {
-      await _userService.disconnectFromUserWithUsername(widget.user.username);
+      await _userService.disconnectFromUserWithUsername(widget.user.username!);
       widget.user.decrementFollowersCount();
       _toastService.success(
           message: 'Disconnected successfully', context: context);

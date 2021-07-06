@@ -14,13 +14,13 @@ import 'package:flutter/material.dart';
 class OBUserPostHeader extends StatelessWidget {
   final Post _post;
   final OnPostDeleted onPostDeleted;
-  final ValueChanged<Post> onPostReported;
-  final OBPostDisplayContext displayContext;
+  final ValueChanged<Post>? onPostReported;
+  final OBPostDisplayContext? displayContext;
   final bool hasActions;
 
   const OBUserPostHeader(this._post,
-      {Key key,
-      @required this.onPostDeleted,
+      {Key? key,
+      required this.onPostDeleted,
       this.onPostReported,
       this.hasActions = true,
       this.displayContext})
@@ -36,26 +36,24 @@ class OBUserPostHeader extends StatelessWidget {
 
     if (_post.creator == null) return const SizedBox();
 
-    String subtitle = '@${_post.creator.username}';
+    String subtitle = '@${_post.creator!.username}';
 
     if (_post.created != null)
       subtitle =
-          '$subtitle · ${utilsService.timeAgo(_post.created, localizationService)}';
+          '$subtitle · ${utilsService.timeAgo(_post.created!, localizationService)}';
 
-    Function navigateToUserProfile = () {
+    VoidCallback navigateToUserProfile = () {
       navigationService.navigateToUserProfile(
-          user: _post.creator, context: context);
+          user: _post.creator!, context: context);
     };
 
     return ListTile(
         onTap: navigateToUserProfile,
         leading: StreamBuilder(
-            stream: _post.creator.updateSubject,
+            stream: _post.creator!.updateSubject,
             initialData: _post.creator,
             builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
-              User postCreator = snapshot.data;
-
-              if (!postCreator.hasProfileAvatar()) return const SizedBox();
+              User postCreator = snapshot.data!;
 
               return OBAvatar(
                 size: OBAvatarSize.medium,
@@ -70,7 +68,7 @@ class OBUserPostHeader extends StatelessWidget {
                       context: context,
                       post: _post,
                       onPostDeleted: onPostDeleted,
-                      displayContext: displayContext,
+                      displayContext: displayContext!,
                       onPostReported: onPostReported);
                 })
             : null,
@@ -78,7 +76,7 @@ class OBUserPostHeader extends StatelessWidget {
           children: <Widget>[
             Flexible(
               child: OBText(
-                _post.creator.getProfileName(),
+                _post.creator!.getProfileName()!,
                 style: TextStyle(fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -96,11 +94,11 @@ class OBUserPostHeader extends StatelessWidget {
   }
 
   Widget _buildBadge() {
-    User postCommenter = _post.creator;
+    User postCommenter = _post.creator!;
 
     if (postCommenter.hasProfileBadges())
       return OBUserBadge(
-          badge: _post.creator.getDisplayedProfileBadge(),
+          badge: _post.creator!.getDisplayedProfileBadge(),
           size: OBUserBadgeSize.small);
 
     return const SizedBox();

@@ -20,9 +20,9 @@ import 'package:flutter/material.dart';
 
 class OBEditProfileModal extends StatefulWidget {
   final User user;
-  final VoidCallback onUserProfileUpdated;
+  final VoidCallback? onUserProfileUpdated;
 
-  const OBEditProfileModal(this.user, {Key key, this.onUserProfileUpdated})
+  const OBEditProfileModal(this.user, {Key? key, this.onUserProfileUpdated})
       : super(key: key);
 
   @override
@@ -36,27 +36,27 @@ class OBEditProfileModalState extends State<OBEditProfileModal> {
   static EdgeInsetsGeometry inputContentPadding =
       EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0);
 
-  UserService _userService;
-  ToastService _toastService;
-  MediaService _imagePickerService;
-  ValidationService _validationService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late MediaService _imagePickerService;
+  late ValidationService _validationService;
+  late LocalizationService _localizationService;
 
-  bool _requestInProgress;
-  bool _formWasSubmitted;
-  String _takenUsername;
+  late bool _requestInProgress;
+  late bool _formWasSubmitted;
+  String? _takenUsername;
 
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController _usernameController;
-  TextEditingController _nameController;
-  TextEditingController _urlController;
-  TextEditingController _locationController;
-  TextEditingController _bioController;
-  String _avatarUrl;
-  String _coverUrl;
-  File _avatarFile;
-  File _coverFile;
+  late TextEditingController _usernameController;
+  late TextEditingController _nameController;
+  late TextEditingController _urlController;
+  late TextEditingController _locationController;
+  late TextEditingController _bioController;
+  String? _avatarUrl;
+  String? _coverUrl;
+  File? _avatarFile;
+  File? _coverFile;
 
   @override
   void initState() {
@@ -131,13 +131,13 @@ class OBEditProfileModalState extends State<OBEditProfileModal> {
                         children: <Widget>[
                           OBTextFormField(
                             controller: _usernameController,
-                            validator: (String username) {
+                            validator: (String? username) {
                               if (!_formWasSubmitted) return null;
                               if (_takenUsername != null &&
                                   _takenUsername == username)
                                 return _localizationService
                                     .user__edit_profile_user_name_taken(
-                                        _takenUsername);
+                                        _takenUsername!);
                               return _validationService
                                   .validateUserUsername(username);
                             },
@@ -149,7 +149,7 @@ class OBEditProfileModalState extends State<OBEditProfileModal> {
                           ),
                           OBTextFormField(
                             controller: _nameController,
-                            validator: (String profileName) {
+                            validator: (String? profileName) {
                               if (!_formWasSubmitted) return null;
                               return _validationService
                                   .validateUserProfileName(profileName);
@@ -162,7 +162,7 @@ class OBEditProfileModalState extends State<OBEditProfileModal> {
                           ),
                           OBTextFormField(
                             controller: _urlController,
-                            validator: (String profileUrl) {
+                            validator: (String? profileUrl) {
                               if (!_formWasSubmitted) return null;
                               return _validationService
                                   .validateUserProfileUrl(profileUrl);
@@ -175,7 +175,7 @@ class OBEditProfileModalState extends State<OBEditProfileModal> {
                           ),
                           OBTextFormField(
                             controller: _locationController,
-                            validator: (String profileLocation) {
+                            validator: (String? profileLocation) {
                               if (!_formWasSubmitted) return null;
                               return _validationService
                                   .validateUserProfileLocation(profileLocation);
@@ -188,7 +188,7 @@ class OBEditProfileModalState extends State<OBEditProfileModal> {
                           ),
                           OBTextFormField(
                             controller: _bioController,
-                            validator: (String profileBio) {
+                            validator: (String? profileBio) {
                               if (!_formWasSubmitted) return null;
                               return _validationService
                                   .validateUserProfileBio(profileBio);
@@ -214,7 +214,7 @@ class OBEditProfileModalState extends State<OBEditProfileModal> {
         ));
   }
 
-  Widget _buildNavigationBar() {
+  PreferredSizeWidget _buildNavigationBar() {
     bool newPostButtonIsEnabled = true;
 
     return OBThemedNavigationBar(
@@ -304,7 +304,7 @@ class OBEditProfileModalState extends State<OBEditProfileModal> {
     );
   }
 
-  void _showImageBottomSheet({@required OBImageType imageType}) {
+  void _showImageBottomSheet({required OBImageType imageType}) {
     ToastService toastService = OpenbookProvider.of(context).toastService;
 
     showModalBottomSheet(
@@ -368,7 +368,7 @@ class OBEditProfileModalState extends State<OBEditProfileModal> {
         });
   }
 
-  void _onUserImageSelected({File image, OBImageType imageType}) {
+  void _onUserImageSelected({File? image, OBImageType? imageType}) {
     if (image != null) {
       switch (imageType) {
         case OBImageType.avatar:
@@ -384,7 +384,7 @@ class OBEditProfileModalState extends State<OBEditProfileModal> {
   }
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   void _submitForm() async {
@@ -408,7 +408,7 @@ class OBEditProfileModalState extends State<OBEditProfileModal> {
         bio: _bioController.text,
         location: _locationController.text,
       );
-      if (widget.onUserProfileUpdated != null) widget.onUserProfileUpdated();
+      if (widget.onUserProfileUpdated != null) widget.onUserProfileUpdated!();
       Navigator.of(context).pop();
     } catch (error) {
       _onError(error);
@@ -422,8 +422,8 @@ class OBEditProfileModalState extends State<OBEditProfileModal> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);
@@ -452,31 +452,31 @@ class OBEditProfileModalState extends State<OBEditProfileModal> {
     });
   }
 
-  void _setAvatarUrl(String avatarUrl) {
+  void _setAvatarUrl(String? avatarUrl) {
     setState(() {
       _avatarUrl = avatarUrl;
     });
   }
 
-  void _setCoverUrl(String coverUrl) {
+  void _setCoverUrl(String? coverUrl) {
     setState(() {
       _coverUrl = coverUrl;
     });
   }
 
-  void _setAvatarFile(File avatarFile) {
+  void _setAvatarFile(File? avatarFile) {
     setState(() {
       _avatarFile = avatarFile;
     });
   }
 
-  void _setCoverFile(File coverFile) {
+  void _setCoverFile(File? coverFile) {
     setState(() {
       _coverFile = coverFile;
     });
   }
 
-  void _setTakenUsername(String takenUsername) {
+  void _setTakenUsername(String? takenUsername) {
     setState(() {
       _takenUsername = takenUsername;
     });

@@ -19,11 +19,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBProfilePostsExcludedCommunitiesPage extends StatefulWidget {
-  final ValueChanged<Community> onExcludedCommunityRemoved;
-  final ValueChanged<List<Community>> onExcludedCommunitiesAdded;
+  final ValueChanged<Community>? onExcludedCommunityRemoved;
+  final ValueChanged<List<Community>>? onExcludedCommunitiesAdded;
 
   const OBProfilePostsExcludedCommunitiesPage(
-      {Key key,
+      {Key? key,
       this.onExcludedCommunityRemoved,
       this.onExcludedCommunitiesAdded})
       : super(key: key);
@@ -36,14 +36,14 @@ class OBProfilePostsExcludedCommunitiesPage extends StatefulWidget {
 
 class OBProfilePostsExcludedCommunitiesState
     extends State<OBProfilePostsExcludedCommunitiesPage> {
-  UserService _userService;
-  NavigationService _navigationService;
-  ModalService _modalService;
-  LocalizationService _localizationService;
-  ToastService _toastService;
-  OBHttpListController _httpListController;
+  late UserService _userService;
+  late NavigationService _navigationService;
+  late ModalService _modalService;
+  late LocalizationService _localizationService;
+  late ToastService _toastService;
+  late OBHttpListController _httpListController;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -117,18 +117,18 @@ class OBProfilePostsExcludedCommunitiesState
           .undoExcludeCommunityFromProfilePosts(excludedCommunity);
       _httpListController.removeListItem(excludedCommunity);
       if (widget.onExcludedCommunityRemoved != null)
-        widget.onExcludedCommunityRemoved(excludedCommunity);
+        widget.onExcludedCommunityRemoved!(excludedCommunity);
     } catch (error) {
       _onError(error);
     }
   }
 
   void _onWantsToExcludeCommunityFromProfilePosts() async {
-    List<Community> excludedCommunities = await _modalService
+    List<Community>? excludedCommunities = await _modalService
         .openExcludeCommunitiesFromProfilePosts(context: context);
     if (excludedCommunities != null && excludedCommunities.isNotEmpty) {
       if (widget.onExcludedCommunitiesAdded != null)
-        widget.onExcludedCommunitiesAdded(excludedCommunities);
+        widget.onExcludedCommunitiesAdded!(excludedCommunities);
 
       excludedCommunities.forEach((excludedCommunity) => _httpListController
           .insertListItem(excludedCommunity, shouldScrollToTop: true));
@@ -140,8 +140,8 @@ class OBProfilePostsExcludedCommunitiesState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);
@@ -152,7 +152,7 @@ class OBProfilePostsExcludedCommunitiesState
   Future<List<Community>> _refreshExcludedCommunities() async {
     CommunitiesList excludedCommunities =
         await _userService.getProfilePostsExcludedCommunities();
-    return excludedCommunities.communities;
+    return excludedCommunities.communities ?? [];
   }
 
   Future<List<Community>> _loadMoreExcludedCommunities(
@@ -164,13 +164,13 @@ class OBProfilePostsExcludedCommunitiesState
     ))
             .communities;
 
-    return moreExcludedCommunities;
+    return moreExcludedCommunities ?? [];
   }
 
   Future<List<Community>> _searchExcludedCommunities(String query) async {
     CommunitiesList results =
         await _userService.searchProfilePostsExcludedCommunities(query: query);
 
-    return results.communities;
+    return results.communities ?? [];
   }
 }

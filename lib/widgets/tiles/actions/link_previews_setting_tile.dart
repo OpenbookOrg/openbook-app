@@ -24,7 +24,7 @@ class OBLinkPreviewsSettingTile extends StatelessWidget {
     return FutureBuilder(
       future: userPreferencesService.getLinkPreviewsSetting(),
       builder:
-          (BuildContext context, AsyncSnapshot<LinkPreviewsSetting> snapshot) {
+          (BuildContext context, AsyncSnapshot<LinkPreviewsSetting?> snapshot) {
         if (snapshot.data == null) return const SizedBox();
 
         return StreamBuilder(
@@ -32,7 +32,7 @@ class OBLinkPreviewsSettingTile extends StatelessWidget {
           initialData: snapshot.data,
           builder: (BuildContext context,
               AsyncSnapshot<LinkPreviewsSetting> snapshot) {
-            LinkPreviewsSetting currentLinkPreviewsSetting = snapshot.data;
+            LinkPreviewsSetting currentLinkPreviewsSetting = snapshot.data!;
 
             return MergeSemantics(
               child: ListTile(
@@ -50,7 +50,7 @@ class OBLinkPreviewsSettingTile extends StatelessWidget {
                     children: <Widget>[
                       OBPrimaryAccentText(
                         linkPreviewsSettingsLocalizationMap[
-                            currentLinkPreviewsSetting],
+                            currentLinkPreviewsSetting]!,
                         style: TextStyle(fontSize: 16),
                       ),
                     ],

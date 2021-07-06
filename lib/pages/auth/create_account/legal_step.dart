@@ -18,8 +18,8 @@ class OBLegalStepPage extends StatefulWidget {
 
 class OBLegalStepPageState extends State<OBLegalStepPage> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  LocalizationService _localizationService;
-  NavigationService _navigationService;
+  late LocalizationService _localizationService;
+  late NavigationService _navigationService;
 
   @override
   void initState() {
@@ -140,9 +140,9 @@ class OBLegalStepPageState extends State<OBLegalStepPage> {
   }
 
   Widget _buildDocument(
-      {@required String icon,
-      @required String title,
-      @required VoidCallback onPressed}) {
+      {required String icon,
+      required String title,
+      required VoidCallback onPressed}) {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
@@ -191,7 +191,7 @@ class OBLegalStepPageState extends State<OBLegalStepPage> {
     );
   }
 
-  Widget _buildPreviousButton({@required BuildContext context}) {
+  Widget _buildPreviousButton({required BuildContext context}) {
     String buttonText =
         _localizationService.trans('auth__create_acc__previous');
 

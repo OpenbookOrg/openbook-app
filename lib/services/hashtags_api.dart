@@ -3,10 +3,10 @@ import 'package:Okuna/services/string_template.dart';
 import 'package:meta/meta.dart';
 
 class HashtagsApiService {
-  HttpieService _httpService;
-  StringTemplateService _stringTemplateService;
+  late HttpieService _httpService;
+  late StringTemplateService _stringTemplateService;
 
-  String apiURL;
+  late String apiURL;
 
   static const SEARCH_HASHTAGS_PATH = 'api/hashtags/search/';
   static const GET_TRENDING_HASHTAGS_PATH = 'api/hashtags/trending/';
@@ -46,7 +46,7 @@ class HashtagsApiService {
   }
 
   Future<HttpieResponse> getHashtagsWithQuery(
-      {bool authenticatedRequest = true, @required String query}) {
+      {bool authenticatedRequest = true, required String query}) {
     Map<String, dynamic> queryParams = {'query': query};
 
     return _httpService.get('$apiURL$SEARCH_HASHTAGS_PATH',
@@ -62,9 +62,9 @@ class HashtagsApiService {
   }
 
   Future<HttpieResponse> reportHashtagWithName(
-      {@required String hashtagName,
-      @required int moderationCategoryId,
-      String description}) {
+      {required String hashtagName,
+      required int moderationCategoryId,
+      String? description}) {
     String path = _makeReportHashtagPath(hashtagName);
 
     Map<String, dynamic> body = {
@@ -80,7 +80,7 @@ class HashtagsApiService {
   }
 
   Future<HttpieResponse> getPostsForHashtagWithName(String hashtagName,
-      {int maxId, int count, bool authenticatedRequest = true}) {
+      {int? maxId, int? count, bool authenticatedRequest = true}) {
     Map<String, dynamic> queryParams = {};
 
     if (count != null) queryParams['count'] = count;

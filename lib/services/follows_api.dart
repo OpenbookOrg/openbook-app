@@ -1,9 +1,9 @@
 import 'package:Okuna/services/httpie.dart';
 
 class FollowsApiService {
-  HttpieService _httpService;
+  late HttpieService _httpService;
 
-  String apiURL;
+  late String apiURL;
 
   static const FOLLOW_USER_PATH = 'api/follows/follow/';
   static const REQUEST_TO_FOLLOW_USER_PATH = 'api/follows/requests/';
@@ -54,8 +54,8 @@ class FollowsApiService {
   }
 
   Future<HttpieResponse> getReceivedFollowRequests( {
-    int maxId,
-    int count,}) {
+    int? maxId,
+    int? count,}) {
 
     Map<String, dynamic> queryParams = {};
 
@@ -69,7 +69,7 @@ class FollowsApiService {
   }
 
   Future<HttpieResponse> followUserWithUsername(String username,
-      {List<int> listsIds}) {
+      {List<int>? listsIds}) {
     Map<String, dynamic> body = {'username': username};
 
     if (listsIds != null) body['lists_ids'] = listsIds;
@@ -84,7 +84,7 @@ class FollowsApiService {
   }
 
   Future<HttpieResponse> updateFollowWithUsername(String username,
-      {List<int> listsIds}) {
+      {List<int>? listsIds}) {
     Map<String, dynamic> body = {'username': username};
 
     if (listsIds != null) body['lists_ids'] = listsIds;

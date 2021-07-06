@@ -1,8 +1,8 @@
 import 'package:Okuna/models/post_comment.dart';
 
 class PostCommentNotification {
-  final int id;
-  final PostComment postComment;
+  final int? id;
+  final PostComment? postComment;
 
   PostCommentNotification({this.id, this.postComment});
 
@@ -11,11 +11,11 @@ class PostCommentNotification {
         id: json['id'], postComment: _parsePostComment(json['post_comment']));
   }
 
-  static PostComment _parsePostComment(Map postCommentData) {
+  static PostComment _parsePostComment(Map<String, dynamic> postCommentData) {
     return PostComment.fromJSON(postCommentData);
   }
 
-  int getPostCreatorId() {
-    return postComment.getPostCreatorId();
+  int? getPostCreatorId() {
+    return postComment?.getPostCreatorId();
   }
 }

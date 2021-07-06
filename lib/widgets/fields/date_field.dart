@@ -7,17 +7,17 @@ import 'package:intl/intl.dart';
 class OBDateField extends StatefulWidget {
   final String title;
   final DateTime initialDate;
-  final ValueChanged<DateTime> onChanged;
+  final ValueChanged<DateTime>? onChanged;
   final DateTime minimumDate;
   final DateTime maximumDate;
 
   const OBDateField(
-      {Key key,
-      @required this.title,
-      @required this.initialDate,
+      {Key? key,
+      required this.title,
+      required this.initialDate,
       this.onChanged,
-      @required this.minimumDate,
-      @required this.maximumDate})
+      required this.minimumDate,
+      required this.maximumDate})
       : super(key: key);
 
   @override
@@ -27,7 +27,7 @@ class OBDateField extends StatefulWidget {
 }
 
 class OBDateFieldState extends State<OBDateField> {
-  DateTime _currentDate;
+  late DateTime _currentDate;
 
   @override
   void initState() {
@@ -59,7 +59,9 @@ class OBDateFieldState extends State<OBDateField> {
                   _currentDate = newDate;
                 });
 
-                widget.onChanged(newDate);
+                if (widget.onChanged != null) {
+                  widget.onChanged!(newDate);
+                }
               });
         },
       ),

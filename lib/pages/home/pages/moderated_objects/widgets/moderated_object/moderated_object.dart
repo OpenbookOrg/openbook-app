@@ -16,10 +16,10 @@ import '../../../../../../provider.dart';
 
 class OBModeratedObject extends StatelessWidget {
   final ModeratedObject moderatedObject;
-  final Community community;
+  final Community? community;
 
   const OBModeratedObject(
-      {Key key, @required this.moderatedObject, this.community})
+      {Key? key, required this.moderatedObject, this.community})
       : super(key: key);
 
   @override
@@ -86,7 +86,7 @@ class OBModeratedObject extends StatelessWidget {
               child: Row(
                 children: <Widget>[
                   OBIcon(
-                    moderatedObject.verified
+                    moderatedObject.verified == true
                         ? OBIcons.verify
                         : OBIcons.unverify,
                     size: OBIconSize.small,
@@ -95,7 +95,7 @@ class OBModeratedObject extends StatelessWidget {
                     width: 10,
                   ),
                   OBText(
-                    moderatedObject.verified ? _localizationService.moderation__moderated_object_true_text : _localizationService.moderation__moderated_object_false_text,
+                    moderatedObject.verified == true ? _localizationService.moderation__moderated_object_true_text : _localizationService.moderation__moderated_object_false_text,
                   )
                 ],
               ),

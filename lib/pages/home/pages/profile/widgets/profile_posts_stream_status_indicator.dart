@@ -10,13 +10,13 @@ import 'package:Okuna/widgets/tiles/retry_tile.dart';
 import 'package:flutter/material.dart';
 
 class OBProfilePostsStreamStatusIndicator extends StatelessWidget {
-  final User user;
+  final User? user;
   final VoidCallback streamRefresher;
-  final OBPostsStreamStatus streamStatus;
-  final List<Widget> streamPrependedItems;
+  final OBPostsStreamStatus? streamStatus;
+  final List<Widget>? streamPrependedItems;
 
   OBProfilePostsStreamStatusIndicator({
-    @required this.streamRefresher,
+    required this.streamRefresher,
     this.streamStatus,
     this.streamPrependedItems,
     this.user,
@@ -54,15 +54,15 @@ class OBProfilePostsStreamStatusIndicator extends StatelessWidget {
   Widget _buildEmptyIndicator(BuildContext context) {
     var provider = OpenbookProvider.of(context);
     UserService _userService = provider.userService;
-    bool isLoggedInUser = _userService.isLoggedInUser(user);
+    bool isLoggedInUser = _userService.isLoggedInUser(user!);
 
     LocalizationService localizationService = provider.localizationService;
-    String name = user.getProfileName();
+    String? name = user?.getProfileName();
 
     return OBButtonAlert(
       text: isLoggedInUser
           ? localizationService.post__have_not_shared_anything
-          : localizationService.post__user_has_not_shared_anything(name),
+          : localizationService.post__user_has_not_shared_anything(name ?? ''),
       onPressed: streamRefresher,
       buttonText: localizationService.post__trending_posts_refresh,
       buttonIcon: OBIcons.refresh,

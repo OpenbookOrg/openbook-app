@@ -15,7 +15,7 @@ class OBAccountSettingsPage extends StatelessWidget {
     var localizationService = openbookProvider.localizationService;
     var navigationService = openbookProvider.navigationService;
     var userService = openbookProvider.userService;
-    String currentUserLanguage = userService.getUserLanguage() != null ? userService.getUserLanguage().name : null;
+    String? currentUserLanguage = userService.getUserLanguage() != null ? userService.getUserLanguage()!.name : null;
 
     return CupertinoPageScaffold(
       backgroundColor: Color.fromARGB(0, 0, 0, 0),

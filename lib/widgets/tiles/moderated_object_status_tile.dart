@@ -9,14 +9,14 @@ import '../moderated_object_status_circle.dart';
 
 class OBModeratedObjectStatusTile extends StatelessWidget {
   final ModeratedObject moderatedObject;
-  final ValueChanged<ModeratedObject> onPressed;
-  final Widget trailing;
+  final ValueChanged<ModeratedObject>? onPressed;
+  final Widget? trailing;
 
   static double statusCircleSize = 10;
   static String pendingColor = '#f48c42';
 
   const OBModeratedObjectStatusTile(
-      {Key key, @required this.moderatedObject, this.onPressed, this.trailing})
+      {Key? key, required this.moderatedObject, this.onPressed, this.trailing})
       : super(key: key);
 
   @override
@@ -25,24 +25,24 @@ class OBModeratedObjectStatusTile extends StatelessWidget {
       stream: moderatedObject.updateSubject,
       initialData: moderatedObject,
       builder: (BuildContext context, AsyncSnapshot<ModeratedObject> snapshot) {
-        ModeratedObject currentModeratedObject = snapshot.data;
+        ModeratedObject currentModeratedObject = snapshot.data!;
 
         return ListTile(
           title: Row(
             children: <Widget>[
               OBModeratedObjectStatusCircle(
-                status: moderatedObject.status,
+                status: moderatedObject.status!,
               ),
               const SizedBox(
                 width: 10,
               ),
               OBText(ModeratedObject.factory.convertStatusToHumanReadableString(
                   currentModeratedObject.status,
-                  capitalize: true))
+                  capitalize: true) ?? '')
             ],
           ),
           onTap: () async {
-            if (onPressed != null) onPressed(moderatedObject);
+            if (onPressed != null) onPressed!(moderatedObject);
           },
           trailing: trailing,
         );

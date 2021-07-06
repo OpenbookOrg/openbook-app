@@ -20,12 +20,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:async/async.dart';
 
 class OBLinkPreview extends StatefulWidget {
-  final LinkPreview linkPreview;
-  final String link;
-  final ValueChanged<LinkPreview> onLinkPreviewRetrieved;
+  final LinkPreview? linkPreview;
+  final String? link;
+  final ValueChanged<LinkPreview?>? onLinkPreviewRetrieved;
 
   const OBLinkPreview(
-      {this.linkPreview, this.link, this.onLinkPreviewRetrieved});
+      {required this.linkPreview, this.link, this.onLinkPreviewRetrieved});
 
   @override
   State<StatefulWidget> createState() {
@@ -37,24 +37,24 @@ class OBLinkPreviewState extends State<OBLinkPreview> {
   static double iconSize = 16;
   static double linkPreviewHeight = 300;
 
-  LinkPreview _linkPreview;
-  UrlLauncherService _urlLauncherService;
-  LocalizationService _localizationService;
-  UtilsService _utilsService;
-  UserService _userService;
-  UserPreferencesService _userPreferencesService;
+  LinkPreview? _linkPreview;
+  late UrlLauncherService _urlLauncherService;
+  late LocalizationService _localizationService;
+  late UtilsService _utilsService;
+  late UserService _userService;
+  late UserPreferencesService _userPreferencesService;
 
-  HttpieService _httpieService;
+  late HttpieService _httpieService;
 
-  bool _linkPreviewRequestInProgress;
-  CancelableOperation _fetchLinkPreviewOperation;
+  late bool _linkPreviewRequestInProgress;
+  CancelableOperation? _fetchLinkPreviewOperation;
 
-  bool _needsBootstrap;
-  bool _failedToPreviewLink;
+  late bool _needsBootstrap;
+  late bool _failedToPreviewLink;
 
-  StreamSubscription _linkPreviewsAreEnabledChangeSubscription;
+  StreamSubscription? _linkPreviewsAreEnabledChangeSubscription;
 
-  bool _linkPreviewsAreEnabled;
+  late bool _linkPreviewsAreEnabled;
 
   @override
   void initState() {
@@ -70,16 +70,16 @@ class OBLinkPreviewState extends State<OBLinkPreview> {
 
     String previousLinkUrl;
     if (oldWidget.link != null) {
-      previousLinkUrl = oldWidget.link;
+      previousLinkUrl = oldWidget.link!;
     } else {
-      previousLinkUrl = oldWidget.linkPreview.url;
+      previousLinkUrl = oldWidget.linkPreview!.url!;
     }
 
     String newLinkUrl;
     if (widget.link != null) {
-      newLinkUrl = widget.link;
+      newLinkUrl = widget.link!;
     } else {
-      newLinkUrl = widget.linkPreview.url;
+      newLinkUrl = widget.linkPreview!.url!;
     }
 
     if (previousLinkUrl != newLinkUrl) {
@@ -227,7 +227,7 @@ class OBLinkPreviewState extends State<OBLinkPreview> {
             ],
           )),
       onTap: () {
-        _urlLauncherService.launchUrl(_linkPreview.url ?? widget.link);
+        _urlLauncherService.launchUrl(_linkPreview?.url ?? widget.link!);
       },
     );
   }
@@ -243,7 +243,7 @@ class OBLinkPreviewState extends State<OBLinkPreview> {
   }
 
   Widget _buildPreviewImage() {
-    if (_linkPreview.image == null) {
+    if (_linkPreview?.image == null) {
       return Semantics(
         label: 'Link preview image',
         child: Container(
@@ -257,13 +257,13 @@ class OBLinkPreviewState extends State<OBLinkPreview> {
       );
     }
 
-    return _buildLinkPreviewImageFromUrl(_linkPreview.image.url);
+    return _buildLinkPreviewImageFromUrl(_linkPreview!.image!.url!);
   }
 
   Widget _buildLinkPreviewImageFromUrl(String url) {
     String proxiedImageUrl = _utilsService.getProxiedContentLink(url);
 
-    String proxyAuthToken = _httpieService.getAuthorizationToken();
+    String proxyAuthToken = _httpieService.getAuthorizationToken()!;
 
     return _buildCrossCompatImageForSource(proxiedImageUrl,
         semanticsLabel: 'Link preview image',
@@ -281,7 +281,7 @@ class OBLinkPreviewState extends State<OBLinkPreview> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                _linkPreview.icon != null
+                _linkPreview?.icon != null
                     ? _buildLinkPreviewIcon()
                     : const SizedBox(),
                 OBSecondaryText(_getLinkPreviewDomain(),
@@ -291,22 +291,22 @@ class OBLinkPreviewState extends State<OBLinkPreview> {
               ],
             ),
           ),
-          _linkPreview.title != null
+          _linkPreview?.title != null
               ? Padding(
                   padding: const EdgeInsets.only(top: 5),
                   child: OBText(
-                    _linkPreview.title,
+                    _linkPreview!.title!,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 )
               : const SizedBox(),
-          _linkPreview.description != null
+          _linkPreview?.description != null
               ? Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child: OBSecondaryText(
-                    _linkPreview.description,
+                    _linkPreview!.description!,
                     size: OBTextSize.mediumSecondary,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
@@ -322,8 +322,8 @@ class OBLinkPreviewState extends State<OBLinkPreview> {
     Widget iconWidget;
 
     String proxiedIconImageUrl =
-        _utilsService.getProxiedContentLink(_linkPreview.icon.url);
-    String proxyAuthToken = _httpieService.getAuthorizationToken();
+        _utilsService.getProxiedContentLink(_linkPreview!.icon!.url!);
+    String proxyAuthToken = _httpieService.getAuthorizationToken()!;
 
     iconWidget = _buildCrossCompatImageForSource(proxiedIconImageUrl,
         semanticsLabel: 'Icon',
@@ -343,7 +343,7 @@ class OBLinkPreviewState extends State<OBLinkPreview> {
   }
 
   Widget _buildCrossCompatImageForSource(String imageSource,
-      {String semanticsLabel, Map<String, String> headers}) {
+      {String? semanticsLabel, Map<String, String>? headers}) {
     String iconExtension = imageSource.split('.').last;
 
     Widget image;
@@ -401,7 +401,7 @@ class OBLinkPreviewState extends State<OBLinkPreview> {
     if (_fetchLinkPreviewOperation != null) return;
     _setLinkPreviewRequestInProgress(true);
 
-    String link = widget.link;
+    String link = widget.link!;
 
     debugLog('Retrieving link preview for url: $link');
 
@@ -409,10 +409,10 @@ class OBLinkPreviewState extends State<OBLinkPreview> {
       _fetchLinkPreviewOperation =
           CancelableOperation.fromFuture(_userService.previewLink(link: link));
 
-      LinkPreview linkPreview = await _fetchLinkPreviewOperation.value;
+      LinkPreview? linkPreview = await _fetchLinkPreviewOperation?.value;
 
       if (widget.onLinkPreviewRetrieved != null)
-        widget.onLinkPreviewRetrieved(linkPreview);
+        widget.onLinkPreviewRetrieved!(linkPreview);
       if (linkPreview != null) {
         _setLinkPreview(linkPreview);
         debugLog('Retrieved link preview for url: $link');
@@ -436,9 +436,9 @@ class OBLinkPreviewState extends State<OBLinkPreview> {
   }
 
   String _getLinkPreviewDomain() {
-    return (_linkPreview != null && _linkPreview.domain != null
-            ? _linkPreview.domain
-            : Uri.parse(widget.link).host)
+    return (_linkPreview != null && _linkPreview!.domain != null
+            ? _linkPreview!.domain!
+            : Uri.parse(widget.link!).host)
         .toUpperCase();
   }
 

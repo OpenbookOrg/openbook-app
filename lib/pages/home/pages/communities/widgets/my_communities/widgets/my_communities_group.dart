@@ -15,26 +15,26 @@ import 'package:flutter/material.dart';
 
 class OBMyCommunitiesGroup extends StatefulWidget {
   final OBHttpListRefresher<Community> communityGroupListRefresher;
-  final OBHttpListSearcher<Community> communityGroupListSearcher;
+  final OBHttpListSearcher<Community>? communityGroupListSearcher;
   final OBHttpListItemBuilder<Community> communityGroupListItemBuilder;
-  final OBHttpListItemBuilder<Community> communitySearchResultListItemBuilder;
+  final OBHttpListItemBuilder<Community>? communitySearchResultListItemBuilder;
   final OBHttpListOnScrollLoader<Community> communityGroupListOnScrollLoader;
-  final OBMyCommunitiesGroupFallbackBuilder noGroupItemsFallbackBuilder;
-  final OBMyCommunitiesGroupController controller;
+  final OBMyCommunitiesGroupFallbackBuilder? noGroupItemsFallbackBuilder;
+  final OBMyCommunitiesGroupController? controller;
   final String groupItemName;
   final String groupName;
   final int maxGroupListPreviewItems;
   final String title;
 
   const OBMyCommunitiesGroup({
-    Key key,
-    @required this.communityGroupListRefresher,
-    @required this.communityGroupListOnScrollLoader,
-    @required this.groupItemName,
-    @required this.groupName,
-    @required this.title,
-    @required this.maxGroupListPreviewItems,
-    @required this.communityGroupListItemBuilder,
+    Key? key,
+    required this.communityGroupListRefresher,
+    required this.communityGroupListOnScrollLoader,
+    required this.groupItemName,
+    required this.groupName,
+    required this.title,
+    required this.maxGroupListPreviewItems,
+    required this.communityGroupListItemBuilder,
     this.communityGroupListSearcher,
     this.communitySearchResultListItemBuilder,
     this.noGroupItemsFallbackBuilder,
@@ -48,18 +48,18 @@ class OBMyCommunitiesGroup extends StatefulWidget {
 }
 
 class OBMyCommunitiesGroupState extends State<OBMyCommunitiesGroup> {
-  bool _needsBootstrap;
-  ToastService _toastService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
-  List<Community> _communityGroupList;
-  bool _refreshInProgress;
-  CancelableOperation _refreshOperation;
+  late bool _needsBootstrap;
+  late ToastService _toastService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
+  late List<Community> _communityGroupList;
+  late bool _refreshInProgress;
+  CancelableOperation? _refreshOperation;
 
   @override
   void initState() {
     super.initState();
-    if (widget.controller != null) widget.controller.attach(this);
+    if (widget.controller != null) widget.controller!.attach(this);
     _needsBootstrap = true;
     _communityGroupList = [];
     _refreshInProgress = false;
@@ -83,7 +83,7 @@ class OBMyCommunitiesGroupState extends State<OBMyCommunitiesGroup> {
 
     if (listItemCount == 0) {
       if (widget.noGroupItemsFallbackBuilder != null && !_refreshInProgress) {
-        return widget.noGroupItemsFallbackBuilder(
+        return widget.noGroupItemsFallbackBuilder!(
             context, _refreshJoinedCommunities);
       }
       return const SizedBox();
@@ -121,8 +121,8 @@ class OBMyCommunitiesGroupState extends State<OBMyCommunitiesGroup> {
   @override
   void dispose() {
     super.dispose();
-    if (widget.controller != null) widget.controller.detach();
-    if (_refreshOperation != null) _refreshOperation.cancel();
+    if (widget.controller != null) widget.controller!.detach();
+    if (_refreshOperation != null) _refreshOperation!.cancel();
   }
 
   Widget _buildSeeAllButton() {
@@ -162,13 +162,13 @@ class OBMyCommunitiesGroupState extends State<OBMyCommunitiesGroup> {
   }
 
   Future<void> _refreshJoinedCommunities() async {
-    if (_refreshOperation != null) _refreshOperation.cancel();
+    if (_refreshOperation != null) _refreshOperation!.cancel();
     _setRefreshInProgress(true);
     try {
       _refreshOperation =
           CancelableOperation.fromFuture(widget.communityGroupListRefresher());
 
-      List<Community> groupCommunities = await _refreshOperation.value;
+      List<Community> groupCommunities = await _refreshOperation!.value;
 
       _setCommunityGroupList(groupCommunities);
     } catch (error) {
@@ -184,8 +184,8 @@ class OBMyCommunitiesGroupState extends State<OBMyCommunitiesGroup> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;
@@ -234,7 +234,7 @@ class OBMyCommunitiesGroupState extends State<OBMyCommunitiesGroup> {
 }
 
 class OBMyCommunitiesGroupController {
-  OBMyCommunitiesGroupState _state;
+  OBMyCommunitiesGroupState? _state;
 
   void attach(OBMyCommunitiesGroupState state) {
     this._state = state;
@@ -246,7 +246,7 @@ class OBMyCommunitiesGroupController {
 
   Future<void> refresh() {
     if (_state == null) return Future.value();
-    return _state._refreshJoinedCommunities();
+    return _state!._refreshJoinedCommunities();
   }
 }
 

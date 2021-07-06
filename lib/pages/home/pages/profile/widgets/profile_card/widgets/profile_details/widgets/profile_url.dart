@@ -11,7 +11,7 @@ class OBProfileUrl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String url = user.getProfileUrl();
+    String? url = user.getProfileUrl();
 
     if (url == null) {
       return const SizedBox();

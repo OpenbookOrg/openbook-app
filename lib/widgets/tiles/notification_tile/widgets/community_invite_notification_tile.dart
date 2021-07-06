@@ -16,29 +16,29 @@ import 'notification_tile_title.dart';
 class OBCommunityInviteNotificationTile extends StatelessWidget {
   final OBNotification notification;
   final CommunityInviteNotification communityInviteNotification;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   static final double postImagePreviewSize = 40;
 
   const OBCommunityInviteNotificationTile(
-      {Key key,
-      @required this.notification,
-      @required this.communityInviteNotification,
+      {Key? key,
+      required this.notification,
+      required this.communityInviteNotification,
       this.onPressed})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     CommunityInvite communityInvite =
-        communityInviteNotification.communityInvite;
-    User inviteCreator = communityInvite.creator;
-    Community community = communityInvite.community;
+        communityInviteNotification.communityInvite!;
+    User inviteCreator = communityInvite.creator!;
+    Community community = communityInvite.community!;
 
-    String communityName = community.name;
+    String communityName = community.name!;
 
     OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
     var utilsService = openbookProvider.utilsService;
 
-    Function navigateToInviteCreatorProfile = () {
+    VoidCallback navigateToInviteCreatorProfile = () {
       openbookProvider.navigationService
           .navigateToUserProfile(user: inviteCreator, context: context);
     };
@@ -46,7 +46,7 @@ class OBCommunityInviteNotificationTile extends StatelessWidget {
 
     return OBNotificationTileSkeleton(
       onTap: () {
-        if (onPressed != null) onPressed();
+        if (onPressed != null) onPressed!();
         OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
 
         openbookProvider.navigationService
@@ -67,7 +67,7 @@ class OBCommunityInviteNotificationTile extends StatelessWidget {
         community: community,
         size: OBAvatarSize.medium,
       ),
-      subtitle: OBSecondaryText(utilsService.timeAgo(notification.created, _localizationService)),
+      subtitle: OBSecondaryText(utilsService.timeAgo(notification.created!, _localizationService)),
     );
   }
 }

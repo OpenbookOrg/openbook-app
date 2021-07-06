@@ -18,24 +18,24 @@ class LoadMore extends StatefulWidget {
   /// return true is refresh success
   ///
   /// return false or null is fail
-  final FutureCallBack onLoadMore;
+  final FutureCallBack? onLoadMore;
 
   /// if [isFinish] is true, then loadMoreWidget status is [LoadMoreStatus.nomore].
   final bool isFinish;
 
   /// see [LoadMoreDelegate]
-  final LoadMoreDelegate delegate;
+  final LoadMoreDelegate? delegate;
 
   /// see [LoadMoreTextBuilder]
-  final LoadMoreTextBuilder textBuilder;
+  final LoadMoreTextBuilder? textBuilder;
 
   /// when [whenEmptyLoad] is true, and when listView children length is 0,or the itemCount is 0,not build loadMoreWidget
   final bool whenEmptyLoad;
 
   const LoadMore({
-    Key key,
-    @required this.child,
-    @required this.onLoadMore,
+    Key? key,
+    required this.child,
+    required this.onLoadMore,
     this.textBuilder,
     this.isFinish = false,
     this.delegate,
@@ -68,7 +68,7 @@ class _LoadMoreState extends State<LoadMore> {
       return child;
     }
     if (child is ListView) {
-      return _buildListView(child);
+      return _buildListView(child as ListView);
     }
     return child;
   }
@@ -79,16 +79,16 @@ class _LoadMoreState extends State<LoadMore> {
     var delegate = listView.childrenDelegate;
     outer:
     if (delegate is SliverChildBuilderDelegate) {
-      SliverChildBuilderDelegate delegate = listView.childrenDelegate;
+      SliverChildBuilderDelegate delegate = listView.childrenDelegate as SliverChildBuilderDelegate;
       if (!widget.whenEmptyLoad && delegate.estimatedChildCount == 0) {
         break outer;
       }
-      var viewCount = delegate.estimatedChildCount + 1;
+      var viewCount = (delegate.estimatedChildCount ?? 0) + 1;
       IndexedWidgetBuilder builder = (context, index) {
         if (index == viewCount - 1) {
           return _buildLoadMoreView();
         }
-        return delegate.builder(context, index);
+        return delegate.builder(context, index)!;
       };
 
       return ListView.builder(
@@ -108,7 +108,7 @@ class _LoadMoreState extends State<LoadMore> {
         shrinkWrap: listView.shrinkWrap,
       );
     } else if (delegate is SliverChildListDelegate) {
-      SliverChildListDelegate delegate = listView.childrenDelegate;
+      SliverChildListDelegate delegate = listView.childrenDelegate as SliverChildListDelegate;
 
       if (!widget.whenEmptyLoad && delegate.estimatedChildCount == 0) {
         break outer;
@@ -185,8 +185,12 @@ class _LoadMoreState extends State<LoadMore> {
   }
 
   void loadMore() {
+    if (widget.onLoadMore == null) {
+      return;
+    }
+
     _updateStatus(LoadMoreStatus.loading);
-    widget.onLoadMore().then((v) {
+    widget.onLoadMore!().then((v) {
       if (v == true) {
         // 成功，切换状态为空闲
         _updateStatus(LoadMoreStatus.idle);
@@ -225,10 +229,10 @@ class DefaultLoadMoreView extends StatefulWidget {
   final LoadMoreDelegate delegate;
   final LoadMoreTextBuilder textBuilder;
   const DefaultLoadMoreView({
-    Key key,
+    Key? key,
     this.status = LoadMoreStatus.idle,
-    @required this.delegate,
-    @required this.textBuilder,
+    required this.delegate,
+    required this.textBuilder,
   }) : super(key: key);
 
   @override

@@ -1,7 +1,7 @@
 import 'package:Okuna/models/language.dart';
 
 class LanguagesList {
-  final List<Language> languages;
+  final List<Language>? languages;
 
   LanguagesList({
     this.languages,

@@ -20,7 +20,7 @@ class OBConnectionsCircleHeader extends StatelessWidget {
         stream: connectionsCircle.updateSubject,
         initialData: connectionsCircle,
         builder: (BuildContext context, AsyncSnapshot<Circle> snapshot) {
-          var connectionsCircle = snapshot.data;
+          var connectionsCircle = snapshot.data!;
           LocalizationService _localizationService = OpenbookProvider.of(context).localizationService;
 
           List<Widget> columnItems = [_buildCircleName(connectionsCircle)];

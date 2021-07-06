@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 
 class EmojiPickerService {
   Future<void> pickEmoji(
-      {@required BuildContext context, @required OnEmojiPicked onEmojiPicked}) {
+      {required BuildContext context, required OnEmojiPicked onEmojiPicked}) {
     return showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {

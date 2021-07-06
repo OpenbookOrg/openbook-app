@@ -1,7 +1,7 @@
 import 'package:Okuna/models/notifications/notification.dart';
 
 class PushNotification {
-  static PushNotificationType parseType(String pushNotificationTypeStr) {
+  static PushNotificationType? parseType(String? pushNotificationTypeStr) {
     if (pushNotificationTypeStr == null) return null;
 
     PushNotificationType pushNotificationType;
@@ -22,13 +22,13 @@ class PushNotification {
     return pushNotificationType;
   }
 
-  final PushNotificationType type;
-  final int notificationId;
+  final PushNotificationType? type;
+  final int? notificationId;
 
   const PushNotification({this.notificationId, this.type});
 
   factory PushNotification.fromJson(Map<String, dynamic> parsedJson) {
-    PushNotificationType type = parseType(parsedJson['type']);
+    PushNotificationType? type = parseType(parsedJson['type']);
 
     return PushNotification(
         notificationId: parsedJson['notification_id'], type: type);

@@ -21,10 +21,10 @@ class OBPostCommentReactionList extends StatefulWidget {
   final Post post;
 
   const OBPostCommentReactionList(
-      {Key key,
-      @required this.emoji,
-      @required this.postComment,
-      @required this.post})
+      {Key? key,
+      required this.emoji,
+      required this.postComment,
+      required this.post})
       : super(key: key);
 
   @override
@@ -34,12 +34,12 @@ class OBPostCommentReactionList extends StatefulWidget {
 }
 
 class OBPostCommentReactionListState extends State<OBPostCommentReactionList> {
-  UserService _userService;
-  NavigationService _navigationService;
+  late UserService _userService;
+  late NavigationService _navigationService;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
-  OBHttpListController _httpListController;
+  late OBHttpListController _httpListController;
 
   @override
   void initState() {
@@ -79,7 +79,7 @@ class OBPostCommentReactionListState extends State<OBPostCommentReactionList> {
   void _onPostCommentReactionListItemPressed(
       PostCommentReaction postCommentReaction) {
     _navigationService.navigateToUserProfile(
-        user: postCommentReaction.reactor, context: context);
+        user: postCommentReaction.reactor!, context: context);
   }
 
   Future<List<PostCommentReaction>> _refreshPostCommentReactions() async {
@@ -88,13 +88,13 @@ class OBPostCommentReactionListState extends State<OBPostCommentReactionList> {
             post: widget.post,
             postComment: widget.postComment,
             emoji: widget.emoji);
-    return postCommentReactions.reactions;
+    return postCommentReactions.reactions!;
   }
 
   Future<List<PostCommentReaction>> _loadMorePostCommentReactions(
       List<PostCommentReaction> postCommentReactionsList) async {
     PostCommentReaction lastPostCommentReaction = postCommentReactionsList.last;
-    int lastPostCommentReactionId = lastPostCommentReaction.id;
+    int? lastPostCommentReactionId = lastPostCommentReaction.id;
     List<PostCommentReaction> morePostCommentReactions =
         (await _userService.getReactionsForPostComment(
       post: widget.post,
@@ -103,7 +103,7 @@ class OBPostCommentReactionListState extends State<OBPostCommentReactionList> {
       emoji: widget.emoji,
       count: 20,
     ))
-            .reactions;
+            .reactions!;
     return morePostCommentReactions;
   }
 }

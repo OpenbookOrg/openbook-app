@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 class OBModerationReportTile extends StatelessWidget {
   final ModerationReport report;
 
-  const OBModerationReportTile({Key key, @required this.report})
+  const OBModerationReportTile({Key? key, required this.report})
       : super(key: key);
 
   @override
@@ -41,13 +41,13 @@ class OBModerationReportTile extends StatelessWidget {
   }
 
   Widget _buildReportReporter(
-      {@required ModerationReport report, @required BuildContext context}) {
+      {required ModerationReport report, required BuildContext context}) {
     LocalizationService _localizationService = OpenbookProvider.of(context).localizationService;
     return GestureDetector(
         onTap: () {
           OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
           openbookProvider.navigationService
-              .navigateToUserProfile(user: report.reporter, context: context);
+              .navigateToUserProfile(user: report.reporter!, context: context);
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,13 +63,13 @@ class OBModerationReportTile extends StatelessWidget {
                   OBAvatar(
                     borderRadius: 4,
                     customSize: 16,
-                    avatarUrl: report.reporter.getProfileAvatar(),
+                    avatarUrl: report.reporter!.getProfileAvatar(),
                   ),
                   const SizedBox(
                     width: 6,
                   ),
                   OBSecondaryText(
-                    '@' + report.reporter.username,
+                    '@' + report.reporter!.username!,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -88,7 +88,7 @@ class OBModerationReportTile extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         OBSecondaryText(
-          report.description != null ? report.description : _localizationService.moderation__no_description_text,
+          report.description != null ? report.description! : _localizationService.moderation__no_description_text,
           style: TextStyle(
               fontStyle: report.description == null
                   ? FontStyle.italic
@@ -108,7 +108,7 @@ class OBModerationReportTile extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         OBSecondaryText(
-          report.category.title,
+          report.category!.title!,
         ),
       ],
     );

@@ -36,8 +36,8 @@ const Color _kDefaultTabBarBackgroundColor = Color(0xCCF8F8F8);
 class OBCupertinoTabBar extends StatelessWidget implements PreferredSizeWidget {
   /// Creates a tab bar in the iOS style.
   OBCupertinoTabBar({
-    Key key,
-    @required this.items,
+    Key? key,
+    required this.items,
     this.onTap,
     this.currentIndex = 0,
     this.backgroundColor = _kDefaultTabBarBackgroundColor,
@@ -61,7 +61,7 @@ class OBCupertinoTabBar extends StatelessWidget implements PreferredSizeWidget {
   /// The widget creating the bottom navigation bar needs to keep track of the
   /// current index and call `setState` to rebuild it with the newly provided
   /// index.
-  final ChangeIndexAllowed<int> onTap;
+  final ChangeIndexAllowed<int>? onTap;
 
   /// The index into [items] of the current active item.
   ///
@@ -111,7 +111,7 @@ class OBCupertinoTabBar extends StatelessWidget implements PreferredSizeWidget {
           final double bottomPadding = MediaQuery.of(context).padding.bottom;
           Widget result = DecoratedBox(
             decoration: BoxDecoration(
-              color: themeValueParserService.parseColor(theme.primaryColor),
+              color: themeValueParserService.parseColor(theme!.primaryColor),
             ),
             // TODO(xster): allow icons-only versions of the tab bar too.
             child: SizedBox(
@@ -175,7 +175,7 @@ class OBCupertinoTabBar extends StatelessWidget implements PreferredSizeWidget {
                 onTap: onTap == null
                     ? null
                     : () {
-                        onTap(index);
+                        onTap!(index);
                       },
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 4.0),
@@ -188,7 +188,7 @@ class OBCupertinoTabBar extends StatelessWidget implements PreferredSizeWidget {
                                 ? items[index].activeIcon
                                 : items[index].icon),
                       ),
-                      items[index].title,
+                      // items[index].label, // TODO(nullsafety): not sure what to do here
                     ],
                   ),
                 ),
@@ -204,7 +204,7 @@ class OBCupertinoTabBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   /// Change the active tab item's icon and title colors to active.
-  Widget _wrapActiveItem(Widget item, {@required bool active}) {
+  Widget _wrapActiveItem(Widget item, {required bool active}) {
     if (!active) return item;
 
     return IconTheme.merge(
@@ -219,14 +219,14 @@ class OBCupertinoTabBar extends StatelessWidget implements PreferredSizeWidget {
   /// Create a clone of the current [OBCupertinoTabBar] but with provided
   /// parameters overridden.
   OBCupertinoTabBar copyWith({
-    Key key,
-    List<BottomNavigationBarItem> items,
-    Color backgroundColor,
-    Color activeColor,
-    Color inactiveColor,
-    Size iconSize,
-    int currentIndex,
-    ChangeIndexAllowed<int> onTap,
+    Key? key,
+    List<BottomNavigationBarItem>? items,
+    Color? backgroundColor,
+    Color? activeColor,
+    Color? inactiveColor,
+    double? iconSize,
+    int? currentIndex,
+    ChangeIndexAllowed<int>? onTap,
   }) {
     return OBCupertinoTabBar(
       key: key ?? this.key,
@@ -241,4 +241,4 @@ class OBCupertinoTabBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-typedef ChangeIndexAllowed<T> = bool Function(T value);
+typedef ChangeIndexAllowed<T> = bool? Function(T value);

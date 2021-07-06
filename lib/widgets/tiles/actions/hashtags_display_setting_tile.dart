@@ -24,7 +24,7 @@ class OBHashtagsDisplaySettingTile extends StatelessWidget {
     return FutureBuilder(
       future: userPreferencesService.getHashtagsDisplaySetting(),
       builder:
-          (BuildContext context, AsyncSnapshot<HashtagsDisplaySetting> snapshot) {
+          (BuildContext context, AsyncSnapshot<HashtagsDisplaySetting?> snapshot) {
         if (snapshot.data == null) return const SizedBox();
 
         return StreamBuilder(
@@ -32,7 +32,7 @@ class OBHashtagsDisplaySettingTile extends StatelessWidget {
           initialData: snapshot.data,
           builder: (BuildContext context,
               AsyncSnapshot<HashtagsDisplaySetting> snapshot) {
-            HashtagsDisplaySetting currentHashtagsDisplaySetting = snapshot.data;
+            HashtagsDisplaySetting currentHashtagsDisplaySetting = snapshot.data!;
 
             return MergeSemantics(
               child: ListTile(
@@ -47,7 +47,7 @@ class OBHashtagsDisplaySettingTile extends StatelessWidget {
                     children: <Widget>[
                       OBPrimaryAccentText(
                         hashtagsDisplaySettingsLocalizationMap[
-                            currentHashtagsDisplaySetting],
+                            currentHashtagsDisplaySetting]!,
                         style: TextStyle(fontSize: 16),
                       ),
                     ],

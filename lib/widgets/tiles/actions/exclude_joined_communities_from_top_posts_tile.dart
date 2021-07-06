@@ -25,7 +25,7 @@ class OBExcludeJoinedCommunitiesTile extends StatelessWidget {
           initialData: snapshot.data,
           builder: (BuildContext context,
               AsyncSnapshot<bool> snapshot) {
-            bool currentExcludeJoinedCommunitiesSetting = snapshot.data;
+            bool currentExcludeJoinedCommunitiesSetting = snapshot.data!;
 
             return OBToggleField(
               key: Key('toggleExcludeJoinedCommunities'),

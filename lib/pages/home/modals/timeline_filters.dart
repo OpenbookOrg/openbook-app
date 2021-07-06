@@ -21,7 +21,7 @@ import 'package:flutter/material.dart';
 class OBTimelineFiltersModal extends StatefulWidget {
   final OBTimelinePageController timelinePageController;
 
-  const OBTimelineFiltersModal({Key key, @required this.timelinePageController})
+  const OBTimelineFiltersModal({Key? key, required this.timelinePageController})
       : super(key: key);
 
   @override
@@ -31,23 +31,23 @@ class OBTimelineFiltersModal extends StatefulWidget {
 }
 
 class OBTimelineFiltersModalState extends State<OBTimelineFiltersModal> {
-  UserService _userService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
 
-  bool _requestInProgress;
-  bool _needsBootstrap;
+  late bool _requestInProgress;
+  late bool _needsBootstrap;
 
-  String _searchQuery;
+  String? _searchQuery;
 
-  List<Circle> _circles;
-  List<Circle> _selectedCircles;
-  List<Circle> _disabledCircles;
-  List<Circle> _circlesSearchResults;
-  Circle _connectionsCircle;
+  late List<Circle> _circles;
+  late List<Circle> _selectedCircles;
+  List<Circle>? _disabledCircles;
+  late List<Circle> _circlesSearchResults;
+  Circle? _connectionsCircle;
 
-  List<FollowsList> _followsLists;
-  List<FollowsList> _selectedFollowsLists;
-  List<FollowsList> _followsListsSearchResults;
+  late List<FollowsList> _followsLists;
+  late List<FollowsList> _selectedFollowsLists;
+  late List<FollowsList> _followsListsSearchResults;
 
   @override
   void initState() {
@@ -138,7 +138,7 @@ class OBTimelineFiltersModalState extends State<OBTimelineFiltersModal> {
           if (isCircle) {
             Circle circle = _circlesSearchResults[index];
             bool isSelected = _selectedCircles.contains(circle);
-            bool isDisabled = _disabledCircles.contains(circle);
+            bool isDisabled = _disabledCircles?.contains(circle) ?? false;
 
             Widget circleTile = OBCircleSelectableTile(
               circle,
@@ -200,7 +200,7 @@ class OBTimelineFiltersModalState extends State<OBTimelineFiltersModal> {
                 height: 20.0,
               ),
               OBText(
-                _localizationService.user__timeline_filters_no_match(_searchQuery),
+                _localizationService.user__timeline_filters_no_match(_searchQuery ?? ''),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18.0,
@@ -214,7 +214,7 @@ class OBTimelineFiltersModalState extends State<OBTimelineFiltersModal> {
     );
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
         leading: GestureDetector(
           child: const OBIcon(OBIcons.close),
@@ -254,7 +254,7 @@ class OBTimelineFiltersModalState extends State<OBTimelineFiltersModal> {
 
   void _searchCircles(String standarisedSearchStr) {
     List<Circle> results = _circles.where((Circle circle) {
-      return circle.name.toLowerCase().contains(standarisedSearchStr);
+      return circle.name!.toLowerCase().contains(standarisedSearchStr);
     }).toList();
 
     _setCirclesSearchResults(results);
@@ -262,7 +262,7 @@ class OBTimelineFiltersModalState extends State<OBTimelineFiltersModal> {
 
   void _searchFollowsLists(String standarisedSearchStr) {
     List<FollowsList> results = _followsLists.where((FollowsList followsList) {
-      return followsList.name.toLowerCase().contains(standarisedSearchStr);
+      return followsList.name!.toLowerCase().contains(standarisedSearchStr);
     }).toList();
     _setFollowsListsSearchResults(results);
   }
@@ -319,14 +319,14 @@ class OBTimelineFiltersModalState extends State<OBTimelineFiltersModal> {
   }
 
   void _setCircles(List<Circle> circles) {
-    var user = _userService.getLoggedInUser();
+    var user = _userService.getLoggedInUser()!;
     setState(() {
       _circles = circles;
       // Find connections circle and move it to the top
       _connectionsCircle = _circles
           .firstWhere((circle) => circle.id == user.connectionsCircleId);
       _circles.remove(_connectionsCircle);
-      _circles.insert(0, _connectionsCircle);
+      _circles.insert(0, _connectionsCircle!);
     });
   }
 
@@ -399,14 +399,14 @@ class OBTimelineFiltersModalState extends State<OBTimelineFiltersModal> {
     var results = await Future.wait(
         [_userService.getConnectionsCircles(), _userService.getFollowsLists()]);
 
-    CirclesList circlesList = results[0];
-    FollowsListsList followsList = results[1];
+    CirclesList circlesList = results[0] as CirclesList;
+    FollowsListsList followsList = results[1] as FollowsListsList;
 
-    _setCircles(circlesList.circles);
-    _setCirclesSearchResults(circlesList.circles);
+    _setCircles(circlesList.circles!);
+    _setCirclesSearchResults(circlesList.circles!);
     _updateDisabledCircles();
-    _setFollowsLists(followsList.lists);
-    _setFollowsListsSearchResults(followsList.lists);
+    _setFollowsLists(followsList.lists!);
+    _setFollowsListsSearchResults(followsList.lists!);
     _setRequestInProgress(false);
   }
 }

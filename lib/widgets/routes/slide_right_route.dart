@@ -6,9 +6,9 @@ class OBSlideRightRoute<T> extends PageRoute<T> {
   Key slidableKey;
 
   OBSlideRightRoute({
-    @required this.slidableKey,
-    @required this.builder,
-    RouteSettings settings,
+    required this.slidableKey,
+    required this.builder,
+    RouteSettings? settings,
     this.maintainState = true,
     bool fullscreenDialog = false,
   })  : assert(builder != null),
@@ -32,7 +32,7 @@ class OBSlideRightRoute<T> extends PageRoute<T> {
   Color get barrierColor => Color.fromARGB(0, 0, 0, 1);
 
   @override
-  String get barrierLabel => null;
+  String? get barrierLabel => null;
 
   @override
   bool canTransitionFrom(TransitionRoute<dynamic> previousRoute) {

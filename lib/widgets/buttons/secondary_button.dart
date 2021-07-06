@@ -18,8 +18,8 @@ class OBSecondaryButton extends StatelessWidget {
   final bool isFullWidth;
 
   const OBSecondaryButton(
-      {@required this.child,
-        @required this.onPressed,
+      {required this.child,
+        required this.onPressed,
         this.isLarge = false,
         this.isFullWidth = false});
 

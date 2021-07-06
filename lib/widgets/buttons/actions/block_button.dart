@@ -21,9 +21,9 @@ class OBBlockButton extends StatefulWidget {
 }
 
 class OBBlockButtonState extends State<OBBlockButton> {
-  UserService _userService;
-  ToastService _toastService;
-  bool _requestInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class OBBlockButtonState extends State<OBBlockButton> {
       stream: widget.user.updateSubject,
       initialData: widget.user,
       builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
-        var user = snapshot.data;
+        var user = snapshot.data!;
         bool isBlocked = user.isBlocked ?? false;
 
         return isBlocked ? _buildUnblockButton() : _buildBlockButton();
@@ -100,8 +100,8 @@ class OBBlockButtonState extends State<OBBlockButton> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;

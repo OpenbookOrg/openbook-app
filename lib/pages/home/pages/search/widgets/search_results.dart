@@ -30,20 +30,20 @@ class OBSearchResults extends StatefulWidget {
   final bool hashtagSearchInProgress;
 
   const OBSearchResults(
-      {Key key,
-      @required this.userResults,
+      {Key? key,
+      required this.userResults,
       this.selectedTab = OBUserSearchResultsTab.users,
-      @required this.communityResults,
-      @required this.hashtagResults,
+      required this.communityResults,
+      required this.hashtagResults,
       this.userSearchInProgress = false,
       this.communitySearchInProgress = false,
       this.hashtagSearchInProgress = false,
-      @required this.searchQuery,
-      @required this.onUserPressed,
-      @required this.onScroll,
-      @required this.onCommunityPressed,
-      @required this.onHashtagPressed,
-      @required this.onTabSelectionChanged})
+      required this.searchQuery,
+      required this.onUserPressed,
+      required this.onScroll,
+      required this.onCommunityPressed,
+      required this.onHashtagPressed,
+      required this.onTabSelectionChanged})
       : super(key: key);
 
   @override
@@ -54,8 +54,8 @@ class OBSearchResults extends StatefulWidget {
 
 class OBSearchResultsState extends State<OBSearchResults>
     with TickerProviderStateMixin {
-  TabController _tabController;
-  LocalizationService _localizationService;
+  late TabController _tabController;
+  late LocalizationService _localizationService;
 
   @override
   void initState() {
@@ -263,7 +263,7 @@ class OBSearchResultsState extends State<OBSearchResults>
 
             return OBHashtagTile(
               hashtag,
-              key: Key(hashtag.name),
+              key: Key(hashtag.name!),
               onHashtagTilePressed: widget.onHashtagPressed,
             );
           }),

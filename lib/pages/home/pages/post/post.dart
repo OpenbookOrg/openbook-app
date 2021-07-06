@@ -22,11 +22,11 @@ class OBPostPage extends StatefulWidget {
 }
 
 class OBPostPageState extends State<OBPostPage> {
-  UserService _userService;
-  ToastService _toastService;
+  late UserService _userService;
+  late ToastService _toastService;
 
-  GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
-  bool _needsBootstrap;
+  late GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -74,7 +74,7 @@ class OBPostPageState extends State<OBPostPage> {
   }
 
   Widget _buildPost(BuildContext context, AsyncSnapshot<Post> snapshot) {
-    Post latestPost = snapshot.data;
+    Post latestPost = snapshot.data!;
 
     return OBPost(
       latestPost,
@@ -94,7 +94,7 @@ class OBPostPageState extends State<OBPostPage> {
   Future<void> _refreshPost() async {
     try {
       // This will trigger the updateSubject of the post
-      await _userService.getPostWithUuid(widget.post.uuid);
+      await _userService.getPostWithUuid(widget.post.uuid!);
     } catch (error) {
       _onError(error);
     }
@@ -105,8 +105,8 @@ class OBPostPageState extends State<OBPostPage> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;

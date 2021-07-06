@@ -1,8 +1,8 @@
 import 'package:Okuna/models/user.dart';
 
 class FollowNotification {
-  final int id;
-  final User follower;
+  final int? id;
+  final User? follower;
 
   FollowNotification({this.id, this.follower});
 
@@ -11,7 +11,7 @@ class FollowNotification {
         id: json['id'], follower: _parseUser(json['follower']));
   }
 
-  static User _parseUser(Map userData) {
+  static User _parseUser(Map<String, dynamic> userData) {
     return User.fromJson(userData);
   }
 }

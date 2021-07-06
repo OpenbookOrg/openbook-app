@@ -85,7 +85,7 @@ class NavigationService {
   var rng = new Random();
 
   Future navigateToUserProfile(
-      {@required User user, @required BuildContext context}) async {
+      {required User user, required BuildContext context}) async {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -99,7 +99,7 @@ class NavigationService {
   }
 
   Future navigateToCommunity(
-      {@required Community community, @required BuildContext context}) async {
+      {required Community community, required BuildContext context}) async {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -113,7 +113,7 @@ class NavigationService {
   }
 
   Future navigateToCommunityStaffPage(
-      {@required BuildContext context, @required Community community}) {
+      {required BuildContext context, required Community community}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -127,7 +127,7 @@ class NavigationService {
   }
 
   Future navigateToCommunityRulesPage(
-      {@required BuildContext context, @required Community community}) {
+      {required BuildContext context, required Community community}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -140,10 +140,10 @@ class NavigationService {
     );
   }
 
-  Future<bool> navigateToConfirmAddCommunityAdministrator(
-      {@required Community community,
-      @required User user,
-      @required BuildContext context}) async {
+  Future<bool?> navigateToConfirmAddCommunityAdministrator(
+      {required Community community,
+      required User user,
+      required BuildContext context}) async {
     return Navigator.push(
       context,
       OBSlideRightRoute(
@@ -158,8 +158,8 @@ class NavigationService {
     );
   }
 
-  Future<bool> navigateToConfirmDeleteAccount(
-      {@required String userPassword, @required BuildContext context}) async {
+  Future<bool?> navigateToConfirmDeleteAccount(
+      {required String userPassword, required BuildContext context}) async {
     return Navigator.push(
       context,
       OBSlideRightRoute(
@@ -172,7 +172,7 @@ class NavigationService {
     );
   }
 
-  Future<bool> navigateToDeleteAccount({@required BuildContext context}) async {
+  Future<Object?> navigateToDeleteAccount({required BuildContext context}) async {
     return Navigator.push(
       context,
       OBSlideRightRoute(
@@ -183,10 +183,10 @@ class NavigationService {
     );
   }
 
-  Future<bool> navigateToConfirmAddCommunityModerator(
-      {@required Community community,
-      @required User user,
-      @required BuildContext context}) async {
+  Future<bool?> navigateToConfirmAddCommunityModerator(
+      {required Community community,
+      required User user,
+      required BuildContext context}) async {
     return Navigator.push(
       context,
       OBSlideRightRoute<bool>(
@@ -201,10 +201,10 @@ class NavigationService {
     );
   }
 
-  Future<bool> navigateToConfirmBanCommunityUser(
-      {@required Community community,
-      @required User user,
-      @required BuildContext context}) async {
+  Future<bool?> navigateToConfirmBanCommunityUser(
+      {required Community community,
+      required User user,
+      required BuildContext context}) async {
     return Navigator.push(
       context,
       OBSlideRightRoute<bool>(
@@ -220,7 +220,7 @@ class NavigationService {
   }
 
   Future<void> navigateToManageCommunity(
-      {@required Community community, @required BuildContext context}) {
+      {required Community community, required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -235,7 +235,7 @@ class NavigationService {
   }
 
   Future<void> navigateToLeaveCommunity(
-      {@required Community community, @required BuildContext context}) {
+      {required Community community, required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -249,7 +249,7 @@ class NavigationService {
   }
 
   Future<void> navigateToDeleteCommunity(
-      {@required Community community, @required BuildContext context}) {
+      {required Community community, required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -263,7 +263,7 @@ class NavigationService {
   }
 
   Future<void> navigateToCommunityAdministrators(
-      {@required Community community, @required BuildContext context}) {
+      {required Community community, required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -278,7 +278,7 @@ class NavigationService {
   }
 
   Future<void> navigateToCommunityMembers(
-      {@required Community community, @required BuildContext context}) {
+      {required Community community, required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -292,7 +292,7 @@ class NavigationService {
   }
 
   Future<void> navigateToCommunityModerators(
-      {@required Community community, @required BuildContext context}) {
+      {required Community community, required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -307,7 +307,7 @@ class NavigationService {
   }
 
   Future<void> navigateToCommunityBannedUsers(
-      {@required Community community, @required BuildContext context}) {
+      {required Community community, required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -322,7 +322,7 @@ class NavigationService {
   }
 
   Future<void> navigateToCommunityClosedPosts(
-      {@required Community community, @required BuildContext context}) {
+      {required Community community, required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -337,7 +337,7 @@ class NavigationService {
   }
 
   Future navigateToCommentPost(
-      {@required Post post, @required BuildContext context}) {
+      {required Post post, required BuildContext context}) {
     return Navigator.push(
         context,
         OBSlideRightRoute<dynamic>(
@@ -352,7 +352,7 @@ class NavigationService {
   }
 
   Future<void> navigateToPostComments(
-      {@required Post post, @required BuildContext context}) {
+      {required Post post, required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -368,11 +368,11 @@ class NavigationService {
   }
 
   Future<void> navigateToPostCommentReplies(
-      {@required Post post,
-      @required PostComment postComment,
-      @required BuildContext context,
-      Function(PostComment) onReplyDeleted,
-      Function(PostComment) onReplyAdded}) {
+      {required Post post,
+      required PostComment postComment,
+      required BuildContext context,
+      Function(PostComment)? onReplyDeleted,
+      Function(PostComment)? onReplyAdded}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -391,7 +391,7 @@ class NavigationService {
   }
 
   Future<void> navigateToPostCommentsLinked(
-      {@required PostComment postComment, @required BuildContext context}) {
+      {required PostComment postComment, required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -408,9 +408,9 @@ class NavigationService {
   }
 
   Future<void> navigateToPostCommentRepliesLinked(
-      {@required PostComment postComment,
-      @required PostComment parentComment,
-      @required BuildContext context}) {
+      {required PostComment postComment,
+      required PostComment parentComment,
+      required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -428,7 +428,7 @@ class NavigationService {
     );
   }
 
-  Future navigateToPost({@required Post post, @required BuildContext context}) {
+  Future navigateToPost({required Post post, required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -439,7 +439,7 @@ class NavigationService {
     );
   }
 
-  Future navigateToSettingsPage({@required BuildContext context}) {
+  Future navigateToSettingsPage({required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -450,7 +450,7 @@ class NavigationService {
     );
   }
 
-  Future navigateToFollowersPage({@required BuildContext context}) {
+  Future navigateToFollowersPage({required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -461,7 +461,7 @@ class NavigationService {
     );
   }
 
-  Future navigateToFollowingPage({@required BuildContext context}) {
+  Future navigateToFollowingPage({required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -472,7 +472,7 @@ class NavigationService {
     );
   }
 
-  Future navigateToAccountSettingsPage({@required BuildContext context}) {
+  Future navigateToAccountSettingsPage({required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -483,7 +483,7 @@ class NavigationService {
     );
   }
 
-  Future navigateToDeveloperSettingsPage({@required BuildContext context}) {
+  Future navigateToDeveloperSettingsPage({required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -494,7 +494,7 @@ class NavigationService {
     );
   }
 
-  Future navigateToApplicationSettingsPage({@required BuildContext context}) {
+  Future navigateToApplicationSettingsPage({required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -506,7 +506,7 @@ class NavigationService {
     );
   }
 
-  Future navigateToAboutPage({@required BuildContext context}) {
+  Future navigateToAboutPage({required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -517,7 +517,7 @@ class NavigationService {
     );
   }
 
-  Future navigateToThemesPage({@required BuildContext context}) {
+  Future navigateToThemesPage({required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -528,7 +528,7 @@ class NavigationService {
     );
   }
 
-  Future navigateToUsefulLinksPage({@required BuildContext context}) {
+  Future navigateToUsefulLinksPage({required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -539,7 +539,7 @@ class NavigationService {
     );
   }
 
-  Future navigateToCommunityGuidelinesPage({@required BuildContext context}) {
+  Future navigateToCommunityGuidelinesPage({required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -550,7 +550,7 @@ class NavigationService {
     );
   }
 
-  Future navigateToPrivacyPolicyPage({@required BuildContext context}) {
+  Future navigateToPrivacyPolicyPage({required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -561,7 +561,7 @@ class NavigationService {
     );
   }
 
-  Future navigateToTermsOfUsePage({@required BuildContext context}) {
+  Future navigateToTermsOfUsePage({required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -573,7 +573,7 @@ class NavigationService {
   }
 
   Future navigateToConfirmRejectGuidelinesPage(
-      {@required BuildContext context}) {
+      {required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -585,9 +585,9 @@ class NavigationService {
     );
   }
 
-  Future<OBNewPostData> navigateToSharePost(
-      {@required BuildContext context,
-      @required OBNewPostData createPostData}) {
+  Future<OBNewPostData?> navigateToSharePost(
+      {required BuildContext context,
+      required OBNewPostData createPostData}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<OBNewPostData>(
@@ -600,9 +600,9 @@ class NavigationService {
     );
   }
 
-  Future<OBNewPostData> navigateToSharePostWithCircles(
-      {@required BuildContext context,
-      @required OBNewPostData createPostData}) {
+  Future<OBNewPostData?> navigateToSharePostWithCircles(
+      {required BuildContext context,
+      required OBNewPostData createPostData}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<OBNewPostData>(
@@ -616,9 +616,9 @@ class NavigationService {
     );
   }
 
-  Future<OBNewPostData> navigateToSharePostWithCommunity(
-      {@required BuildContext context,
-      @required OBNewPostData createPostData}) {
+  Future<OBNewPostData?> navigateToSharePostWithCommunity(
+      {required BuildContext context,
+      required OBNewPostData createPostData}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<OBNewPostData>(
@@ -632,7 +632,7 @@ class NavigationService {
     );
   }
 
-  Future navigateToFollowsLists({@required BuildContext context}) {
+  Future navigateToFollowsLists({required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -643,7 +643,7 @@ class NavigationService {
     );
   }
 
-  Future navigateToUserInvites({@required BuildContext context}) {
+  Future navigateToUserInvites({required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -655,7 +655,7 @@ class NavigationService {
   }
 
   Future navigateToShareInvite(
-      {@required BuildContext context, @required UserInvite userInvite}) {
+      {required BuildContext context, required UserInvite userInvite}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -668,7 +668,7 @@ class NavigationService {
   }
 
   Future navigateToInviteDetailPage(
-      {@required BuildContext context, @required UserInvite userInvite}) {
+      {required BuildContext context, required UserInvite userInvite}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -680,7 +680,7 @@ class NavigationService {
     );
   }
 
-  Future navigateToConnectionsCircles({@required BuildContext context}) {
+  Future navigateToConnectionsCircles({required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -692,7 +692,7 @@ class NavigationService {
   }
 
   Future navigateToConnectionsCircle(
-      {@required Circle connectionsCircle, @required BuildContext context}) {
+      {required Circle connectionsCircle, required BuildContext context}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -704,8 +704,8 @@ class NavigationService {
   }
 
   Future navigateToFollowsList({
-    @required FollowsList followsList,
-    @required BuildContext context,
+    required FollowsList followsList,
+    required BuildContext context,
   }) {
     return Navigator.push(
       context,
@@ -718,10 +718,10 @@ class NavigationService {
   }
 
   Future<void> navigateToPostReactions(
-      {@required Post post,
-      @required List<ReactionsEmojiCount> reactionsEmojiCounts,
-      @required BuildContext context,
-      Emoji reactionEmoji}) {
+      {required Post post,
+      required List<ReactionsEmojiCount?> reactionsEmojiCounts,
+      required BuildContext context,
+      Emoji? reactionEmoji}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -737,11 +737,11 @@ class NavigationService {
   }
 
   Future<void> navigateToPostCommentReactions(
-      {@required PostComment postComment,
-      @required Post post,
-      @required List<ReactionsEmojiCount> reactionsEmojiCounts,
-      @required BuildContext context,
-      Emoji reactionEmoji}) {
+      {required PostComment postComment,
+      required Post post,
+      required List<ReactionsEmojiCount?> reactionsEmojiCounts,
+      required BuildContext context,
+      Emoji? reactionEmoji}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -759,7 +759,7 @@ class NavigationService {
   }
 
   Future<void> navigateToNotificationsSettings({
-    @required BuildContext context,
+    required BuildContext context,
   }) {
     return Navigator.push(
       context,
@@ -773,7 +773,7 @@ class NavigationService {
   }
 
   Future<void> navigateToUserLanguageSettings({
-    @required BuildContext context,
+    required BuildContext context,
   }) {
     return Navigator.push(
       context,
@@ -787,7 +787,7 @@ class NavigationService {
   }
 
   Future<void> navigateToBlockedUsers({
-    @required BuildContext context,
+    required BuildContext context,
   }) {
     return Navigator.push(
       context,
@@ -800,7 +800,7 @@ class NavigationService {
   }
 
   Future<void> navigateToTopPostsExcludedCommunities({
-    @required BuildContext context,
+    required BuildContext context,
   }) {
     return Navigator.push(
       context,
@@ -813,7 +813,7 @@ class NavigationService {
   }
 
   Future<void> navigateToTopPostsSettings({
-    @required BuildContext context,
+    required BuildContext context,
   }) {
     return Navigator.push(
       context,
@@ -826,7 +826,7 @@ class NavigationService {
   }
 
   Future<void> navigateToConfirmBlockUser(
-      {@required BuildContext context, @required User user}) {
+      {required BuildContext context, required User user}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -839,14 +839,14 @@ class NavigationService {
     );
   }
 
-  Future<bool> navigateToConfirmReportObject(
-      {@required BuildContext context,
-      @required dynamic object,
-      Map<String, dynamic> extraData,
-      @required ModerationCategory category}) {
+  Future<bool?> navigateToConfirmReportObject(
+      {required BuildContext context,
+      required dynamic object,
+      Map<String, dynamic>? extraData,
+      required ModerationCategory category}) {
     return Navigator.push(
       context,
-      OBSlideRightRoute(
+      OBSlideRightRoute<bool>(
           slidableKey:
               _getKeyRandomisedWithWord('confirmReportObjectPageRoute'),
           builder: (BuildContext context) {
@@ -859,11 +859,11 @@ class NavigationService {
     );
   }
 
-  Future<void> navigateToReportObject(
-      {@required BuildContext context,
-      @required dynamic object,
-      Map<String, dynamic> extraData,
-      ValueChanged<dynamic> onObjectReported}) async {
+  Future<dynamic> navigateToReportObject(
+      {required BuildContext context,
+      required dynamic object,
+      Map<String, dynamic>? extraData,
+      ValueChanged<dynamic>? onObjectReported}) async {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -878,8 +878,8 @@ class NavigationService {
     );
   }
 
-  Future<void> navigateToCommunityModeratedObjects(
-      {@required BuildContext context, @required Community community}) async {
+  Future<dynamic> navigateToCommunityModeratedObjects(
+      {required BuildContext context, required Community community}) async {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -893,8 +893,8 @@ class NavigationService {
     );
   }
 
-  Future<void> navigateToGlobalModeratedObjects(
-      {@required BuildContext context}) async {
+  Future<dynamic> navigateToGlobalModeratedObjects(
+      {required BuildContext context}) async {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -906,9 +906,9 @@ class NavigationService {
     );
   }
 
-  Future<void> navigateToModeratedObjectReports(
-      {@required BuildContext context,
-      @required ModeratedObject moderatedObject}) async {
+  Future<dynamic> navigateToModeratedObjectReports(
+      {required BuildContext context,
+      required ModeratedObject moderatedObject}) async {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -921,9 +921,9 @@ class NavigationService {
     );
   }
 
-  Future<void> navigateToModeratedObjectGlobalReview(
-      {@required BuildContext context,
-      @required ModeratedObject moderatedObject}) async {
+  Future<dynamic> navigateToModeratedObjectGlobalReview(
+      {required BuildContext context,
+      required ModeratedObject moderatedObject}) async {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -937,10 +937,10 @@ class NavigationService {
     );
   }
 
-  Future<void> navigateToModeratedObjectCommunityReview(
-      {@required BuildContext context,
-      @required Community community,
-      @required ModeratedObject moderatedObject}) async {
+  Future<dynamic> navigateToModeratedObjectCommunityReview(
+      {required BuildContext context,
+      required Community? community,
+      required ModeratedObject moderatedObject}) async {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -948,15 +948,15 @@ class NavigationService {
               'moderatedObjectCommunityReviewPageRoute'),
           builder: (BuildContext context) {
             return OBModeratedObjectCommunityReviewPage(
-              community: community,
+              community: community!,
               moderatedObject: moderatedObject,
             );
           }),
     );
   }
 
-  Future<void> navigateToMyModerationTasksPage(
-      {@required BuildContext context}) async {
+  Future<dynamic> navigateToMyModerationTasksPage(
+      {required BuildContext context}) async {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -967,8 +967,8 @@ class NavigationService {
     );
   }
 
-  Future<void> navigateToMyModerationPenaltiesPage(
-      {@required BuildContext context}) async {
+  Future<dynamic> navigateToMyModerationPenaltiesPage(
+      {required BuildContext context}) async {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -981,10 +981,10 @@ class NavigationService {
   }
 
   Future<void> navigateToBlankPageWithWidget(
-      {@required BuildContext context,
-      @required String navBarTitle,
-      @required Key key,
-      @required Widget widget}) {
+      {required BuildContext context,
+      required String navBarTitle,
+      required Key key,
+      required Widget widget}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -1004,24 +1004,24 @@ class NavigationService {
   }
 
   Future navigateToHashtag(
-      {@required Hashtag hashtag,
-      String rawHashtagName,
-      @required BuildContext context}) async {
+      {required Hashtag hashtag,
+      String? rawHashtagName,
+      required BuildContext context}) async {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
           slidableKey: _getKeyRandomisedWithWord('hashtagRoute'),
           builder: (BuildContext context) {
             return OBHashtagPage(
-                hashtag: hashtag, rawHashtagName: rawHashtagName);
+                hashtag: hashtag, rawHashtagName: rawHashtagName ?? '');
           }),
     );
   }
 
   Future<void> navigateToProfilePostsExcludedCommunities(
-      {@required BuildContext context,
-      ValueChanged<Community> onExcludedCommunityRemoved,
-      ValueChanged<List<Community>> onExcludedCommunitiesAdded}) {
+      {required BuildContext context,
+      ValueChanged<Community>? onExcludedCommunityRemoved,
+      ValueChanged<List<Community>>? onExcludedCommunitiesAdded}) {
     return Navigator.push(
       context,
       OBSlideRightRoute<dynamic>(
@@ -1035,12 +1035,12 @@ class NavigationService {
     );
   }
 
-  Future<void> navigateToManageProfile({
-    @required User user,
-    @required BuildContext context,
-    VoidCallback onUserProfileUpdated,
-    ValueChanged<Community> onExcludedCommunityRemoved,
-    ValueChanged<List<Community>> onExcludedCommunitiesAdded,
+  Future<dynamic> navigateToManageProfile({
+    required User user,
+    required BuildContext context,
+    VoidCallback? onUserProfileUpdated,
+    ValueChanged<Community>? onExcludedCommunityRemoved,
+    ValueChanged<List<Community>>? onExcludedCommunitiesAdded,
   }) async {
     return Navigator.push(
       context,
@@ -1057,8 +1057,8 @@ class NavigationService {
     );
   }
 
-  Future<void> navigateToFollowRequests({
-    @required BuildContext context,
+  Future<dynamic> navigateToFollowRequests({
+    required BuildContext context,
   }) async {
     return Navigator.push(
       context,

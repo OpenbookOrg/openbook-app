@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class OBUserBadge extends StatelessWidget {
-  final Badge badge;
+  final Badge? badge;
   final OBUserBadgeSize size;
   static double badgeSizeLarge = 45;
   static double badgeSizeMedium = 25;
@@ -20,7 +20,7 @@ class OBUserBadge extends StatelessWidget {
   static double iconSizeExtraSmall = 8;
 
 
-  const OBUserBadge({Key key, this.badge, this.size = OBUserBadgeSize.medium}) : super(key: key);
+  const OBUserBadge({Key? key, this.badge, this.size = OBUserBadgeSize.medium}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,19 +34,19 @@ class OBUserBadge extends StatelessWidget {
         initialData: themeService.getActiveTheme(),
         builder: (BuildContext context, AsyncSnapshot<OBTheme> snapshot) {
 
-          switch(badge.getKeyword()) {
+          switch(badge!.getKeyword()) {
             case BadgeKeyword.verified:
-              return _getVerifiedBadge(badge); break;
+              return _getVerifiedBadge(badge!); break;
             case BadgeKeyword.founder:
-              return _getFounderBadge(badge); break;
+              return _getFounderBadge(badge!); break;
             case BadgeKeyword.golden_founder:
-              return _getGoldenFounderBadge(badge); break;
+              return _getGoldenFounderBadge(badge!); break;
             case BadgeKeyword.diamond_founder:
-              return _getDiamondFounderBadge(badge); break;
+              return _getDiamondFounderBadge(badge!); break;
             case BadgeKeyword.super_founder:
-              return _getSuperFounderBadge(badge); break;
+              return _getSuperFounderBadge(badge!); break;
             case BadgeKeyword.angel:
-              return _getAngelBadge(badge); break;
+              return _getAngelBadge(badge!); break;
             default:
               return const SizedBox(); break;
           }
@@ -66,9 +66,9 @@ class OBUserBadge extends StatelessWidget {
             end: Alignment.bottomRight,
             stops: [0.2, 0.6, 0.8],
             colors: [
-              Colors.blue[300],
-              Colors.blueAccent[200],
-              Colors.blue[800],
+              Colors.blue[300]!,
+              Colors.blueAccent[200]!,
+              Colors.blue[800]!,
             ],
           ),
           borderRadius: BorderRadius.circular(50)
@@ -87,7 +87,7 @@ class OBUserBadge extends StatelessWidget {
           children: <Widget>[
             Shimmer.fromColors(
               baseColor: Colors.pink,
-              highlightColor: Colors.pinkAccent[100],
+              highlightColor: Colors.pinkAccent[100]!,
               child: Container(
                 margin: EdgeInsets.only(left: 4.0, right: 4.0),
                 width: badgeSize,
@@ -124,11 +124,11 @@ class OBUserBadge extends StatelessWidget {
             end: Alignment.bottomRight,
             stops: [0.1, 0.2, 0.5, 0.8, 0.9],
             colors: [
-              Colors.green[300],
-              Colors.lightGreenAccent[700],
-              Colors.yellow[400],
-              Colors.yellow[700],
-              Colors.orange[400],
+              Colors.green[300]!,
+              Colors.lightGreenAccent[700]!,
+              Colors.yellow[400]!,
+              Colors.yellow[700]!,
+              Colors.orange[400]!,
             ]
           ),
           borderRadius: BorderRadius.circular(50)
@@ -152,9 +152,9 @@ class OBUserBadge extends StatelessWidget {
             end: Alignment.bottomRight,
             stops: [0.1, 0.3, 0.8],
             colors: [
-              Colors.yellowAccent[400],
-              Colors.yellow[700],
-              Colors.yellow[800],
+              Colors.yellowAccent[400]!,
+              Colors.yellow[700]!,
+              Colors.yellow[800]!,
             ],
           ),
           borderRadius: BorderRadius.circular(50)
@@ -178,9 +178,9 @@ class OBUserBadge extends StatelessWidget {
             end: Alignment.bottomRight,
             stops: [0.2, 0.6, 0.8],
             colors: [
-              Colors.red[100],
-              Colors.redAccent[100],
-              Colors.red[300],
+              Colors.red[100]!,
+              Colors.redAccent[100]!,
+              Colors.red[300]!,
             ],
           ),
           borderRadius: BorderRadius.circular(50)
@@ -204,9 +204,9 @@ class OBUserBadge extends StatelessWidget {
             end: Alignment.bottomRight,
             stops: [0.1, 0.5, 0.8],
             colors: [
-              Colors.deepPurple[200],
-              Colors.deepPurple[100],
-              Colors.blue[200],
+              Colors.deepPurple[200]!,
+              Colors.deepPurple[100]!,
+              Colors.blue[200]!,
             ],
           ),
           borderRadius: BorderRadius.circular(50)

@@ -5,10 +5,10 @@ import 'package:Okuna/services/string_template.dart';
 import 'package:meta/meta.dart';
 
 class PostsApiService {
-  HttpieService _httpService;
-  StringTemplateService _stringTemplateService;
+  late HttpieService _httpService;
+  late StringTemplateService _stringTemplateService;
 
-  String apiURL;
+  late String apiURL;
 
   static const GET_POSTS_PATH = 'api/posts/';
   static const GET_TOP_POSTS_PATH = 'api/posts/top/';
@@ -98,10 +98,10 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> getTopPosts(
-      {int maxId,
-      int minId,
-      int count,
-      bool excludeJoinedCommunities,
+      {int? maxId,
+      int? minId,
+      int? count,
+      bool? excludeJoinedCommunities,
       bool authenticatedRequest = true}) {
     Map<String, dynamic> queryParams = {};
     if (count != null) queryParams['count'] = count;
@@ -119,7 +119,7 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> getTrendingPosts(
-      {int maxId, int minId, int count, bool authenticatedRequest = true}) {
+      {int? maxId, int? minId, int? count, bool authenticatedRequest = true}) {
     Map<String, dynamic> queryParams = {};
     if (count != null) queryParams['count'] = count;
 
@@ -133,11 +133,11 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> getTimelinePosts(
-      {List<int> listIds,
-      List<int> circleIds,
-      int maxId,
-      int count,
-      String username,
+      {List<int>? listIds,
+      List<int>? circleIds,
+      int? maxId,
+      int? count,
+      String? username,
       bool authenticatedRequest = true}) {
     Map<String, dynamic> queryParams = {};
 
@@ -158,7 +158,7 @@ class PostsApiService {
   }
 
   Future<HttpieStreamedResponse> createPost(
-      {String text, List<int> circleIds, bool isDraft = false}) {
+      {String? text, List<int>? circleIds, bool isDraft = false}) {
     Map<String, dynamic> body = {};
 
     if (text != null && text.length > 0) {
@@ -178,7 +178,7 @@ class PostsApiService {
   }
 
   Future<HttpieStreamedResponse> addMediaToPost(
-      {@required File file, @required String postUuid}) {
+      {required File file, required String postUuid}) {
     Map<String, dynamic> body = {'file': file};
 
     String path = _makeAddPostMediaPath(postUuid: postUuid);
@@ -187,13 +187,13 @@ class PostsApiService {
         body: body, appendAuthorizationToken: true);
   }
 
-  Future<HttpieResponse> getPostMedia({@required String postUuid}) {
+  Future<HttpieResponse> getPostMedia({required String postUuid}) {
     String path = _makeGetPostMediaPath(postUuid: postUuid);
 
     return _httpService.get(_makeApiUrl(path), appendAuthorizationToken: true);
   }
 
-  Future<HttpieResponse> publishPost({@required String postUuid}) {
+  Future<HttpieResponse> publishPost({required String postUuid}) {
     String path = _makePublishPostPath(postUuid: postUuid);
 
     return _httpService.post(_makeApiUrl(path), appendAuthorizationToken: true);
@@ -207,7 +207,7 @@ class PostsApiService {
   }
 
   Future<HttpieStreamedResponse> editPost(
-      {@required String postUuid, String text}) {
+      {required String postUuid, String? text}) {
     Map<String, dynamic> body = {};
 
     body['post_uuid'] = postUuid;
@@ -236,7 +236,7 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> getCommentsForPostWithUuid(String postUuid,
-      {int countMax, int maxId, int countMin, int minId, String sort}) {
+      {int? countMax, int? maxId, int? countMin, int? minId, String? sort}) {
     Map<String, dynamic> queryParams = {};
     if (countMax != null) queryParams['count_max'] = countMax;
     if (countMin != null) queryParams['count_min'] = countMin;
@@ -253,7 +253,7 @@ class PostsApiService {
 
   Future<HttpieResponse> getRepliesForCommentWithIdForPostWithUuid(
       String postUuid, int postCommentId,
-      {int countMax, int maxId, int countMin, int minId, String sort}) {
+      {int? countMax, int? maxId, int? countMin, int? minId, String? sort}) {
     Map<String, dynamic> queryParams = {};
     if (countMax != null) queryParams['count_max'] = countMax;
     if (countMin != null) queryParams['count_min'] = countMin;
@@ -269,7 +269,7 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> commentPost(
-      {@required String postUuid, @required String text}) {
+      {required String postUuid, required String text}) {
     Map<String, dynamic> body = {'text': text};
 
     String path = _makeCommentPostPath(postUuid);
@@ -278,9 +278,9 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> editPostComment(
-      {@required String postUuid,
-      @required int postCommentId,
-      @required String text}) {
+      {required String postUuid,
+      required int postCommentId,
+      required String text}) {
     Map<String, dynamic> body = {'text': text};
 
     String path = _makeEditCommentPostPath(postUuid, postCommentId);
@@ -289,15 +289,15 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> getPostComment(
-      {@required String postUuid, @required int postCommentId}) {
+      {required String postUuid, required int postCommentId}) {
     String path = _makeGetCommentPostPath(postUuid, postCommentId);
     return _httpService.get(_makeApiUrl(path), appendAuthorizationToken: true);
   }
 
   Future<HttpieResponse> replyPostComment(
-      {@required String postUuid,
-      @required int postCommentId,
-      @required String text}) {
+      {required String postUuid,
+      required int postCommentId,
+      required String text}) {
     Map<String, dynamic> body = {'text': text};
 
     String path = _makeReplyCommentPostPath(postUuid, postCommentId);
@@ -306,7 +306,7 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> deletePostComment(
-      {@required postCommentId, @required postUuid}) {
+      {required postCommentId, required postUuid}) {
     String path = _makeDeletePostCommentPath(
         postCommentId: postCommentId, postUuid: postUuid);
 
@@ -315,7 +315,7 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> getReactionsForPostWithUuid(String postUuid,
-      {int count, int maxId, int emojiId}) {
+      {int? count, int? maxId, int? emojiId}) {
     Map<String, dynamic> queryParams = {};
     if (count != null) queryParams['count'] = count;
 
@@ -337,7 +337,7 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> reactToPost(
-      {@required String postUuid, @required int emojiId}) {
+      {required String postUuid, required int emojiId}) {
     Map<String, dynamic> body = {'emoji_id': emojiId};
 
     String path = _makeReactToPostPath(postUuid);
@@ -346,7 +346,7 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> deletePostReaction(
-      {@required postReactionId, @required postUuid}) {
+      {required postReactionId, required postUuid}) {
     String path = _makeDeletePostReactionPath(
         postReactionId: postReactionId, postUuid: postUuid);
 
@@ -355,11 +355,11 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> getReactionsForPostComment(
-      {@required int postCommentId,
-      @required String postUuid,
-      int count,
-      int maxId,
-      int emojiId}) {
+      {required int postCommentId,
+      required String postUuid,
+      int? count,
+      int? maxId,
+      int? emojiId}) {
     Map<String, dynamic> queryParams = {};
     if (count != null) queryParams['count'] = count;
 
@@ -375,8 +375,8 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> getReactionsEmojiCountForPostComment({
-    @required int postCommentId,
-    @required String postUuid,
+    required int postCommentId,
+    required String postUuid,
   }) {
     String path = _makeGetPostCommentReactionsEmojiCountPath(
         postCommentId: postCommentId, postUuid: postUuid);
@@ -385,9 +385,9 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> reactToPostComment(
-      {@required int postCommentId,
-      @required String postUuid,
-      @required int emojiId}) {
+      {required int postCommentId,
+      required String postUuid,
+      required int emojiId}) {
     Map<String, dynamic> body = {'emoji_id': emojiId};
 
     String path = _makeReactToPostCommentPath(
@@ -398,9 +398,9 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> deletePostCommentReaction({
-    @required postCommentReactionId,
-    @required int postCommentId,
-    @required String postUuid,
+    required postCommentReactionId,
+    required int postCommentId,
+    required String postUuid,
   }) {
     String path = _makeDeletePostCommentReactionPath(
       postCommentReactionId: postCommentReactionId,
@@ -413,8 +413,8 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> mutePostComment({
-    @required int postCommentId,
-    @required String postUuid,
+    required int postCommentId,
+    required String postUuid,
   }) {
     String path = _makeMutePostCommentPath(
         postCommentId: postCommentId, postUuid: postUuid);
@@ -422,8 +422,8 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> unmutePostComment({
-    @required int postCommentId,
-    @required String postUuid,
+    required int postCommentId,
+    required String postUuid,
   }) {
     String path = _makeUnmutePostCommentPath(
         postCommentId: postCommentId, postUuid: postUuid);
@@ -466,10 +466,10 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> reportPostComment(
-      {@required int postCommentId,
-      @required String postUuid,
-      @required int moderationCategoryId,
-      String description}) {
+      {required int postCommentId,
+      required String postUuid,
+      required int moderationCategoryId,
+      String? description}) {
     String path = _makeReportPostCommentPath(
         postCommentId: postCommentId, postUuid: postUuid);
 
@@ -486,9 +486,9 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> reportPost(
-      {@required String postUuid,
-      @required int moderationCategoryId,
-      String description}) {
+      {required String postUuid,
+      required int moderationCategoryId,
+      String? description}) {
     String path = _makeReportPostPath(postUuid: postUuid);
 
     Map<String, dynamic> body = {
@@ -503,21 +503,21 @@ class PostsApiService {
         body: body, appendAuthorizationToken: true);
   }
 
-  Future<HttpieResponse> translatePost({@required String postUuid}) {
+  Future<HttpieResponse> translatePost({required String postUuid}) {
     String path = _makeTranslatePostPath(postUuid: postUuid);
 
     return _httpService.post(_makeApiUrl(path), appendAuthorizationToken: true);
   }
 
   Future<HttpieResponse> getPreviewDataForPostUuid(
-      {@required String postUuid}) {
+      {required String postUuid}) {
     String path = _makePreviewPostDataPath(postUuid: postUuid);
 
     return _httpService.get(_makeApiUrl(path), appendAuthorizationToken: true);
   }
 
   Future<HttpieResponse> translatePostComment(
-      {@required String postUuid, @required int postCommentId}) {
+      {required String postUuid, required int postCommentId}) {
     String path = _makeTranslatePostCommentPath(
         postUuid: postUuid, postCommentId: postCommentId);
 
@@ -525,7 +525,7 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> getPostParticipants(
-      {@required String postUuid, int count}) {
+      {required String postUuid, int? count}) {
     String path = _makeGetPostParticipantsPath(postUuid);
 
     Map<String, dynamic> queryParams = {};
@@ -536,7 +536,7 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> searchPostParticipants(
-      {@required String postUuid, @required String query, int count}) {
+      {required String postUuid, required String query, int? count}) {
     String path = _makeSearchPostParticipantsPath(postUuid);
 
     Map<String, dynamic> body = {'query': query};
@@ -548,14 +548,14 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> getTopPostsExcludedCommunities(
-      {bool authenticatedRequest = true, int offset, int count}) {
+      {bool authenticatedRequest = true, int? offset, int? count}) {
     return _httpService.get('$apiURL$EXCLUDED_TOP_POSTS_COMMUNITIES_PATH',
         appendAuthorizationToken: authenticatedRequest,
         queryParameters: {'offset': offset, 'count': count});
   }
 
   Future<HttpieResponse> searchTopPostsExcludedCommunities(
-      {@required String query, int count}) {
+      {required String query, int? count}) {
     Map<String, dynamic> queryParams = {'query': query};
 
     if (count != null) queryParams['count'] = count;
@@ -565,14 +565,14 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> excludeCommunityFromTopPosts(
-      {@required String communityName}) {
+      {required String communityName}) {
     return _httpService.putJSON('$apiURL$EXCLUDED_TOP_POSTS_COMMUNITIES_PATH',
         body: {'community_name': communityName},
         appendAuthorizationToken: true);
   }
 
   Future<HttpieResponse> undoExcludeCommunityFromTopPosts(
-      {@required String communityName}) {
+      {required String communityName}) {
     String path = _makeExcludedCommunityFromTopPostsPath(communityName);
     return _httpService.delete(_makeApiUrl(path),
         appendAuthorizationToken: true);
@@ -584,14 +584,14 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> getProfilePostsExcludedCommunities(
-      {bool authenticatedRequest = true, int offset, int count}) {
+      {bool authenticatedRequest = true, int? offset, int? count}) {
     return _httpService.get('$apiURL$EXCLUDED_PROFILE_POSTS_COMMUNITIES_PATH',
         appendAuthorizationToken: authenticatedRequest,
         queryParameters: {'offset': offset, 'count': count});
   }
 
   Future<HttpieResponse> searchProfilePostsExcludedCommunities(
-      {@required String query, int count}) {
+      {required String query, int? count}) {
     Map<String, dynamic> queryParams = {'query': query};
 
     if (count != null) queryParams['count'] = count;
@@ -601,7 +601,7 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> excludeCommunityFromProfilePosts(
-      {@required String communityName}) {
+      {required String communityName}) {
     return _httpService.putJSON(
         '$apiURL$EXCLUDED_PROFILE_POSTS_COMMUNITIES_PATH',
         body: {'community_name': communityName},
@@ -609,14 +609,14 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> undoExcludeCommunityFromProfilePosts(
-      {@required String communityName}) {
+      {required String communityName}) {
     String path = _makeExcludedCommunityFromProfilePostsPath(communityName);
     return _httpService.delete(_makeApiUrl(path),
         appendAuthorizationToken: true);
   }
 
   Future<HttpieResponse> previewLink(
-      {@required String link}) {
+      {required String link}) {
     Map<String, dynamic> body = {'link': link};
 
     return _httpService.postJSON(_makeApiUrl(PREVIEW_LINK_PATH),
@@ -624,7 +624,7 @@ class PostsApiService {
   }
 
   Future<HttpieResponse> linkIsPreviewable(
-      {@required String link}) {
+      {required String link}) {
     Map<String, dynamic> body = {'link': link};
 
     return _httpService.postJSON(_makeApiUrl(LINK_IS_PREVIEWABLE_PATH),
@@ -650,16 +650,16 @@ class PostsApiService {
   }
 
   String _makeMutePostCommentPath({
-    @required int postCommentId,
-    @required String postUuid,
+    required int postCommentId,
+    required String postUuid,
   }) {
     return _stringTemplateService.parse(MUTE_POST_COMMENT_PATH,
         {'postCommentId': postCommentId, 'postUuid': postUuid});
   }
 
   String _makeUnmutePostCommentPath({
-    @required int postCommentId,
-    @required String postUuid,
+    required int postCommentId,
+    required String postUuid,
   }) {
     return _stringTemplateService.parse(UNMUTE_POST_COMMENT_PATH,
         {'postCommentId': postCommentId, 'postUuid': postUuid});
@@ -715,7 +715,7 @@ class PostsApiService {
   }
 
   String _makeDeletePostCommentPath(
-      {@required postCommentId, @required postUuid}) {
+      {required postCommentId, required postUuid}) {
     return _stringTemplateService.parse(DELETE_POST_COMMENT_PATH,
         {'postCommentId': postCommentId, 'postUuid': postUuid});
   }
@@ -741,21 +741,21 @@ class PostsApiService {
   }
 
   String _makeReactToPostCommentPath(
-      {@required int postCommentId, @required String postUuid}) {
+      {required int postCommentId, required String postUuid}) {
     return _stringTemplateService.parse(REACT_TO_POST_COMMENT_PATH,
         {'postUuid': postUuid, 'postCommentId': postCommentId});
   }
 
   String _makeGetPostCommentReactionsPath(
-      {@required int postCommentId, @required String postUuid}) {
+      {required int postCommentId, required String postUuid}) {
     return _stringTemplateService.parse(GET_POST_COMMENT_REACTIONS_PATH,
         {'postCommentId': postCommentId, 'postUuid': postUuid});
   }
 
   String _makeDeletePostCommentReactionPath(
-      {@required int postCommentReactionId,
-      @required String postUuid,
-      @required int postCommentId}) {
+      {required int postCommentReactionId,
+      required String postUuid,
+      required int postCommentId}) {
     return _stringTemplateService.parse(DELETE_POST_COMMENT_REACTION_PATH, {
       'postCommentReactionId': postCommentReactionId,
       'postUuid': postUuid,
@@ -764,14 +764,14 @@ class PostsApiService {
   }
 
   String _makeGetPostCommentReactionsEmojiCountPath(
-      {@required postUuid, @required int postCommentId}) {
+      {required postUuid, required int postCommentId}) {
     return _stringTemplateService.parse(
         GET_POST_COMMENT_REACTIONS_EMOJI_COUNT_PATH,
         {'postUuid': postUuid, 'postCommentId': postCommentId});
   }
 
   String _makeDeletePostReactionPath(
-      {@required postReactionId, @required postUuid}) {
+      {required postReactionId, required postUuid}) {
     return _stringTemplateService.parse(DELETE_POST_REACTION_PATH,
         {'postReactionId': postReactionId, 'postUuid': postUuid});
   }
@@ -782,48 +782,48 @@ class PostsApiService {
   }
 
   String _makeReportPostCommentPath(
-      {@required int postCommentId, @required String postUuid}) {
+      {required int postCommentId, required String postUuid}) {
     return _stringTemplateService.parse(REPORT_POST_COMMENT_PATH,
         {'postCommentId': postCommentId, 'postUuid': postUuid});
   }
 
-  String _makeReportPostPath({@required postUuid}) {
+  String _makeReportPostPath({required postUuid}) {
     return _stringTemplateService
         .parse(REPORT_POST_PATH, {'postUuid': postUuid});
   }
 
-  String _makeTranslatePostPath({@required postUuid}) {
+  String _makeTranslatePostPath({required postUuid}) {
     return _stringTemplateService
         .parse(TRANSLATE_POST_PATH, {'postUuid': postUuid});
   }
 
-  String _makePreviewPostDataPath({@required postUuid}) {
+  String _makePreviewPostDataPath({required postUuid}) {
     return _stringTemplateService
         .parse(PREVIEW_POST_DATA_PATH, {'postUuid': postUuid});
   }
 
-  String _makeAddPostMediaPath({@required postUuid}) {
+  String _makeAddPostMediaPath({required postUuid}) {
     return _stringTemplateService
         .parse(POST_MEDIA_PATH, {'postUuid': postUuid});
   }
 
-  String _makeGetPostMediaPath({@required postUuid}) {
+  String _makeGetPostMediaPath({required postUuid}) {
     return _stringTemplateService
         .parse(POST_MEDIA_PATH, {'postUuid': postUuid});
   }
 
-  String _makePublishPostPath({@required postUuid}) {
+  String _makePublishPostPath({required postUuid}) {
     return _stringTemplateService
         .parse(PUBLISH_POST_PATH, {'postUuid': postUuid});
   }
 
-  String _makeGetPostStatusPath({@required postUuid}) {
+  String _makeGetPostStatusPath({required postUuid}) {
     return _stringTemplateService
         .parse(GET_POST_STATUS_PATH, {'postUuid': postUuid});
   }
 
   String _makeTranslatePostCommentPath(
-      {@required postUuid, @required postCommentId}) {
+      {required postUuid, required postCommentId}) {
     return _stringTemplateService.parse(TRANSLATE_POST_COMMENT_PATH,
         {'postUuid': postUuid, 'postCommentId': postCommentId});
   }

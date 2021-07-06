@@ -23,11 +23,11 @@ class OBFollowRequestsPage extends StatefulWidget {
 
 class OBFollowRequestsPageState
     extends State<OBFollowRequestsPage> {
-  UserService _userService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
 
-  OBHttpListController _httpListController;
-  bool _needsBootstrap;
+  late OBHttpListController _httpListController;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -64,10 +64,13 @@ class OBFollowRequestsPageState
 
   Widget _buildFollowRequestListItem(BuildContext context, FollowRequest followRequest) {
     return StreamBuilder(
-      stream: followRequest.creator.updateSubject,
+      stream: followRequest.creator?.updateSubject,
       builder: (BuildContext context, AsyncSnapshot<User> snapshot){
         // In case the request was approved elsewhere, make sure we dont render it
-        if((snapshot.data != null && snapshot.data.isFollowed != null && snapshot.data.isFollowed) || (snapshot.data != null && snapshot.data.isPendingFollowRequestApproval != null && !snapshot.data.isPendingFollowRequestApproval)) return const SizedBox();
+        if (
+          (snapshot.data != null && snapshot.data!.isFollowed != null && snapshot.data!.isFollowed!)
+          || (snapshot.data != null && snapshot.data!.isPendingFollowRequestApproval != null && !snapshot.data!.isPendingFollowRequestApproval!)
+        ) return const SizedBox();
 
         return OBReceivedFollowRequestTile(
           followRequest,
@@ -85,7 +88,7 @@ class OBFollowRequestsPageState
   Future<List<FollowRequest>> _refreshFollowRequests() async {
     FollowRequestList followRequests =
         await _userService.getReceivedFollowRequests();
-    return followRequests.followRequests;
+    return followRequests.followRequests ?? [];
   }
 
   Future<List<FollowRequest>> _loadMoreFollowRequests(
@@ -98,7 +101,7 @@ class OBFollowRequestsPageState
       count: 20,
     ))
             .followRequests;
-    return moreFollowRequests;
+    return moreFollowRequests ?? [];
   }
 
 }

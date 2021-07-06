@@ -3,12 +3,12 @@ import 'package:Okuna/provider.dart';
 import 'package:flutter/material.dart';
 
 class OBHighlightedColorContainer extends StatelessWidget {
-  final Widget child;
-  final BoxDecoration decoration;
-  final MainAxisSize mainAxisSize;
+  final Widget? child;
+  final BoxDecoration? decoration;
+  final MainAxisSize? mainAxisSize;
 
   const OBHighlightedColorContainer(
-      {Key key,
+      {Key? key,
       this.child,
       this.decoration,
       this.mainAxisSize = MainAxisSize.max})
@@ -27,7 +27,7 @@ class OBHighlightedColorContainer extends StatelessWidget {
           var theme = snapshot.data;
 
           var primaryColor =
-              themeValueParserService.parseColor(theme.primaryColor);
+              themeValueParserService.parseColor(theme!.primaryColor);
           final bool isDarkPrimaryColor =
               primaryColor.computeLuminance() < 0.179;
 
@@ -52,7 +52,7 @@ class OBHighlightedColorContainer extends StatelessWidget {
           }
 
           return Column(
-            mainAxisSize: mainAxisSize,
+            mainAxisSize: mainAxisSize ?? MainAxisSize.max,
             children: <Widget>[Expanded(child: container)],
           );
         });

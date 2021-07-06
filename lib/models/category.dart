@@ -3,13 +3,13 @@ import 'package:Okuna/models/user.dart';
 import 'package:dcache/dcache.dart';
 
 class Category extends UpdatableModel<Category> {
-  final int id;
-  final User creator;
-  String name;
-  String title;
-  String description;
-  String avatar;
-  String color;
+  final int? id;
+  final User? creator;
+  String? name;
+  String? title;
+  String? description;
+  String? avatar;
+  String? color;
 
   Category({
     this.id,
@@ -24,7 +24,6 @@ class Category extends UpdatableModel<Category> {
   static final factory = CategoryFactory();
 
   factory Category.fromJSON(Map<String, dynamic> json) {
-    if (json == null) return null;
     return factory.fromJson(json);
   }
 
@@ -66,7 +65,7 @@ class Category extends UpdatableModel<Category> {
 
 class CategoryFactory extends UpdatableModelFactory<Category> {
   @override
-  SimpleCache<int, Category> cache =
+  SimpleCache<int, Category>? cache =
       SimpleCache(storage: UpdatableModelSimpleStorage(size: 20));
 
   @override
@@ -82,7 +81,7 @@ class CategoryFactory extends UpdatableModelFactory<Category> {
     );
   }
 
-  User parseUser(Map userData) {
+  User? parseUser(Map<String, dynamic>? userData) {
     if (userData == null) return null;
     return User.fromJson(userData);
   }

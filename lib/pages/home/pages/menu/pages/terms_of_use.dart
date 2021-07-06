@@ -16,10 +16,10 @@ class OBTermsOfUsePage extends StatefulWidget {
 }
 
 class OBTermsOfUsePageState extends State {
-  String _guidelinesText;
-  bool _needsBootstrap;
+  late String _guidelinesText;
+  late bool _needsBootstrap;
 
-  CancelableOperation _getGuidelinesOperation;
+  CancelableOperation? _getGuidelinesOperation;
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class OBTermsOfUsePageState extends State {
   @override
   void dispose() {
     super.dispose();
-    if (_getGuidelinesOperation != null) _getGuidelinesOperation.cancel();
+    if (_getGuidelinesOperation != null) _getGuidelinesOperation!.cancel();
   }
 
   void _bootstrap() async {
@@ -39,7 +39,7 @@ class OBTermsOfUsePageState extends State {
     _getGuidelinesOperation = CancelableOperation.fromFuture(
         openbookProvider.documentsService.getTermsOfUse());
 
-    String guidelines = await _getGuidelinesOperation.value;
+    String guidelines = await _getGuidelinesOperation?.value;
     _setGuidelinesText(guidelines);
   }
 

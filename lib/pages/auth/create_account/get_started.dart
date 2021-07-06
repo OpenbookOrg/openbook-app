@@ -14,7 +14,7 @@ class OBAuthGetStartedPage extends StatefulWidget {
 }
 
 class OBAuthGetStartedPageState extends State<OBAuthGetStartedPage> {
-  LocalizationService _localizationService;
+  late LocalizationService _localizationService;
 
   @override
   void initState() {
@@ -97,7 +97,7 @@ class OBAuthGetStartedPageState extends State<OBAuthGetStartedPage> {
   }
 
   Widget _buildNextButton(
-      {@required BuildContext context, @required String text}) {
+      {required BuildContext context, required String text}) {
     return OBSuccessButton(
       minWidth: double.infinity,
       size: OBButtonSize.large,
@@ -109,7 +109,7 @@ class OBAuthGetStartedPageState extends State<OBAuthGetStartedPage> {
   }
 
   Widget _buildPreviousButton(
-      {@required BuildContext context, @required String text}) {
+      {required BuildContext context, required String text}) {
     return OBSecondaryButton(
       isFullWidth: true,
       isLarge: true,

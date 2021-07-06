@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 
 class OBNotificationTileSkeleton extends StatelessWidget {
   final Widget leading;
-  final Widget trailing;
+  final Widget? trailing;
   final Widget title;
   final Widget subtitle;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const OBNotificationTileSkeleton(
-      {Key key,
-      @required this.leading,
+      {Key? key,
+      required this.leading,
       this.trailing,
-      @required this.title,
+      required this.title,
       this.onTap,
-      @required this.subtitle})
+      required this.subtitle})
       : super(key: key);
 
   @override

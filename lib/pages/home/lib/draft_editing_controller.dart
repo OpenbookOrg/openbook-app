@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 
 abstract class DraftTextEditingController extends TextEditingController {
   final DraftService _draftService;
-  String _previousText;
+  String? _previousText;
 
   DraftTextEditingController(this._draftService) {
     addListener(_onChanged);
   }
 
   factory DraftTextEditingController.comment(int postId,
-      {int commentId, String text, @required DraftService draftService}) {
+      {required int? commentId, String? text, required DraftService draftService}) {
     return _CommentDraftEditingController(
         postId, commentId, text, draftService);
   }
 
   factory DraftTextEditingController.post(
-      {int communityId, String text, @required DraftService draftService}) {
+      {int? communityId, String? text, required DraftService draftService}) {
     return _PostDraftEditingController(communityId, text, draftService);
   }
 
@@ -35,10 +35,10 @@ abstract class DraftTextEditingController extends TextEditingController {
 
 class _CommentDraftEditingController extends DraftTextEditingController {
   final int postId;
-  final int commentId;
+  final int? commentId;
 
   _CommentDraftEditingController(
-      this.postId, this.commentId, String text, DraftService draftService)
+      this.postId, this.commentId, String? text, DraftService draftService)
       : super(draftService) {
     if (text == null) {
       this.text = _draftService.getCommentDraft(postId, commentId);
@@ -57,10 +57,10 @@ class _CommentDraftEditingController extends DraftTextEditingController {
 }
 
 class _PostDraftEditingController extends DraftTextEditingController {
-  final int communityId;
+  final int? communityId;
 
   _PostDraftEditingController(
-      this.communityId, String text, DraftService draftService)
+      this.communityId, String? text, DraftService draftService)
       : super(draftService) {
     if (text == null) {
       this.text = _draftService.getPostDraft(communityId);

@@ -16,7 +16,7 @@ class OBConfirmAddCommunityAdministrator<T> extends StatefulWidget {
   final Community community;
 
   const OBConfirmAddCommunityAdministrator(
-      {Key key, @required this.user, @required this.community})
+      {Key? key, required this.user, required this.community})
       : super(key: key);
 
   @override
@@ -27,11 +27,11 @@ class OBConfirmAddCommunityAdministrator<T> extends StatefulWidget {
 
 class OBConfirmAddCommunityAdministratorState
     extends State<OBConfirmAddCommunityAdministrator> {
-  bool _confirmationInProgress;
-  UserService _userService;
-  LocalizationService _localizationService;
-  ToastService _toastService;
-  bool _needsBootstrap;
+  late bool _confirmationInProgress;
+  late UserService _userService;
+  late LocalizationService _localizationService;
+  late ToastService _toastService;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -42,7 +42,7 @@ class OBConfirmAddCommunityAdministratorState
 
   @override
   Widget build(BuildContext context) {
-    String username = widget.user.username;
+    String username = widget.user.username!;
 
     if (_needsBootstrap) {
       OpenbookProviderState openbookProvider = OpenbookProvider.of(context);
@@ -136,8 +136,8 @@ class OBConfirmAddCommunityAdministratorState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(message: _localizationService.trans('error__unknown_error'), context: context);
       throw error;

@@ -17,19 +17,19 @@ class OBAuthLoginPage extends StatefulWidget {
 
 class OBAuthLoginPageState extends State<OBAuthLoginPage> {
   final _formKey = GlobalKey<FormState>();
-  FocusNode _passwordFocusNode;
+  late FocusNode _passwordFocusNode;
 
-  bool _isSubmitted;
-  bool _passwordIsVisible;
-  String _loginFeedback;
-  bool _loginInProgress;
+  late bool _isSubmitted;
+  late bool _passwordIsVisible;
+  String? _loginFeedback;
+  late bool _loginInProgress;
 
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-  LocalizationService _localizationService;
-  ValidationService _validationService;
-  UserService _userService;
+  late LocalizationService _localizationService;
+  late ValidationService _validationService;
+  late UserService _userService;
 
   @override
   void initState() {
@@ -111,7 +111,7 @@ class OBAuthLoginPageState extends State<OBAuthLoginPage> {
 
     return SizedBox(
       child: Text(
-        _loginFeedback,
+        _loginFeedback!,
         style: TextStyle(fontSize: 16.0, color: Colors.deepOrange),
         textAlign: TextAlign.center,
       ),
@@ -132,7 +132,7 @@ class OBAuthLoginPageState extends State<OBAuthLoginPage> {
 
   Future<void> _submitForm() async {
     _isSubmitted = true;
-    if (_validateForm()) {
+    if (_validateForm() == true) {
       await _login(context);
     }
   }
@@ -161,7 +161,7 @@ class OBAuthLoginPageState extends State<OBAuthLoginPage> {
     _setLoginInProgress(false);
   }
 
-  Widget _buildPreviousButton({@required BuildContext context}) {
+  Widget _buildPreviousButton({required BuildContext context}) {
     String buttonText = _localizationService.trans('auth__login__previous');
 
     return OBSecondaryButton(
@@ -185,7 +185,7 @@ class OBAuthLoginPageState extends State<OBAuthLoginPage> {
     );
   }
 
-  Widget _buildForgotPasswordButton({@required BuildContext context}) {
+  Widget _buildForgotPasswordButton({required BuildContext context}) {
     String buttonText = _localizationService.trans(
         'auth__login__forgot_password');
 
@@ -207,7 +207,7 @@ class OBAuthLoginPageState extends State<OBAuthLoginPage> {
     );
   }
 
-  Widget _buildHeading({@required BuildContext context}) {
+  Widget _buildHeading({required BuildContext context}) {
     String titleText = _localizationService.trans('auth__login__title');
     String subtitleText = _localizationService.trans('auth__login__subtitle');
 
@@ -313,22 +313,22 @@ class OBAuthLoginPageState extends State<OBAuthLoginPage> {
         ));
   }
 
-  String _validateUsername(String value) {
+  String? _validateUsername(String? value) {
     if (!_isSubmitted) return null;
-    return _validationService.validateUserUsername(value.trim());
+    return _validationService.validateUserUsername(value?.trim());
   }
 
-  String _validatePassword(String value) {
+  String? _validatePassword(String? value) {
     if (!_isSubmitted) return null;
 
     return _validationService.validateUserPassword(value);
   }
 
-  bool _validateForm() {
+  bool? _validateForm() {
     if (_loginFeedback != null) {
       _setLoginFeedback(null);
     }
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate();
   }
 
   void _togglePasswordVisibility() {
@@ -337,7 +337,7 @@ class OBAuthLoginPageState extends State<OBAuthLoginPage> {
     });
   }
 
-  void _setLoginFeedback(String feedback) {
+  void _setLoginFeedback(String? feedback) {
     setState(() {
       _loginFeedback = feedback;
     });

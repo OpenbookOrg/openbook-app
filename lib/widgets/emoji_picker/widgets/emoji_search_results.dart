@@ -16,7 +16,7 @@ class OBEmojiSearchResults extends StatelessWidget {
   final OnEmojiPressed onEmojiPressed;
 
   OBEmojiSearchResults(this.results, this.searchQuery,
-      {Key key, @required this.onEmojiPressed})
+      {Key? key, required this.onEmojiPressed})
       : super(key: key);
 
   @override
@@ -41,16 +41,16 @@ class OBEmojiSearchResults extends StatelessWidget {
               leading: ConstrainedBox(
                 constraints: BoxConstraints(maxHeight: 25),
                 child: CachedNetworkImage(
-                  imageUrl: emoji.image,
+                  imageUrl: emoji.image!,
                   errorWidget:
-                      (BuildContext context, String url, Object error) {
+                      (BuildContext context, String url, dynamic error) {
                     return const SizedBox(
                       child: Center(child: const OBText('?')),
                     );
                   },
                 ),
               ),
-              title: OBText(emoji.keyword),
+              title: OBText(emoji.keyword!),
             );
           }).toList();
 

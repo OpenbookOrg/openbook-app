@@ -18,18 +18,18 @@ import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 
 class OBPostCommentActions extends StatefulWidget {
-  final ValueChanged<PostComment> onReplyDeleted;
-  final ValueChanged<PostComment> onReplyAdded;
-  final ValueChanged<PostComment> onPostCommentDeleted;
-  final ValueChanged<PostComment> onPostCommentReported;
+  final ValueChanged<PostComment>? onReplyDeleted;
+  final ValueChanged<PostComment>? onReplyAdded;
+  final ValueChanged<PostComment>? onPostCommentDeleted;
+  final ValueChanged<PostComment>? onPostCommentReported;
   final Post post;
   final PostComment postComment;
   final bool showReplyAction;
 
   const OBPostCommentActions(
-      {Key key,
-      @required this.post,
-      @required this.postComment,
+      {Key? key,
+      required this.post,
+      required this.postComment,
       this.onReplyDeleted,
       this.onReplyAdded,
       this.onPostCommentDeleted,
@@ -44,19 +44,19 @@ class OBPostCommentActions extends StatefulWidget {
 }
 
 class OBPostCommentActionsState extends State<OBPostCommentActions> {
-  ModalService _modalService;
-  NavigationService _navigationService;
-  BottomSheetService _bottomSheetService;
-  UserService _userService;
-  ToastService _toastService;
-  ThemeService _themeService;
-  LocalizationService _localizationService;
-  ThemeValueParserService _themeValueParserService;
+  late ModalService _modalService;
+  late NavigationService _navigationService;
+  late BottomSheetService _bottomSheetService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late ThemeService _themeService;
+  late LocalizationService _localizationService;
+  late ThemeValueParserService _themeValueParserService;
 
-  bool _requestInProgress;
-  CancelableOperation _requestOperation;
+  late bool _requestInProgress;
+  CancelableOperation? _requestOperation;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -86,7 +86,7 @@ class OBPostCommentActionsState extends State<OBPostCommentActions> {
 
     if (widget.showReplyAction &&
         _userService
-            .getLoggedInUser()
+            .getLoggedInUser()!
             .canReplyPostComment(widget.postComment)) {
       actionItems.add(_buildReplyButton());
     }
@@ -126,16 +126,16 @@ class OBPostCommentActionsState extends State<OBPostCommentActions> {
                   initialData: widget.postComment,
                   builder: (BuildContext context,
                       AsyncSnapshot<PostComment> snapshot) {
-                    PostComment postComment = snapshot.data;
+                    PostComment postComment = snapshot.data!;
 
-                    PostCommentReaction reaction = postComment.reaction;
+                    PostCommentReaction? reaction = postComment.reaction;
                     bool hasReaction = reaction != null;
 
                     OBTheme activeTheme = _themeService.getActiveTheme();
 
                     return hasReaction
                         ? OBText(
-                            reaction.getEmojiKeyword(),
+                            reaction.getEmojiKeyword()!,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -171,11 +171,11 @@ class OBPostCommentActionsState extends State<OBPostCommentActions> {
   @override
   void dispose() {
     super.dispose();
-    if (_requestOperation != null) _requestOperation.cancel();
+    if (_requestOperation != null) _requestOperation!.cancel();
   }
 
   void _replyToPostComment() async {
-    PostComment comment = await _modalService.openExpandedReplyCommenter(
+    PostComment? comment = await _modalService.openExpandedReplyCommenter(
         context: context,
         post: widget.post,
         postComment: widget.postComment,
@@ -208,10 +208,10 @@ class OBPostCommentActionsState extends State<OBPostCommentActions> {
       _requestOperation = CancelableOperation.fromFuture(
           _userService.deletePostCommentReaction(
               postComment: widget.postComment,
-              postCommentReaction: widget.postComment.reaction,
+              postCommentReaction: widget.postComment.reaction!,
               post: widget.post));
 
-      await _requestOperation.value;
+      await _requestOperation?.value;
       widget.postComment.clearReaction();
     } catch (error) {
       _onError(error);
@@ -241,8 +241,8 @@ class OBPostCommentActionsState extends State<OBPostCommentActions> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

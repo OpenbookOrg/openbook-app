@@ -23,21 +23,21 @@ class OBChangeEmailModal extends StatefulWidget {
 }
 
 class OBChangeEmailModalState extends State<OBChangeEmailModal> {
-  ValidationService _validationService;
-  ToastService _toastService;
-  UserService _userService;
-  LocalizationService _localizationService;
+  late ValidationService _validationService;
+  late ToastService _toastService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
   static const double INPUT_ICONS_SIZE = 16;
   static const EdgeInsetsGeometry INPUT_CONTENT_PADDING =
       EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _requestInProgress = false;
   bool _formWasSubmitted = false;
-  bool _changedEmailTaken = false;
+  bool? _changedEmailTaken = false;
   bool _formValid = true;
   TextEditingController _emailController = TextEditingController();
-  TextEditingController _currentEmailController;
-  CancelableOperation _requestOperation;
+  late TextEditingController _currentEmailController;
+  CancelableOperation? _requestOperation;
 
   @override
   void initState() {
@@ -52,7 +52,7 @@ class OBChangeEmailModalState extends State<OBChangeEmailModal> {
   @override
   void dispose() {
     super.dispose();
-    if (_requestOperation != null) _requestOperation.cancel();
+    if (_requestOperation != null) _requestOperation!.cancel();
   }
 
   @override
@@ -62,8 +62,8 @@ class OBChangeEmailModalState extends State<OBChangeEmailModal> {
     _toastService = openbookProvider.toastService;
     _userService = openbookProvider.userService;
     _localizationService = openbookProvider.localizationService;
-    
-    String currentUserEmail = _userService.getLoggedInUser().getEmail();
+
+    String currentUserEmail = _userService.getLoggedInUser()!.getEmail()!;
     _currentEmailController = TextEditingController(text: currentUserEmail);
 
     return OBCupertinoPageScaffold(
@@ -93,12 +93,12 @@ class OBChangeEmailModalState extends State<OBChangeEmailModal> {
                         labelText:_localizationService.user__change_email_email_text,
                         hintText:_localizationService.user__change_email_hint_text,
                       ),
-                      validator: (String email) {
+                      validator: (String? email) {
                         if (!_formWasSubmitted) return null;
-                        String validateEmail =
+                        String? validateEmail =
                             _validationService.validateUserEmail(email);
                         if (validateEmail != null) return validateEmail;
-                        if (_changedEmailTaken != null && _changedEmailTaken) {
+                        if (_changedEmailTaken != null && _changedEmailTaken!) {
                           return _localizationService.user__change_email_error;
                         }
                       },
@@ -109,7 +109,7 @@ class OBChangeEmailModalState extends State<OBChangeEmailModal> {
         ));
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
       leading: GestureDetector(
         child: const OBIcon(OBIcons.close),
@@ -129,7 +129,7 @@ class OBChangeEmailModalState extends State<OBChangeEmailModal> {
   }
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   bool _updateFormValid() {
@@ -148,7 +148,7 @@ class OBChangeEmailModalState extends State<OBChangeEmailModal> {
       var email = _emailController.text;
       _requestOperation =
           CancelableOperation.fromFuture(_userService.updateUserEmail(email));
-      await _requestOperation.value;
+      await _requestOperation?.value;
       _toastService.success(
           message:
               _localizationService.user__change_email_success_info,
@@ -167,8 +167,8 @@ class OBChangeEmailModalState extends State<OBChangeEmailModal> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

@@ -22,7 +22,7 @@ class OBConnectionsCircleUsers extends StatelessWidget {
         initialData: connectionsCircle,
         builder: (BuildContext context, AsyncSnapshot<Circle> snapshot) {
           var connectionsCircle = snapshot.data;
-          List<User> users = connectionsCircle.users?.users ?? [];
+          List<User> users = connectionsCircle?.users?.users ?? [];
 
           var onUserTilePressed = (User user) {
             navigationService.navigateToUserProfile(
@@ -35,7 +35,7 @@ class OBConnectionsCircleUsers extends StatelessWidget {
               itemBuilder: (context, index) {
                 var user = users[index];
 
-                Widget trailing;
+                Widget? trailing;
                 bool isFullyConnected = user.isFullyConnected ?? true;
 
                 if (!isFullyConnected) {

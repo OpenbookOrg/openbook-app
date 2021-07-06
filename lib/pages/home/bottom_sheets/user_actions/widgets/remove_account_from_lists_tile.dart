@@ -10,10 +10,10 @@ import 'package:flutter/material.dart';
 
 class OBRemoveAccountFromLists extends StatefulWidget {
   final User user;
-  final VoidCallback onRemovedAccountFromLists;
+  final VoidCallback? onRemovedAccountFromLists;
 
   const OBRemoveAccountFromLists(this.user,
-      {Key key, this.onRemovedAccountFromLists})
+      {Key? key, this.onRemovedAccountFromLists})
       : super(key: key);
 
   @override
@@ -23,9 +23,9 @@ class OBRemoveAccountFromLists extends StatefulWidget {
 }
 
 class OBRemoveAccountFromListsState extends State<OBRemoveAccountFromLists> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +43,10 @@ class OBRemoveAccountFromListsState extends State<OBRemoveAccountFromLists> {
   Future _removeAccountFromLists() async {
     try {
       await _userService
-          .updateFollowWithUsername(widget.user.username, followsLists: []);
+          .updateFollowWithUsername(widget.user.username!, followsLists: []);
       _toastService.success(message: _localizationService.trans('user__remove_account_from_list_success'), context: context);
       if (widget.onRemovedAccountFromLists != null)
-        widget.onRemovedAccountFromLists();
+        widget.onRemovedAccountFromLists!();
     } catch (error) {
       _onError(error);
     }
@@ -57,8 +57,8 @@ class OBRemoveAccountFromListsState extends State<OBRemoveAccountFromLists> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(message: _localizationService.trans('error__unknown_error'), context: context);
       throw error;

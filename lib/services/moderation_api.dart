@@ -2,10 +2,10 @@ import 'package:Okuna/services/httpie.dart';
 import 'package:Okuna/services/string_template.dart';
 
 class ModerationApiService {
-  HttpieService _httpService;
-  StringTemplateService _stringTemplateService;
+  late HttpieService _httpService;
+  late StringTemplateService _stringTemplateService;
 
-  String apiURL;
+  late String apiURL;
 
   static const GET_GLOBAL_MODERATED_OBJECTS_PATH =
       'api/moderation/moderated-objects/global/';
@@ -42,12 +42,12 @@ class ModerationApiService {
   }
 
   Future<HttpieResponse> getGlobalModeratedObjects({
-    int count,
-    int maxId,
-    String type,
-    bool verified,
-    List<String> statuses,
-    List<String> types,
+    int? count,
+    int? maxId,
+    String? type,
+    bool? verified,
+    List<String>? statuses,
+    List<String>? types,
   }) {
     Map<String, dynamic> queryParams = {};
     if (count != null) queryParams['count'] = count;
@@ -68,8 +68,8 @@ class ModerationApiService {
 
   Future<HttpieResponse> getModeratedObjectLogs(
     int moderatedObjectId, {
-    int count,
-    int maxId,
+    int? count,
+    int? maxId,
   }) {
     Map<String, dynamic> queryParams = {};
     if (count != null) queryParams['count'] = count;
@@ -84,8 +84,8 @@ class ModerationApiService {
 
   Future<HttpieResponse> getModeratedObjectReports(
     int moderatedObjectId, {
-    int count,
-    int maxId,
+    int? count,
+    int? maxId,
   }) {
     Map<String, dynamic> queryParams = {};
     if (count != null) queryParams['count'] = count;
@@ -104,7 +104,7 @@ class ModerationApiService {
     return _httpService.get(_makeApiUrl(path), appendAuthorizationToken: true);
   }
 
-  Future<HttpieResponse> getUserModerationPenalties({int maxId, int count}) {
+  Future<HttpieResponse> getUserModerationPenalties({int? maxId, int? count}) {
     Map<String, dynamic> queryParams = {};
     if (count != null) queryParams['count'] = count;
 
@@ -117,7 +117,7 @@ class ModerationApiService {
   }
 
   Future<HttpieResponse> getUserPendingModeratedObjectsCommunities(
-      {int maxId, int count}) {
+      {int? maxId, int? count}) {
     Map<String, dynamic> queryParams = {};
     if (count != null) queryParams['count'] = count;
 
@@ -154,7 +154,7 @@ class ModerationApiService {
   }
 
   Future<HttpieResponse> updateModeratedObjectWithId(int moderatedObjectId,
-      {String description, int categoryId}) {
+      {String? description, int? categoryId}) {
     Map<String, dynamic> body = {};
 
     if (description != null) body['description'] = description;

@@ -22,10 +22,10 @@ class OBJoinCommunityButton extends StatefulWidget {
 }
 
 class OBJoinCommunityButtonState extends State<OBJoinCommunityButton> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  bool _requestInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class OBJoinCommunityButtonState extends State<OBJoinCommunityButton> {
       stream: widget.community.updateSubject,
       initialData: widget.community,
       builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
-        var community = snapshot.data;
+        var community = snapshot.data!;
 
         bool isCreator = community.isCreator ?? true;
 
@@ -52,9 +52,9 @@ class OBJoinCommunityButtonState extends State<OBJoinCommunityButton> {
 
         bool isInvited = community.isInvited ?? false;
 
-        User loggedInUser = _userService.getLoggedInUser();
+        User loggedInUser = _userService.getLoggedInUser()!;
 
-        bool isMember = community.isMember(loggedInUser) ?? false;
+        bool isMember = community.isMember(loggedInUser);
 
         if (community.type == CommunityType.private && !isMember && !isInvited)
           return SizedBox();
@@ -108,8 +108,8 @@ class OBJoinCommunityButtonState extends State<OBJoinCommunityButton> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);

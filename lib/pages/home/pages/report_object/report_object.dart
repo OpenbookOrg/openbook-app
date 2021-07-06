@@ -15,11 +15,11 @@ import 'package:flutter/material.dart';
 
 class OBReportObjectPage extends StatefulWidget {
   final dynamic object;
-  final OnObjectReported onObjectReported;
-  final Map<String, dynamic> extraData;
+  final OnObjectReported? onObjectReported;
+  final Map<String, dynamic>? extraData;
 
   const OBReportObjectPage({
-    Key key,
+    Key? key,
     this.object,
     this.onObjectReported,
     this.extraData,
@@ -32,10 +32,10 @@ class OBReportObjectPage extends StatefulWidget {
 }
 
 class OBReportObjectPageState extends State<OBReportObjectPage> {
-  NavigationService _navigationService;
-  UserService _userService;
-  List<ModerationCategory> _moderationCategories = [];
-  bool _needsBootstrap;
+  late NavigationService _navigationService;
+  late UserService _userService;
+  late List<ModerationCategory> _moderationCategories = [];
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -110,20 +110,20 @@ class OBReportObjectPageState extends State<OBReportObjectPage> {
             context: context);
         if (result != null && result) {
           if (widget.onObjectReported != null)
-            widget.onObjectReported(widget.object);
+            widget.onObjectReported!(widget.object);
           Navigator.pop(context);
         }
       },
       title: OBText(
-        category.title,
+        category.title ?? '',
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
-      subtitle: OBSecondaryText(category.description),
+      subtitle: OBSecondaryText(category.description ?? ''),
       //trailing: OBIcon(OBIcons.chevronRight),
     );
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
       title: 'Report ' + modelTypeToString(widget.object),
     );
@@ -136,7 +136,7 @@ class OBReportObjectPageState extends State<OBReportObjectPage> {
 
   _setModerationCategories(ModerationCategoriesList moderationCategoriesList) {
     setState(() {
-      _moderationCategories = moderationCategoriesList.moderationCategories;
+      _moderationCategories = moderationCategoriesList.moderationCategories!;
     });
   }
 }

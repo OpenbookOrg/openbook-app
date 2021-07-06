@@ -14,10 +14,10 @@ import 'package:flutter/material.dart';
 
 class OBModeratedObjectLogs extends StatefulWidget {
   final ModeratedObject moderatedObject;
-  final OBModeratedObjectLogsController controller;
+  final OBModeratedObjectLogsController? controller;
 
   const OBModeratedObjectLogs(
-      {Key key, @required this.moderatedObject, this.controller})
+      {Key? key, required this.moderatedObject, this.controller})
       : super(key: key);
 
   @override
@@ -29,13 +29,13 @@ class OBModeratedObjectLogs extends StatefulWidget {
 class OBModeratedObjectLogsState extends State<OBModeratedObjectLogs> {
   static int logssCount = 5;
 
-  bool _needsBootstrap;
-  UserService _userService;
-  ToastService _toastService;
+  late bool _needsBootstrap;
+  late UserService _userService;
+  late ToastService _toastService;
 
-  CancelableOperation _refreshLogsOperation;
-  bool _refreshInProgress;
-  List<ModeratedObjectLog> _logs;
+  CancelableOperation? _refreshLogsOperation;
+  late bool _refreshInProgress;
+  late List<ModeratedObjectLog> _logs;
 
   @override
   void initState() {
@@ -43,13 +43,13 @@ class OBModeratedObjectLogsState extends State<OBModeratedObjectLogs> {
     _needsBootstrap = true;
     _refreshInProgress = false;
     _logs = [];
-    if (widget.controller != null) widget.controller.attach(this);
+    if (widget.controller != null) widget.controller!.attach(this);
   }
 
   @override
   void dispose() {
     super.dispose();
-    if (_refreshLogsOperation != null) _refreshLogsOperation.cancel();
+    if (_refreshLogsOperation != null) _refreshLogsOperation!.cancel();
   }
 
   @override
@@ -114,8 +114,8 @@ class OBModeratedObjectLogsState extends State<OBModeratedObjectLogs> {
           .getModeratedObjectLogs(widget.moderatedObject, count: 5));
 
       ModeratedObjectLogsList moderationLogsList =
-          await _refreshLogsOperation.value;
-      _setLogs(moderationLogsList.moderatedObjectLogs);
+          await _refreshLogsOperation?.value;
+      _setLogs(moderationLogsList.moderatedObjectLogs ?? []);
     } catch (error) {
       _onError(error);
     } finally {
@@ -140,8 +140,8 @@ class OBModeratedObjectLogsState extends State<OBModeratedObjectLogs> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;
@@ -150,13 +150,13 @@ class OBModeratedObjectLogsState extends State<OBModeratedObjectLogs> {
 }
 
 class OBModeratedObjectLogsController {
-  OBModeratedObjectLogsState _state;
+  OBModeratedObjectLogsState? _state;
 
   void attach(state) {
     _state = state;
   }
 
-  Future refreshLogs() {
-    return _state._refreshLogs();
+  Future? refreshLogs() {
+    return _state?._refreshLogs();
   }
 }

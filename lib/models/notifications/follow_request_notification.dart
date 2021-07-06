@@ -3,8 +3,8 @@ import 'package:Okuna/models/user.dart';
 import '../follow_request.dart';
 
 class FollowRequestNotification {
-  final int id;
-  final FollowRequest followRequest;
+  final int? id;
+  final FollowRequest? followRequest;
 
   FollowRequestNotification({this.id, this.followRequest});
 

@@ -21,9 +21,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBModeratedObjectsPage extends StatefulWidget {
-  final Community community;
+  final Community? community;
 
-  const OBModeratedObjectsPage({Key key, this.community}) : super(key: key);
+  const OBModeratedObjectsPage({Key? key, this.community}) : super(key: key);
 
   @override
   OBModeratedObjectsPageState createState() {
@@ -34,26 +34,26 @@ class OBModeratedObjectsPage extends StatefulWidget {
 class OBModeratedObjectsPageState extends State<OBModeratedObjectsPage> {
   static int itemsLoadMoreCount = 10;
 
-  OBModeratedObjectsPageController _controller;
+  late OBModeratedObjectsPageController _controller;
 
-  Community _community;
-  OBModeratedObjectsFilters _filters;
-  ScrollController _scrollController;
+  Community? _community;
+  late OBModeratedObjectsFilters _filters;
+  late ScrollController _scrollController;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-  List<ModeratedObject> _moderatedObjects;
+  late List<ModeratedObject> _moderatedObjects;
 
-  UserService _userService;
-  ToastService _toastService;
-  ModalService _modalService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late ModalService _modalService;
+  late LocalizationService _localizationService;
 
-  CancelableOperation _loadMoreOperation;
-  CancelableOperation _refreshModeratedObjectsOperation;
+  CancelableOperation? _loadMoreOperation;
+  CancelableOperation? _refreshModeratedObjectsOperation;
 
-  bool _needsBootstrap;
-  bool _moreModeratedObjectsToLoad;
-  bool _refreshModeratedObjectsInProgress;
+  late bool _needsBootstrap;
+  late bool _moreModeratedObjectsToLoad;
+  late bool _refreshModeratedObjectsInProgress;
 
   @override
   void initState() {
@@ -72,9 +72,9 @@ class OBModeratedObjectsPageState extends State<OBModeratedObjectsPage> {
   @override
   void dispose() {
     super.dispose();
-    if (_loadMoreOperation != null) _loadMoreOperation.cancel();
+    if (_loadMoreOperation != null) _loadMoreOperation!.cancel();
     if (_refreshModeratedObjectsOperation != null)
-      _refreshModeratedObjectsOperation.cancel();
+      _refreshModeratedObjectsOperation!.cancel();
   }
 
   @override
@@ -179,7 +179,7 @@ class OBModeratedObjectsPageState extends State<OBModeratedObjectsPage> {
     });
   }
 
-  Future<void> setFilters(OBModeratedObjectsFilters filters) {
+  Future<void>? setFilters(OBModeratedObjectsFilters filters) {
     _filters = filters;
     _refresh();
   }
@@ -199,7 +199,7 @@ class OBModeratedObjectsPageState extends State<OBModeratedObjectsPage> {
   }
 
   Future<void> _refresh() async {
-    _refreshIndicatorKey.currentState.show();
+    _refreshIndicatorKey.currentState?.show();
   }
 
   Future<void> _refreshModeratedObjects() async {
@@ -215,7 +215,7 @@ class OBModeratedObjectsPageState extends State<OBModeratedObjectsPage> {
       } else {
         _refreshModeratedObjectsOperation = CancelableOperation.fromFuture(
             _userService.getCommunityModeratedObjects(
-                community: widget.community,
+                community: widget.community!,
                 count: itemsLoadMoreCount,
                 verified: _filters.onlyVerified,
                 statuses: _filters.statuses,
@@ -223,8 +223,8 @@ class OBModeratedObjectsPageState extends State<OBModeratedObjectsPage> {
       }
 
       ModeratedObjectsList moderatedObjectList =
-          await _refreshModeratedObjectsOperation.value;
-      _setModeratedObjects(moderatedObjectList.moderatedObjects);
+          await _refreshModeratedObjectsOperation?.value;
+      _setModeratedObjects(moderatedObjectList.moderatedObjects ?? []);
     } catch (error) {
       _onError(error);
     } finally {
@@ -233,7 +233,7 @@ class OBModeratedObjectsPageState extends State<OBModeratedObjectsPage> {
   }
 
   Future<bool> _loadMoreModeratedObjects() async {
-    if (_loadMoreOperation != null) _loadMoreOperation.cancel();
+    if (_loadMoreOperation != null) _loadMoreOperation!.cancel();
 
     var lastModeratedObjectId;
     if (_moderatedObjects.isNotEmpty) {
@@ -253,7 +253,7 @@ class OBModeratedObjectsPageState extends State<OBModeratedObjectsPage> {
       } else {
         _loadMoreOperation = CancelableOperation.fromFuture(
             _userService.getCommunityModeratedObjects(
-                community: _community,
+                community: _community!,
                 maxId: lastModeratedObjectId,
                 count: itemsLoadMoreCount,
                 verified: _filters.onlyVerified,
@@ -262,7 +262,7 @@ class OBModeratedObjectsPageState extends State<OBModeratedObjectsPage> {
       }
 
       var moreModeratedObjects =
-          (await _loadMoreOperation.value).moderatedObjects;
+          (await _loadMoreOperation?.value).moderatedObjects;
 
       if (moreModeratedObjects.length == 0) {
         _setMoreModeratedObjectsToLoad(false);
@@ -313,8 +313,8 @@ class OBModeratedObjectsPageState extends State<OBModeratedObjectsPage> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);
@@ -328,7 +328,7 @@ class OBModeratedObjectsFilters {
   final List<ModeratedObjectStatus> statuses;
   final bool onlyVerified;
 
-  static OBModeratedObjectsFilters makeDefault({@required isGlobalModeration}) {
+  static OBModeratedObjectsFilters makeDefault({required isGlobalModeration}) {
     List<ModeratedObjectType> filterTypes = [
       ModeratedObjectType.postComment,
       ModeratedObjectType.post,
@@ -352,9 +352,9 @@ class OBModeratedObjectsFilters {
   }
 
   OBModeratedObjectsFilters(
-      {@required this.types,
-      @required this.statuses,
-      @required this.onlyVerified});
+      {required this.types,
+      required this.statuses,
+      required this.onlyVerified});
 
   OBModeratedObjectsFilters clone() {
     return OBModeratedObjectsFilters(
@@ -369,33 +369,33 @@ class OBModeratedObjectsFilters {
 }
 
 class OBModeratedObjectsPageController {
-  OBModeratedObjectsPageState state;
+  OBModeratedObjectsPageState? state;
 
   OBModeratedObjectsPageController({this.state});
 
-  void attach({OBModeratedObjectsPageState state}) {
+  void attach({OBModeratedObjectsPageState? state}) {
     state = state;
   }
 
-  Future<void> setFilters(OBModeratedObjectsFilters filters) async {
-    return state.setFilters(filters);
+  Future<void>? setFilters(OBModeratedObjectsFilters filters) async {
+    return state?.setFilters(filters);
   }
 
-  OBModeratedObjectsFilters getFilters() {
-    return state.getFilters();
+  OBModeratedObjectsFilters? getFilters() {
+    return state?.getFilters();
   }
 
   void scrollToTop() {
-    state.scrollToTop();
+    state?.scrollToTop();
   }
 
   bool hasCommunity() {
-    return state.hasCommunity();
+    return state?.hasCommunity() ?? false;
   }
 }
 
 class OBModeratedObjectsPageLoadMoreDelegate extends LoadMoreDelegate {
-  final VoidCallback onWantsToRetryLoading;
+  final VoidCallback? onWantsToRetryLoading;
 
   const OBModeratedObjectsPageLoadMoreDelegate({this.onWantsToRetryLoading});
 
@@ -407,7 +407,7 @@ class OBModeratedObjectsPageLoadMoreDelegate extends LoadMoreDelegate {
     if (status == LoadMoreStatus.fail) {
       return OBRetryTile(
         text: 'Tap to retry loading items',
-        onWantsToRetry: onWantsToRetryLoading,
+        onWantsToRetry: onWantsToRetryLoading ?? () {},
       );
     }
     if (status == LoadMoreStatus.idle) {

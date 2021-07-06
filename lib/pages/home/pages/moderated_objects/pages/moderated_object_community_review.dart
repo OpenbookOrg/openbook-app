@@ -24,7 +24,7 @@ class OBModeratedObjectCommunityReviewPage extends StatefulWidget {
   final Community community;
 
   const OBModeratedObjectCommunityReviewPage(
-      {Key key, @required this.moderatedObject, @required this.community})
+      {Key? key, required this.moderatedObject, required this.community})
       : super(key: key);
 
   @override
@@ -35,16 +35,16 @@ class OBModeratedObjectCommunityReviewPage extends StatefulWidget {
 
 class OBModeratedObjectCommunityReviewPageState
     extends State<OBModeratedObjectCommunityReviewPage> {
-  bool _requestInProgress;
-  bool _isEditable;
+  late bool _requestInProgress;
+  late bool _isEditable;
 
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  bool _needsBootstrap;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late bool _needsBootstrap;
 
-  CancelableOperation _requestOperation;
-  OBModeratedObjectLogsController _logsController;
+  CancelableOperation? _requestOperation;
+  late OBModeratedObjectLogsController _logsController;
 
   @override
   void initState() {
@@ -58,7 +58,7 @@ class OBModeratedObjectCommunityReviewPageState
   @override
   void dispose() {
     super.dispose();
-    if (_requestOperation != null) _requestOperation.cancel();
+    if (_requestOperation != null) _requestOperation!.cancel();
   }
 
   @override
@@ -125,7 +125,7 @@ class OBModeratedObjectCommunityReviewPageState
   Widget _buildPrimaryActions() {
     List<Widget> actions = [];
 
-    if (widget.moderatedObject.verified) {
+    if (widget.moderatedObject.verified == true) {
       actions.add(_buildVerifiedButton());
     } else if (widget.moderatedObject.status != ModeratedObjectStatus.pending) {
       if (widget.moderatedObject.status == ModeratedObjectStatus.approved) {
@@ -202,7 +202,7 @@ class OBModeratedObjectCommunityReviewPageState
     try {
       _requestOperation = CancelableOperation.fromFuture(
           _userService.approveModeratedObject(widget.moderatedObject));
-      await _requestOperation.value;
+      await _requestOperation?.value;
       widget.moderatedObject.setIsApproved();
       _updateIsEditable();
     } catch (error) {
@@ -218,7 +218,7 @@ class OBModeratedObjectCommunityReviewPageState
     try {
       _requestOperation = CancelableOperation.fromFuture(
           _userService.rejectModeratedObject(widget.moderatedObject));
-      await _requestOperation.value;
+      await _requestOperation?.value;
       widget.moderatedObject.setIsRejected();
       _updateIsEditable();
     } catch (error) {
@@ -251,8 +251,8 @@ class OBModeratedObjectCommunityReviewPageState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(message: _localizationService.trans('error__unknown_error'), context: context);
       throw error;

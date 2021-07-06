@@ -20,18 +20,18 @@ class OBZoomablePhotoModal extends StatefulWidget {
 
 class OBZoomablePhotoModalState extends State<OBZoomablePhotoModal>
     with SingleTickerProviderStateMixin {
-  bool _isDismissible;
-  AnimationController _controller;
-  Animation<Offset> _offset;
-  Animation<double> _rotationAnimation;
-  double _rotationAngle;
-  double _rotationDirection;
-  double _posX;
-  double _posY;
-  double _velocityX;
-  double _velocityY;
-  PointerDownEvent startDragDetails;
-  PointerMoveEvent updateDragDetails;
+  late bool _isDismissible;
+  late AnimationController _controller;
+  Animation<Offset>? _offset;
+  Animation<double>? _rotationAnimation;
+  late double _rotationAngle;
+  late double _rotationDirection;
+  late double _posX;
+  late double _posY;
+  late double _velocityX;
+  late double _velocityY;
+  PointerDownEvent? startDragDetails;
+  PointerMoveEvent? updateDragDetails;
   static const VELOCITY_THRESHOLD = 10.0;
 
   // THRESHOLD_SECOND_POINTER_EVENT:
@@ -85,14 +85,14 @@ class OBZoomablePhotoModalState extends State<OBZoomablePhotoModal>
                   double deltaX = 0.0;
                   if (updateDragDetails == null && startDragDetails != null) {
                     deltaY = updatedDetails.position.dy -
-                        startDragDetails.position.dy;
+                        startDragDetails!.position.dy;
                     deltaX = updatedDetails.position.dx -
-                        startDragDetails.position.dx;
+                        startDragDetails!.position.dx;
                   } else if (updateDragDetails != null) {
                     deltaY = updatedDetails.position.dy -
-                        updateDragDetails.position.dy;
+                        updateDragDetails!.position.dy;
                     deltaX = updatedDetails.position.dx -
-                        updateDragDetails.position.dx;
+                        updateDragDetails!.position.dx;
                   }
                   _updateDragValues(deltaX, deltaY, updatedDetails);
                 },
@@ -173,8 +173,8 @@ class OBZoomablePhotoModalState extends State<OBZoomablePhotoModal>
               .chain(CurveTween(curve: Curves.easeInOutSine))
               .animate(_controller)
                 ..addListener(() {
-                  _posX = _offset.value.dx;
-                  _posY = _offset.value.dy;
+                  _posX = _offset!.value.dx;
+                  _posY = _offset!.value.dy;
                   setState(() {});
                 });
       startDragDetails = null;
@@ -184,7 +184,7 @@ class OBZoomablePhotoModalState extends State<OBZoomablePhotoModal>
         .chain(CurveTween(curve: Curves.easeInOutCubic))
         .animate(_controller)
           ..addListener(() {
-            _rotationAngle = _rotationAnimation.value;
+            _rotationAngle = _rotationAnimation!.value;
             setState(() {});
           });
     _controller.reset();
@@ -209,9 +209,9 @@ class OBZoomablePhotoModalState extends State<OBZoomablePhotoModal>
     double maxRotationAngle = pi / 2;
     // Rotation increases proportional to distance from mid of screen
     double rotationRatio =
-        (startDragDetails.position.dx - screenMid).abs() / screenMid;
+        (startDragDetails!.position.dx - screenMid).abs() / screenMid;
 
-    if (startDragDetails.position.dx < screenMid) {
+    if (startDragDetails!.position.dx < screenMid) {
       maxRotationAngle = -pi / 2;
     }
     // Rotation increases proportional to drag in Y direction
@@ -239,8 +239,8 @@ class OBZoomablePhotoModalState extends State<OBZoomablePhotoModal>
           .chain(CurveTween(curve: Curves.easeInOutSine))
           .animate(_controller)
             ..addListener(() {
-              _posX = _offset.value.dx + _velocityX / 2;
-              _posY = _offset.value.dy + _velocityY / 2;
+              _posX = _offset!.value.dx + _velocityX / 2;
+              _posY = _offset!.value.dy + _velocityY / 2;
               setState(() {});
             });
 
@@ -249,7 +249,7 @@ class OBZoomablePhotoModalState extends State<OBZoomablePhotoModal>
           .chain(CurveTween(curve: Curves.easeInOutCubic))
           .animate(_controller)
             ..addListener(() {
-              _rotationAngle = _rotationAnimation.value;
+              _rotationAngle = _rotationAnimation!.value;
               setState(() {});
             });
 

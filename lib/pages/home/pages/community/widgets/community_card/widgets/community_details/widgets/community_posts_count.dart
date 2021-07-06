@@ -19,12 +19,12 @@ class OBCommunityPostsCount extends StatefulWidget {
 }
 
 class OBCommunityPostsCountState extends State<OBCommunityPostsCount> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  bool _requestInProgress;
-  bool _hasError;
-  bool _needsBootstrap;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late bool _requestInProgress;
+  late bool _hasError;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -49,7 +49,7 @@ class OBCommunityPostsCountState extends State<OBCommunityPostsCount> {
       stream: widget.community.updateSubject,
       initialData: widget.community,
       builder: (BuildContext context, AsyncSnapshot<Community> snapshot) {
-        var community = snapshot.data;
+        var community = snapshot.data!;
 
         return _hasError
             ? _buildErrorIcon()
@@ -94,8 +94,8 @@ class OBCommunityPostsCountState extends State<OBCommunityPostsCount> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);

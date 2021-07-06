@@ -15,7 +15,7 @@ class OBConnectionsCircleName extends StatelessWidget {
         stream: connectionsCircle.updateSubject,
         initialData: connectionsCircle,
         builder: (BuildContext context, AsyncSnapshot<Circle> snapshot) {
-          var connectionsCircle = snapshot.data;
+          var connectionsCircle = snapshot.data!;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,7 +28,7 @@ class OBConnectionsCircleName extends StatelessWidget {
                 children: <Widget>[
                   Flexible(
                     child: OBPrimaryAccentText(
-                      connectionsCircle.name,
+                      connectionsCircle.name!,
                       size: OBTextSize.extraLarge,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,

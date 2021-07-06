@@ -7,17 +7,17 @@ enum ToastType { info, warning, success, error }
 class ToastService {
   static const Duration toastDuration = Duration(seconds: 3);
   static Color colorError = Colors.redAccent;
-  static Color colorSuccess = Colors.greenAccent[700];
+  static Color colorSuccess = Colors.greenAccent[700]!;
   static Color colorInfo = Colors.blue;
-  static Color colorWarning = Colors.yellow[800];
+  static Color colorWarning = Colors.yellow[800]!;
 
   void warning({
-    String title,
-    @required String message,
-    @required BuildContext context,
-    GlobalKey<ScaffoldState> scaffoldKey,
-    VoidCallback onDismissed,
-    Duration duration,
+    String? title,
+    required String message,
+    required BuildContext context,
+    GlobalKey<ScaffoldState>? scaffoldKey,
+    VoidCallback? onDismissed,
+    Duration? duration,
   }) {
     toast(
         title: title,
@@ -30,13 +30,13 @@ class ToastService {
   }
 
   void success({
-    String title,
-    Widget child,
-    @required String message,
-    @required BuildContext context,
-    GlobalKey<ScaffoldState> scaffoldKey,
-    VoidCallback onDismissed,
-    Duration duration,
+    String? title,
+    Widget? child,
+    required String message,
+    required BuildContext context,
+    GlobalKey<ScaffoldState>? scaffoldKey,
+    VoidCallback? onDismissed,
+    Duration? duration,
   }) {
     toast(
         title: title,
@@ -50,12 +50,12 @@ class ToastService {
   }
 
   void error({
-    String title,
-    @required String message,
-    @required BuildContext context,
-    GlobalKey<ScaffoldState> scaffoldKey,
-    VoidCallback onDismissed,
-    Duration duration,
+    String? title,
+    required String message,
+    required BuildContext context,
+    GlobalKey<ScaffoldState>? scaffoldKey,
+    VoidCallback? onDismissed,
+    Duration? duration,
   }) {
     toast(
         title: title,
@@ -68,13 +68,13 @@ class ToastService {
   }
 
   void info({
-    String title,
-    Widget child,
-    String message,
-    @required BuildContext context,
-    GlobalKey<ScaffoldState> scaffoldKey,
-    VoidCallback onDismissed,
-    Duration duration,
+    String? title,
+    Widget? child,
+    required String message,
+    required BuildContext context,
+    GlobalKey<ScaffoldState>? scaffoldKey,
+    VoidCallback? onDismissed,
+    Duration? duration,
   }) {
     toast(
         title: title,
@@ -88,14 +88,14 @@ class ToastService {
   }
 
   void toast({
-    String title,
-    Widget child,
-    @required String message,
-    @required ToastType type,
-    @required BuildContext context,
-    GlobalKey<ScaffoldState> scaffoldKey,
-    VoidCallback onDismissed,
-    Duration duration,
+    String? title,
+    Widget? child,
+    required String message,
+    required ToastType type,
+    required BuildContext context,
+    GlobalKey<ScaffoldState>? scaffoldKey,
+    VoidCallback? onDismissed,
+    Duration? duration,
   }) {
     if (context != null) {
       OBToast.of(context).showToast(

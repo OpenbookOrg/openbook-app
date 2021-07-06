@@ -3,10 +3,10 @@ import 'package:Okuna/services/string_template.dart';
 import 'package:meta/meta.dart';
 
 class DevicesApiService {
-  HttpieService _httpService;
-  StringTemplateService _stringTemplateService;
+  late HttpieService _httpService;
+  late StringTemplateService _stringTemplateService;
 
-  String apiURL;
+  late String apiURL;
 
   static const DEVICES_PATH = 'api/devices/';
   static const DEVICE_PATH = 'api/devices/{deviceUuid}/';
@@ -34,7 +34,7 @@ class DevicesApiService {
   }
 
   Future<HttpieResponse> createDevice(
-      {@required String uuid, String name}) {
+      {required String uuid, String? name}) {
     String url = _makeApiUrl(DEVICES_PATH);
     Map<String, dynamic> body = {'uuid': uuid};
 
@@ -45,7 +45,7 @@ class DevicesApiService {
   }
 
   Future<HttpieResponse> updateDeviceWithUuid(String deviceUuid,
-      {String name}) {
+      {String? name}) {
     String url = _makeDevicePath(deviceUuid);
 
     Map<String, dynamic> body = {};

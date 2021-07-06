@@ -8,11 +8,11 @@ import 'package:Okuna/widgets/theming/text.dart';
 import 'package:flutter/material.dart';
 
 class OBModeratedObjectActions extends StatelessWidget {
-  final Community community;
+  final Community? community;
   final ModeratedObject moderatedObject;
 
   OBModeratedObjectActions(
-      {@required this.community, @required this.moderatedObject});
+      {required this.community, required this.moderatedObject});
 
   @override
   Widget build(BuildContext context) {

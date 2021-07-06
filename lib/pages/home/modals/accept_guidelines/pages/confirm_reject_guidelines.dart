@@ -19,10 +19,10 @@ class OBConfirmRejectGuidelines<T> extends StatefulWidget {
 }
 
 class OBConfirmRejectGuidelinesState extends State<OBConfirmRejectGuidelines> {
-  bool _confirmationInProgress;
-  UserService _userService;
-  ToastService _toastService;
-  bool _needsBootstrap;
+  late bool _confirmationInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late bool _needsBootstrap;
 
   @override
   void initState() {

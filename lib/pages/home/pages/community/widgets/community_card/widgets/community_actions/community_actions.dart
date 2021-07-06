@@ -10,7 +10,7 @@ import 'package:Okuna/widgets/buttons/community_button.dart';
 import 'package:flutter/material.dart';
 
 class OBCommunityActions extends StatelessWidget {
-  final Community community;
+  final Community? community;
 
   OBCommunityActions(this.community);
 
@@ -21,7 +21,7 @@ class OBCommunityActions extends StatelessWidget {
     UserService userService = openbookProvider.userService;
     LocalizationService localizationService = openbookProvider.localizationService;
 
-    User loggedInUser = userService.getLoggedInUser();
+    User loggedInUser = userService.getLoggedInUser()!;
 
     bool isCommunityAdmin = community?.isAdministrator(loggedInUser) ?? false;
     bool isCommunityModerator = community?.isModerator(loggedInUser) ?? false;
@@ -32,11 +32,11 @@ class OBCommunityActions extends StatelessWidget {
       actions.add(_buildManageButton(navigationService, context, localizationService));
     } else {
       actions.addAll([
-        OBJoinCommunityButton(community),
+        OBJoinCommunityButton(community!),
         const SizedBox(
           width: 10,
         ),
-        OBCommunityActionMore(community)
+        OBCommunityActionMore(community!)
       ]);
     }
 
@@ -48,12 +48,12 @@ class OBCommunityActions extends StatelessWidget {
 
   _buildManageButton(NavigationService navigationService, context, LocalizationService localizationService) {
     return OBCommunityButton(
-        community: community,
+        community: community!,
         isLoading: false,
         text: localizationService.community__actions_manage_text,
         onPressed: () {
           navigationService.navigateToManageCommunity(
-              community: community, context: context);
+              community: community!, context: context);
         });
   }
 }

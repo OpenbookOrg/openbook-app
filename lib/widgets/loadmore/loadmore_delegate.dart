@@ -12,7 +12,7 @@ class OBHomePostsLoadMoreDelegate extends LoadMoreDelegate {
     String text = builder(status);
 
     if (status == LoadMoreStatus.fail) {
-      return OBRetryTile(text: 'Tap to retry loading posts');
+      return OBRetryTile(text: 'Tap to retry loading posts', onWantsToRetry: () {},);
     }
     if (status == LoadMoreStatus.idle) {
       // No clue why is this even a state.

@@ -9,12 +9,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBHashtagPage extends StatefulWidget {
-  final OBHashtagPageController controller;
+  final OBHashtagPageController? controller;
   final Hashtag hashtag;
   final String rawHashtagName;
 
   const OBHashtagPage(
-      {Key key, this.controller, this.hashtag, this.rawHashtagName})
+      {Key? key, this.controller, required this.hashtag, required this.rawHashtagName})
       : super(key: key);
 
   @override
@@ -24,10 +24,10 @@ class OBHashtagPage extends StatefulWidget {
 }
 
 class OBHashtagPageState extends State<OBHashtagPage> {
-  Hashtag _hashtag;
-  bool _needsBootstrap;
-  UserService _userService;
-  OBPostsStreamController _obPostsStreamController;
+  late Hashtag _hashtag;
+  late bool _needsBootstrap;
+  late UserService _userService;
+  late OBPostsStreamController _obPostsStreamController;
 
   @override
   void initState() {
@@ -35,7 +35,7 @@ class OBHashtagPageState extends State<OBHashtagPage> {
     _obPostsStreamController = OBPostsStreamController();
     _needsBootstrap = true;
     _hashtag = widget.hashtag;
-    if (widget.controller != null) widget.controller.attach(this);
+    if (widget.controller != null) widget.controller!.attach(this);
   }
 
   @override
@@ -74,19 +74,19 @@ class OBHashtagPageState extends State<OBHashtagPage> {
   }
 
   Future<void> _refreshHashtag() async {
-    var hashtag = await _userService.getHashtagWithName(_hashtag.name);
+    var hashtag = await _userService.getHashtagWithName(_hashtag.name!);
     _setHashtag(hashtag);
   }
 
   Future<List<Post>> _refreshPosts() async {
-    return (await _userService.getPostsForHashtag(_hashtag)).posts;
+    return (await _userService.getPostsForHashtag(_hashtag)).posts ?? [];
   }
 
   Future<List<Post>> _loadMorePosts(List<Post> posts) async {
     Post lastPost = posts.last;
 
     return (await _userService.getPostsForHashtag(_hashtag, maxId: lastPost.id))
-        .posts;
+        .posts ?? [];
   }
 
   void _setHashtag(Hashtag hashtag) {
@@ -97,15 +97,15 @@ class OBHashtagPageState extends State<OBHashtagPage> {
 }
 
 class OBHashtagPageController {
-  OBHashtagPageState _timelinePageState;
+  OBHashtagPageState? _timelinePageState;
 
-  void attach(OBHashtagPageState hashtagPageState) {
+  void attach(OBHashtagPageState? hashtagPageState) {
     assert(hashtagPageState != null, 'Cannot attach to empty state');
     _timelinePageState = hashtagPageState;
   }
 
   void scrollToTop() {
-    if (_timelinePageState != null) _timelinePageState.scrollToTop();
+    if (_timelinePageState != null) _timelinePageState!.scrollToTop();
   }
 }
 

@@ -15,7 +15,7 @@ class OBPickFollowsListEmojiPage extends StatelessWidget {
       ),
       child: OBPrimaryColorContainer(
         child: OBEmojiPicker(
-          onEmojiPicked: (Emoji pickedEmoji, EmojiGroup emojiGroup) {
+          onEmojiPicked: (Emoji? pickedEmoji, EmojiGroup? emojiGroup) {
             Navigator.pop(context, pickedEmoji);
           },
         ),

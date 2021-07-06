@@ -15,8 +15,8 @@ class OBAuthSplashPage extends StatefulWidget {
 }
 
 class OBAuthSplashPageState extends State<OBAuthSplashPage> {
-  LocalizationService localizationService;
-  CreateAccountBloc createAccountBloc;
+  late LocalizationService localizationService;
+  late CreateAccountBloc createAccountBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +79,7 @@ class OBAuthSplashPageState extends State<OBAuthSplashPage> {
     );
   }
 
-  Widget _buildLoginButton({@required BuildContext context}) {
+  Widget _buildLoginButton({required BuildContext context}) {
     String buttonText = localizationService.trans('auth__login');
 
     return OBSuccessButton(
@@ -100,7 +100,7 @@ class OBAuthSplashPageState extends State<OBAuthSplashPage> {
     );
   }
 
-  Widget _buildCreateAccountButton({@required BuildContext context}) {
+  Widget _buildCreateAccountButton({required BuildContext context}) {
     String buttonText = localizationService.trans('auth__create_account');
 
     return OBSecondaryButton(

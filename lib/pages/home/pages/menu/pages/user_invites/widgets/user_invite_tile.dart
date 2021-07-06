@@ -14,10 +14,10 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 class OBUserInviteTile extends StatefulWidget {
   final UserInvite userInvite;
-  final VoidCallback onUserInviteDeletedCallback;
+  final VoidCallback? onUserInviteDeletedCallback;
 
   OBUserInviteTile(
-      {@required this.userInvite, Key key, this.onUserInviteDeletedCallback})
+      {required this.userInvite, Key? key, this.onUserInviteDeletedCallback})
       : super(key: key);
 
   @override
@@ -27,12 +27,12 @@ class OBUserInviteTile extends StatefulWidget {
 }
 
 class OBUserInviteTileState extends State<OBUserInviteTile> {
-  bool _requestInProgress;
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
+  late bool _requestInProgress;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
 
-  CancelableOperation _deleteOperation;
+  CancelableOperation? _deleteOperation;
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class OBUserInviteTileState extends State<OBUserInviteTile> {
   @override
   void dispose() {
     super.dispose();
-    if (_deleteOperation != null) _deleteOperation.cancel();
+    if (_deleteOperation != null) _deleteOperation!.cancel();
   }
 
   @override
@@ -59,11 +59,11 @@ class OBUserInviteTileState extends State<OBUserInviteTile> {
       tile = ListTile(
           onTap: () {
             navigationService.navigateToUserProfile(
-                user: widget.userInvite.createdUser, context: context);
+                user: widget.userInvite.createdUser!, context: context);
           },
           leading: const OBIcon(OBIcons.invite),
           title: OBText(
-            widget.userInvite.nickname,
+            widget.userInvite.nickname!,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: _buildActionableSecondaryText());
@@ -78,7 +78,7 @@ class OBUserInviteTileState extends State<OBUserInviteTile> {
             },
             leading: const OBIcon(OBIcons.invite),
             title: OBText(
-              widget.userInvite.nickname,
+              widget.userInvite.nickname!,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: _buildActionableSecondaryText()),
@@ -103,7 +103,7 @@ class OBUserInviteTileState extends State<OBUserInviteTile> {
       return OBActionableSmartText(
         size: OBTextSize.mediumSecondary,
         text: _localizationService
-            .user__invites_joined_with(widget.userInvite.createdUser.username),
+            .user__invites_joined_with(widget.userInvite.createdUser!.username!),
       );
     } else {
       return OBSecondaryText(_localizationService.user__invites_pending);
@@ -115,10 +115,10 @@ class OBUserInviteTileState extends State<OBUserInviteTile> {
     try {
       _deleteOperation = CancelableOperation.fromFuture(
           _userService.deleteUserInvite(widget.userInvite));
-      await _deleteOperation.value;
+      await _deleteOperation!.value;
       _setRequestInProgress(false);
       if (widget.onUserInviteDeletedCallback != null) {
-        widget.onUserInviteDeletedCallback();
+        widget.onUserInviteDeletedCallback!();
       }
     } catch (error) {
       _onError(error);
@@ -133,8 +133,8 @@ class OBUserInviteTileState extends State<OBUserInviteTile> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);

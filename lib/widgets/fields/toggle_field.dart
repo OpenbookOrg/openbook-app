@@ -5,22 +5,22 @@ import 'package:flutter/material.dart';
 
 class OBToggleField extends StatelessWidget {
   final bool value;
-  final ValueChanged<bool> onChanged;
-  final VoidCallback onTap;
-  final Widget leading;
+  final ValueChanged<bool>? onChanged;
+  final VoidCallback? onTap;
+  final Widget? leading;
   final String title;
-  final Widget subtitle;
+  final Widget? subtitle;
   final bool hasDivider;
-  final TextStyle titleStyle;
+  final TextStyle? titleStyle;
   final bool isLoading;
 
   const OBToggleField(
-      {Key key,
-      @required this.value,
+      {Key? key,
+      required this.value,
       this.onChanged,
       this.onTap,
       this.leading,
-      @required this.title,
+      required this.title,
       this.subtitle,
       this.hasDivider = true,
       this.titleStyle,

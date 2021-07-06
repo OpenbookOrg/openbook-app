@@ -9,12 +9,12 @@ import 'package:flutter/material.dart';
 class OBModeratedObjectDescription extends StatelessWidget {
   final bool isEditable;
   final ModeratedObject moderatedObject;
-  final ValueChanged<String> onDescriptionChanged;
+  final ValueChanged<String>? onDescriptionChanged;
 
   const OBModeratedObjectDescription(
-      {Key key,
-      @required this.moderatedObject,
-      @required this.isEditable,
+      {Key? key,
+      required this.moderatedObject,
+      required this.isEditable,
       this.onDescriptionChanged})
       : super(key: key);
 
@@ -32,20 +32,20 @@ class OBModeratedObjectDescription extends StatelessWidget {
             if(!isEditable) return;
             OpenbookProviderState openbookProvider =
                 OpenbookProvider.of(context);
-            String newDescription = await openbookProvider.modalService
+            String? newDescription = await openbookProvider.modalService
                 .openModeratedObjectUpdateDescription(
                     context: context, moderatedObject: moderatedObject);
             if (newDescription != null && onDescriptionChanged != null)
-              onDescriptionChanged(newDescription);
+              onDescriptionChanged!(newDescription);
           },
           title: StreamBuilder(
             initialData: moderatedObject,
             stream: moderatedObject.updateSubject,
             builder: (BuildContext context,
                 AsyncSnapshot<ModeratedObject> snapshot) {
-              String description = snapshot.data.description;
+              String? description = snapshot.data?.description;
               return description != null
-                  ? OBText(snapshot.data.description)
+                  ? OBText(description)
                   : OBSecondaryText(
                       'No description',
                       style: TextStyle(fontStyle: FontStyle.italic),

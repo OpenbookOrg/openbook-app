@@ -19,7 +19,7 @@ import 'package:flutter/material.dart';
 class OBSharePostWithCommunityPage extends StatefulWidget {
   final OBNewPostData createPostData;
 
-  const OBSharePostWithCommunityPage({Key key, @required this.createPostData})
+  const OBSharePostWithCommunityPage({Key? key, required this.createPostData})
       : super(key: key);
 
   @override
@@ -30,10 +30,10 @@ class OBSharePostWithCommunityPage extends StatefulWidget {
 
 class OBSharePostWithCommunityPageState
     extends State<OBSharePostWithCommunityPage> {
-  UserService _userService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
 
-  Community _chosenCommunity;
+  Community? _chosenCommunity;
 
   @override
   void initState() {
@@ -74,7 +74,7 @@ class OBSharePostWithCommunityPageState
     );
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
       title: _localizationService.trans('post__share_to_community'),
       trailing: OBButton(
@@ -102,14 +102,14 @@ class OBSharePostWithCommunityPageState
   }
 
   Future<void> createPost() async {
-    widget.createPostData.setCommunity(_chosenCommunity);
+    widget.createPostData.setCommunity(_chosenCommunity!);
 
     Navigator.pop(context, widget.createPostData);
   }
 
   Future<List<Community>> _refreshCommunities() async {
     CommunitiesList communities = await _userService.getJoinedCommunities();
-    return communities.communities;
+    return communities.communities!;
   }
 
   Future<List<Community>> _loadMoreCommunities(
@@ -119,7 +119,7 @@ class OBSharePostWithCommunityPageState
     List<Community> moreCommunities = (await _userService.getJoinedCommunities(
       offset: offset,
     ))
-        .communities;
+        .communities!;
     return moreCommunities;
   }
 
@@ -127,7 +127,7 @@ class OBSharePostWithCommunityPageState
     CommunitiesList results =
         await _userService.searchJoinedCommunities(query: query);
 
-    return results.communities;
+    return results.communities!;
   }
 
   void _onCommunityPressed(Community pressedCommunity) {
@@ -142,7 +142,7 @@ class OBSharePostWithCommunityPageState
     _setChosenCommunity(null);
   }
 
-  void _setChosenCommunity(Community chosenCommunity) {
+  void _setChosenCommunity(Community? chosenCommunity) {
     setState(() {
       _chosenCommunity = chosenCommunity;
     });

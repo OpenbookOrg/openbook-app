@@ -15,7 +15,7 @@ class OBClearApplicationCacheTile extends StatefulWidget {
 
 class OBClearApplicationCacheTileState
     extends State<OBClearApplicationCacheTile> {
-  bool _inProgress;
+  late bool _inProgress;
 
   @override
   initState() {

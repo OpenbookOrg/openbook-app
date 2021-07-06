@@ -12,12 +12,12 @@ import 'package:http_retry/http_retry.dart';
 export 'package:http/http.dart';
 
 class HttpieService {
-  LocalizationService _localizationService;
-  UtilsService _utilsService;
-  String authorizationToken;
-  String magicHeaderName;
-  String magicHeaderValue;
-  Client client;
+  late LocalizationService _localizationService;
+  late UtilsService _utilsService;
+  String? authorizationToken;
+  String? magicHeaderName;
+  String? magicHeaderValue;
+  late Client client;
 
   HttpieService() {
     client = IOClient();
@@ -37,7 +37,7 @@ class HttpieService {
     authorizationToken = token;
   }
 
-  String getAuthorizationToken() {
+  String? getAuthorizationToken() {
     return authorizationToken;
   }
 
@@ -59,27 +59,27 @@ class HttpieService {
   }
 
   void setProxy(String proxy) {
-    var overrides = HttpOverrides.current as HttpieOverrides;
+    var overrides = HttpOverrides.current as HttpieOverrides?;
     if (overrides != null) {
       overrides.setProxy(proxy);
     }
   }
 
   Future<HttpieResponse> post(url,
-      {Map<String, String> headers,
+      {Map<String, String>? headers,
       body,
-      Encoding encoding,
-      bool appendLanguageHeader,
-      bool appendAuthorizationToken}) async {
+      Encoding? encoding,
+      bool? appendLanguageHeader,
+      bool? appendAuthorizationToken}) async {
     var finalHeaders = _getHeadersWithConfig(
         headers: headers,
         appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
 
-    Response response;
+    Response? response;
 
     try {
-      response = await client.post(url,
+      response = await client.post(Uri.parse(url),
           headers: finalHeaders, body: body, encoding: encoding);
     } catch (error) {
       _handleRequestError(error);
@@ -89,20 +89,20 @@ class HttpieService {
   }
 
   Future<HttpieResponse> put(url,
-      {Map<String, String> headers,
+      {Map<String, String>? headers,
       body,
-      Encoding encoding,
-      bool appendLanguageHeader,
-      bool appendAuthorizationToken}) async {
+      Encoding? encoding,
+      bool? appendLanguageHeader,
+      bool? appendAuthorizationToken}) async {
     var finalHeaders = _getHeadersWithConfig(
         headers: headers,
         appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
 
-    Response response;
+    Response? response;
 
     try {
-      response = await client.put(url,
+      response = await client.put(Uri.parse(url),
           headers: finalHeaders, body: body, encoding: encoding);
     } catch (error) {
       _handleRequestError(error);
@@ -111,20 +111,20 @@ class HttpieService {
   }
 
   Future<HttpieResponse> patch(url,
-      {Map<String, String> headers,
+      {Map<String, String>? headers,
       body,
-      Encoding encoding,
-      bool appendLanguageHeader,
-      bool appendAuthorizationToken}) async {
+      Encoding? encoding,
+      bool? appendLanguageHeader,
+      bool? appendAuthorizationToken}) async {
     var finalHeaders = _getHeadersWithConfig(
         headers: headers,
         appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
 
-    Response response;
+    Response? response;
 
     try {
-      response = await client.patch(url,
+      response = await client.patch(Uri.parse(url),
           headers: finalHeaders, body: body, encoding: encoding);
     } catch (error) {
       _handleRequestError(error);
@@ -134,18 +134,18 @@ class HttpieService {
   }
 
   Future<HttpieResponse> delete(url,
-      {Map<String, String> headers,
-      bool appendLanguageHeader,
-      bool appendAuthorizationToken}) async {
+      {Map<String, String>? headers,
+      bool? appendLanguageHeader,
+      bool? appendAuthorizationToken}) async {
     var finalHeaders = _getHeadersWithConfig(
         headers: headers,
         appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
 
-    Response response;
+    Response? response;
 
     try {
-      response = await client.delete(url, headers: finalHeaders);
+      response = await client.delete(Uri.parse(url), headers: finalHeaders);
     } catch (error) {
       _handleRequestError(error);
     }
@@ -156,9 +156,9 @@ class HttpieService {
   Future<HttpieResponse> postJSON(url,
       {Map<String, String> headers = const {},
       body,
-      Encoding encoding,
-      bool appendLanguageHeader,
-      bool appendAuthorizationToken}) {
+      Encoding? encoding,
+      bool? appendLanguageHeader,
+      bool? appendAuthorizationToken}) {
     String jsonBody = json.encode(body);
 
     Map<String, String> jsonHeaders = _getJsonHeaders();
@@ -176,9 +176,9 @@ class HttpieService {
   Future<HttpieResponse> putJSON(url,
       {Map<String, String> headers = const {},
       body,
-      Encoding encoding,
-      bool appendLanguageHeader,
-      bool appendAuthorizationToken}) {
+      Encoding? encoding,
+      bool? appendLanguageHeader,
+      bool? appendAuthorizationToken}) {
     String jsonBody = json.encode(body);
 
     Map<String, String> jsonHeaders = _getJsonHeaders();
@@ -196,9 +196,9 @@ class HttpieService {
   Future<HttpieResponse> patchJSON(url,
       {Map<String, String> headers = const {},
       body,
-      Encoding encoding,
-      bool appendLanguageHeader,
-      bool appendAuthorizationToken}) {
+      Encoding? encoding,
+      bool? appendLanguageHeader,
+      bool? appendAuthorizationToken}) {
     String jsonBody = json.encode(body);
 
     Map<String, String> jsonHeaders = _getJsonHeaders();
@@ -214,10 +214,10 @@ class HttpieService {
   }
 
   Future<HttpieResponse> get(url,
-      {Map<String, String> headers,
-      Map<String, dynamic> queryParameters,
-      bool appendLanguageHeader,
-      bool appendAuthorizationToken}) async {
+      {Map<String, String>? headers,
+      Map<String, dynamic>? queryParameters,
+      bool? appendLanguageHeader,
+      bool? appendAuthorizationToken}) async {
     var finalHeaders = _getHeadersWithConfig(
         headers: headers,
         appendLanguageHeader: appendLanguageHeader,
@@ -227,10 +227,10 @@ class HttpieService {
       url = url + _makeQueryString(queryParameters);
     }
 
-    Response response;
+    Response? response;
 
     try {
-      response = await client.get(url, headers: finalHeaders);
+      response = await client.get(Uri.parse(url), headers: finalHeaders);
     } catch (error) {
       _handleRequestError(error);
     }
@@ -239,11 +239,11 @@ class HttpieService {
   }
 
   Future<HttpieStreamedResponse> postMultiform(String url,
-      {Map<String, String> headers,
-      Map<String, dynamic> body,
-      Encoding encoding,
-      bool appendLanguageHeader,
-      bool appendAuthorizationToken}) {
+      {Map<String, String>? headers,
+      Map<String, dynamic>? body,
+      Encoding? encoding,
+      bool? appendLanguageHeader,
+      bool? appendAuthorizationToken}) {
     return _multipartRequest(url,
         method: 'POST',
         headers: headers,
@@ -254,11 +254,11 @@ class HttpieService {
   }
 
   Future<HttpieStreamedResponse> patchMultiform(String url,
-      {Map<String, String> headers,
-      Map<String, dynamic> body,
-      Encoding encoding,
-      bool appendLanguageHeader,
-      bool appendAuthorizationToken}) {
+      {Map<String, String>? headers,
+      Map<String, dynamic>? body,
+      Encoding? encoding,
+      bool? appendLanguageHeader,
+      bool? appendAuthorizationToken}) {
     return _multipartRequest(url,
         method: 'PATCH',
         headers: headers,
@@ -269,11 +269,11 @@ class HttpieService {
   }
 
   Future<HttpieStreamedResponse> putMultiform(String url,
-      {Map<String, String> headers,
-      Map<String, dynamic> body,
-      Encoding encoding,
-      bool appendLanguageHeader,
-      bool appendAuthorizationToken}) {
+      {Map<String, String>? headers,
+      Map<String, dynamic>? body,
+      Encoding? encoding,
+      bool? appendLanguageHeader,
+      bool? appendAuthorizationToken}) {
     return _multipartRequest(url,
         method: 'PUT',
         headers: headers,
@@ -284,12 +284,12 @@ class HttpieService {
   }
 
   Future<HttpieStreamedResponse> _multipartRequest(String url,
-      {Map<String, String> headers,
-      String method,
-      Map<String, dynamic> body,
-      Encoding encoding,
-      bool appendLanguageHeader,
-      bool appendAuthorizationToken}) async {
+      {Map<String, String>? headers,
+      required String method,
+      Map<String, dynamic>? body,
+      Encoding? encoding,
+      bool? appendLanguageHeader,
+      bool? appendAuthorizationToken}) async {
     var request = new http.MultipartRequest(method, Uri.parse(url));
 
     var finalHeaders = _getHeadersWithConfig(
@@ -301,35 +301,38 @@ class HttpieService {
 
     List<Future> fileFields = [];
 
-    List<String> bodyKeys = body.keys.toList();
+    List<String>? bodyKeys = body?.keys.toList();
 
-    for (final String key in bodyKeys) {
-      dynamic value = body[key];
-      if (value is String || value is bool) {
-        request.fields[key] = value.toString();
-      } else if (value is List) {
-        request.fields[key] =
-            value.map((item) => item.toString()).toList().join(',');
-      } else if (value is File) {
-        String fileMimeType = await _utilsService.getFileMimeType(value) ??
-            'application/octet-stream';
+    if (bodyKeys != null) {
+      for (final String key in bodyKeys) {
+        dynamic value = body![key];
+        if (value is String || value is bool) {
+          request.fields[key] = value.toString();
+        } else if (value is List) {
+          request.fields[key] =
+              value.map((item) => item.toString()).toList().join(',');
+        } else if (value is File) {
+          String fileMimeType = await _utilsService.getFileMimeType(value);
 
-        String fileExtension =
-            _utilsService.getFileExtensionForMimeType(fileMimeType);
+          String? fileExtension =
+              _utilsService.getFileExtensionForMimeType(fileMimeType);
 
-        var bytes = utf8.encode(value.path);
-        var digest = sha256.convert(bytes);
+          var bytes = utf8.encode(value.path);
+          var digest = sha256.convert(bytes);
 
-        String newFileName = digest.toString() + '.' + fileExtension;
+          String newFileName = fileExtension == null
+            ? digest.toString()
+            : digest.toString() + '.' + fileExtension;
 
-        MediaType fileMediaType = MediaType.parse(fileMimeType);
+          MediaType fileMediaType = MediaType.parse(fileMimeType);
 
-        var fileFuture = http.MultipartFile.fromPath(key, value.path,
-            filename: newFileName, contentType: fileMediaType);
+          var fileFuture = http.MultipartFile.fromPath(key, value.path,
+              filename: newFileName, contentType: fileMediaType);
 
-        fileFields.add(fileFuture);
-      } else {
-        throw HttpieArgumentsError('Unsupported multiform value type');
+          fileFields.add(fileFuture);
+        } else {
+          throw HttpieArgumentsError('Unsupported multiform value type');
+        }
       }
     }
 
@@ -352,9 +355,9 @@ class HttpieService {
   }
 
   Map<String, String> _getHeadersWithConfig(
-      {Map<String, String> headers = const {},
-      bool appendLanguageHeader,
-      bool appendAuthorizationToken}) {
+      {Map<String, String>? headers = const {},
+      bool? appendLanguageHeader,
+      bool? appendAuthorizationToken}) {
     headers = headers ?? {};
 
     Map<String, String> finalHeaders = Map.from(headers);
@@ -369,7 +372,7 @@ class HttpieService {
     }
 
     if (magicHeaderName != null && magicHeaderValue != null) {
-      finalHeaders[magicHeaderName] = magicHeaderValue;
+      finalHeaders[magicHeaderName!] = magicHeaderValue!;
     }
 
     return finalHeaders;
@@ -377,7 +380,7 @@ class HttpieService {
 
   void _handleRequestError(error) {
     if (error is SocketException) {
-      var errorCode = error.osError.errorCode;
+      var errorCode = error.osError?.errorCode;
       if (errorCode == 61 ||
           errorCode == 60 ||
           errorCode == 111 ||
@@ -536,7 +539,7 @@ class HttpieRequestError<T extends HttpieBaseResponse> implements Exception {
   }
 
   Future<String> body() async {
-    String body;
+    late String body;
 
     if (response is HttpieResponse) {
       HttpieResponse castedResponse = this.response as HttpieResponse;
@@ -549,7 +552,7 @@ class HttpieRequestError<T extends HttpieBaseResponse> implements Exception {
     return body;
   }
 
-  Future<String> toHumanReadableMessage() async {
+  Future<String?> toHumanReadableMessage() async {
     String errorBody = await body();
 
     try {
@@ -576,6 +579,8 @@ class HttpieRequestError<T extends HttpieBaseResponse> implements Exception {
       } else if (parsedError is List && parsedError.isNotEmpty) {
         return parsedError.first;
       }
+
+      return null;
     } catch (error) {
       return convertStatusCodeToHumanReadableMessage(response.statusCode);
     }
@@ -611,8 +616,8 @@ class HttpieArgumentsError implements Exception {
 // used by any other package, as long as they're running inside a zone with
 // these set.
 class HttpieOverrides extends HttpOverrides {
-  String _proxy;
-  final HttpOverrides _previous = HttpOverrides.current;
+  String? _proxy;
+  final HttpOverrides? _previous = HttpOverrides.current;
 
   HttpieOverrides();
 
@@ -621,15 +626,15 @@ class HttpieOverrides extends HttpOverrides {
   }
 
   @override
-  HttpClient createHttpClient(SecurityContext context) {
-    if (_previous != null) return _previous.createHttpClient(context);
+  HttpClient createHttpClient(SecurityContext? context) {
+    if (_previous != null) return _previous!.createHttpClient(context);
     return super.createHttpClient(context);
   }
 
   @override
-  String findProxyFromEnvironment(Uri uri, Map<String, String> environment) {
-    if (_proxy != null) return _proxy;
-    if (_previous != null) return _previous.findProxyFromEnvironment(uri, environment);
+  String findProxyFromEnvironment(Uri uri, Map<String, String>? environment) {
+    if (_proxy != null) return _proxy!;
+    if (_previous != null) return _previous!.findProxyFromEnvironment(uri, environment);
     return super.findProxyFromEnvironment(uri, environment);
   }
 }

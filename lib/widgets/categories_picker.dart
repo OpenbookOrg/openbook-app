@@ -10,15 +10,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBCategoriesPicker extends StatefulWidget {
-  final List<Category> initialCategories;
+  final List<Category>? initialCategories;
   final ValueChanged<List<Category>> onChanged;
   final maxSelections;
 
   const OBCategoriesPicker(
-      {Key key,
+      {Key? key,
       this.initialCategories,
       this.maxSelections,
-      @required this.onChanged})
+      required this.onChanged})
       : super(key: key);
 
   @override
@@ -28,16 +28,16 @@ class OBCategoriesPicker extends StatefulWidget {
 }
 
 class OBCategoriesPickerState extends State<OBCategoriesPicker> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  bool _hasError;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late bool _hasError;
 
-  bool _needsBootstrap;
-  bool _requestInProgress;
+  late bool _needsBootstrap;
+  late bool _requestInProgress;
 
-  List<Category> _categories;
-  List<Category> _pickedCategories;
+  late List<Category> _categories;
+  late List<Category> _pickedCategories;
 
   @override
   void initState() {
@@ -45,7 +45,7 @@ class OBCategoriesPickerState extends State<OBCategoriesPicker> {
     _categories = [];
     _pickedCategories = widget.initialCategories == null
         ? []
-        : widget.initialCategories.toList();
+        : widget.initialCategories!.toList();
     _needsBootstrap = true;
     _requestInProgress = true;
     _hasError = true;
@@ -131,9 +131,9 @@ class OBCategoriesPickerState extends State<OBCategoriesPicker> {
     });
   }
 
-  void _setCategories(List<Category> categories) {
+  void _setCategories(List<Category>? categories) {
     setState(() {
-      _categories = categories;
+      _categories = categories ?? [];
     });
   }
 
@@ -154,8 +154,8 @@ class OBCategoriesPickerState extends State<OBCategoriesPicker> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);

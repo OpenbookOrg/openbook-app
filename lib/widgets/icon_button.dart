@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 class OBIconButton extends StatelessWidget {
   final OBIconData iconData;
-  final OBIconSize size;
-  final double customSize;
-  final Color color;
-  final OBIconThemeColor themeColor;
-  final VoidCallback onPressed;
+  final OBIconSize? size;
+  final double? customSize;
+  final Color? color;
+  final OBIconThemeColor? themeColor;
+  final VoidCallback? onPressed;
 
   OBIconButton(this.iconData,
       {this.size,

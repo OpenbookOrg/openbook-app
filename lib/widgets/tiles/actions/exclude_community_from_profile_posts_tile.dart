@@ -14,9 +14,9 @@ class OBExcludeCommunityFromProfilePostsTile extends StatefulWidget {
   final ValueChanged<Community> onPostCommunityExcludedFromProfilePosts;
 
   const OBExcludeCommunityFromProfilePostsTile({
-    Key key,
-    @required this.post,
-    @required this.onPostCommunityExcludedFromProfilePosts,
+    Key? key,
+    required this.post,
+    required this.onPostCommunityExcludedFromProfilePosts,
   }) : super(key: key);
 
   @override
@@ -27,10 +27,10 @@ class OBExcludeCommunityFromProfilePostsTile extends StatefulWidget {
 
 class OBExcludeCommunityFromProfilePostsTileState
     extends State<OBExcludeCommunityFromProfilePostsTile> {
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  BottomSheetService _bottomSheetService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late BottomSheetService _bottomSheetService;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,7 @@ class OBExcludeCommunityFromProfilePostsTileState
         actionCompleter: (BuildContext context) async {
           await _excludePostCommunity();
 
-          widget.onPostCommunityExcludedFromProfilePosts(widget.post.community);
+          widget.onPostCommunityExcludedFromProfilePosts(widget.post.community!);
           _toastService.success(
               message: _localizationService.post__exclude_community_from_profile_posts_success,
               context: context);
@@ -64,6 +64,6 @@ class OBExcludeCommunityFromProfilePostsTileState
   }
 
   Future _excludePostCommunity() async {
-    return _userService.excludeCommunityFromProfilePosts(widget.post.community);
+    return _userService.excludeCommunityFromProfilePosts(widget.post.community!);
   }
 }

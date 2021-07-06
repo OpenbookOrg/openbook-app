@@ -10,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBEmojiPicker extends StatefulWidget {
-  final OnEmojiPicked onEmojiPicked;
+  final OnEmojiPicked? onEmojiPicked;
   final bool isReactionsPicker;
   final bool hasSearch;
 
@@ -26,14 +26,14 @@ class OBEmojiPicker extends StatefulWidget {
 }
 
 class OBEmojiPickerState extends State<OBEmojiPicker> {
-  UserService _userService;
+  late UserService _userService;
 
-  bool _needsBootstrap;
-  bool _hasSearch;
+  late bool _needsBootstrap;
+  late bool _hasSearch;
 
-  List<EmojiGroup> _emojiGroups;
-  List<EmojiGroupSearchResults> _emojiSearchResults;
-  String _emojiSearchQuery;
+  late List<EmojiGroup> _emojiGroups;
+  late List<EmojiGroupSearchResults> _emojiSearchResults;
+  late String _emojiSearchQuery;
 
   @override
   void initState() {
@@ -79,8 +79,12 @@ class OBEmojiPickerState extends State<OBEmojiPicker> {
     );
   }
 
-  void _onEmojiPressed(Emoji pressedEmoji, EmojiGroup emojiGroup) {
-    widget.onEmojiPicked(pressedEmoji, emojiGroup);
+  void _onEmojiPressed(Emoji pressedEmoji, EmojiGroup? emojiGroup) {
+    if (widget.onEmojiPicked == null) {
+      return;
+    }
+
+    widget.onEmojiPicked!(pressedEmoji, emojiGroup);
   }
 
   void _onSearch(String searchString) {
@@ -95,9 +99,9 @@ class OBEmojiPickerState extends State<OBEmojiPicker> {
 
     List<EmojiGroupSearchResults> searchResults =
         _emojiGroups.map((EmojiGroup emojiGroup) {
-      List<Emoji> groupEmojis = emojiGroup.getEmojis();
+      List<Emoji> groupEmojis = emojiGroup.getEmojis()!;
       List<Emoji> groupSearchResults = groupEmojis.where((Emoji emoji) {
-        return emoji.keyword.toLowerCase().contains(standarisedSearchStr);
+        return emoji.keyword!.toLowerCase().contains(standarisedSearchStr);
       }).toList();
       return EmojiGroupSearchResults(
           group: emojiGroup, searchResults: groupSearchResults);
@@ -111,7 +115,7 @@ class OBEmojiPickerState extends State<OBEmojiPicker> {
     EmojiGroupList emojiGroupList = await (widget.isReactionsPicker
         ? _userService.getReactionEmojiGroups()
         : _userService.getEmojiGroups());
-    this._setEmojiGroups(emojiGroupList.emojisGroups);
+    this._setEmojiGroups(emojiGroupList.emojisGroups!);
   }
 
   void _setEmojiGroups(List<EmojiGroup> emojiGroups) {
@@ -142,11 +146,11 @@ class OBEmojiPickerState extends State<OBEmojiPicker> {
 
 enum OBEmojiPickerStatus { searching, suggesting, overview }
 
-typedef void OnEmojiPicked(Emoji pickedEmoji, EmojiGroup emojiGroup);
+typedef void OnEmojiPicked(Emoji pickedEmoji, EmojiGroup? emojiGroup);
 
 class EmojiGroupSearchResults {
   final EmojiGroup group;
   final List<Emoji> searchResults;
 
-  EmojiGroupSearchResults({@required this.group, @required this.searchResults});
+  EmojiGroupSearchResults({required this.group, required this.searchResults});
 }

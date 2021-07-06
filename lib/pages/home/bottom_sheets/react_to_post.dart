@@ -24,11 +24,11 @@ class OBReactToPostBottomSheet extends StatefulWidget {
 }
 
 class OBReactToPostBottomSheetState extends State<OBReactToPostBottomSheet> {
-  UserService _userService;
-  ToastService _toastService;
+  late UserService _userService;
+  late ToastService _toastService;
 
-  bool _isReactToPostInProgress;
-  CancelableOperation _reactOperation;
+  late bool _isReactToPostInProgress;
+  CancelableOperation? _reactOperation;
 
   @override
   void initState() {
@@ -39,7 +39,7 @@ class OBReactToPostBottomSheetState extends State<OBReactToPostBottomSheet> {
   @override
   void dispose() {
     super.dispose();
-    if (_reactOperation != null) _reactOperation.cancel();
+    if (_reactOperation != null) _reactOperation!.cancel();
   }
 
   @override
@@ -73,7 +73,7 @@ class OBReactToPostBottomSheetState extends State<OBReactToPostBottomSheet> {
     );
   }
 
-  Future<void> _reactToPost(Emoji emoji, EmojiGroup emojiGroup) async {
+  Future<void> _reactToPost(Emoji emoji, EmojiGroup? emojiGroup) async {
     if (_isReactToPostInProgress) return null;
     _setReactToPostInProgress(true);
 
@@ -81,7 +81,7 @@ class OBReactToPostBottomSheetState extends State<OBReactToPostBottomSheet> {
       _reactOperation = CancelableOperation.fromFuture(_userService.reactToPost(
           post: widget.post, emoji: emoji));
 
-      PostReaction postReaction = await _reactOperation.value;
+      PostReaction postReaction = await _reactOperation!.value;
       widget.post.setReaction(postReaction);
       // Remove modal
       Navigator.pop(context);
@@ -99,8 +99,8 @@ class OBReactToPostBottomSheetState extends State<OBReactToPostBottomSheet> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;

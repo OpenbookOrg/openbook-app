@@ -9,9 +9,9 @@ import 'package:rxdart/rxdart.dart';
 import 'localization.dart';
 
 class UserPreferencesService {
-  LocalizationService _localizationService;
-  OBStorage _storage;
-  ConnectivityService _connectivityService;
+  late LocalizationService _localizationService;
+  late OBStorage _storage;
+  late ConnectivityService _connectivityService;
 
   static const postCommentsSortTypeStorageKey = 'postCommentsSortType';
   static const videosAutoPlaySettingStorageKey = 'videosAutoPlaySetting';
@@ -19,10 +19,10 @@ class UserPreferencesService {
   static const videosSoundSettingStorageKey = 'videoSoundSetting';
   static const hashtagsDisplaySettingStorageKey = 'hashtagsSetting';
 
-  ConnectivityResult _currentConnectivity;
-  StreamSubscription _connectivityChangeSubscription;
+  ConnectivityResult? _currentConnectivity;
+  StreamSubscription? _connectivityChangeSubscription;
 
-  Future _getPostCommentsSortTypeCache;
+  Future<PostCommentsSortType>? _getPostCommentsSortTypeCache;
 
   Stream<bool> get videosAutoPlayAreEnabledChange =>
       _videosAutoPlayEnabledChangeSubject.stream;
@@ -56,7 +56,7 @@ class UserPreferencesService {
   final _videosAutoPlaySettingChangeSubject =
       BehaviorSubject<VideosAutoPlaySetting>();
 
-  HashtagsDisplaySetting currentHashtagsDisplaySetting;
+  HashtagsDisplaySetting? currentHashtagsDisplaySetting;
 
   Stream<HashtagsDisplaySetting> get hashtagsDisplaySettingChange =>
       _hashtagsDisplaySettingChangeSubject.stream;
@@ -77,8 +77,10 @@ class UserPreferencesService {
     _connectivityChangeSubscription =
         _connectivityService.onConnectivityChange(_onConnectivityChange);
 
-    HashtagsDisplaySetting hashtagsDisplaySetting = await getHashtagsDisplaySetting();
-    _hashtagsDisplaySettingChangeSubject.add(hashtagsDisplaySetting);
+    HashtagsDisplaySetting? hashtagsDisplaySetting = await getHashtagsDisplaySetting();
+    if (hashtagsDisplaySetting != null) {
+      _hashtagsDisplaySettingChangeSubject.add(hashtagsDisplaySetting);
+    }
   }
 
   void _onConnectivityChange(ConnectivityResult newConnectivity) {
@@ -115,9 +117,9 @@ class UserPreferencesService {
     _refreshLinkPreviewsAreEnabled();
   }
 
-  Future<LinkPreviewsSetting> getLinkPreviewsSetting() async {
-    String rawValue = await _storage.get(linkPreviewsSettingStorageKey,
-        defaultValue: LinkPreviewsSetting.always.toString());
+  Future<LinkPreviewsSetting?> getLinkPreviewsSetting() async {
+    String rawValue = (await _storage.get(linkPreviewsSettingStorageKey,
+        defaultValue: LinkPreviewsSetting.always.toString()))!;
     return LinkPreviewsSetting.parse(rawValue);
   }
 
@@ -144,9 +146,9 @@ class UserPreferencesService {
     _refreshVideosAutoPlayAreEnabled();
   }
 
-  Future<VideosAutoPlaySetting> getVideosAutoPlaySetting() async {
-    String rawValue = await _storage.get(videosAutoPlaySettingStorageKey,
-        defaultValue: VideosAutoPlaySetting.wifiOnly.toString());
+  Future<VideosAutoPlaySetting?> getVideosAutoPlaySetting() async {
+    String rawValue = (await _storage.get(videosAutoPlaySettingStorageKey,
+        defaultValue: VideosAutoPlaySetting.wifiOnly.toString()))!;
     return VideosAutoPlaySetting.parse(rawValue);
   }
 
@@ -167,9 +169,9 @@ class UserPreferencesService {
     return _storage.set(videosSoundSettingStorageKey, rawValue);
   }
 
-  Future<VideosSoundSetting> getVideosSoundSetting() async {
-    String rawValue = await _storage.get(videosSoundSettingStorageKey,
-        defaultValue: VideosSoundSetting.disabled.toString());
+  Future<VideosSoundSetting?> getVideosSoundSetting() async {
+    String rawValue = (await _storage.get(videosSoundSettingStorageKey,
+        defaultValue: VideosSoundSetting.disabled.toString()))!;
     return VideosSoundSetting.parse(rawValue);
   }
 
@@ -190,9 +192,9 @@ class UserPreferencesService {
     return _storage.set(hashtagsDisplaySettingStorageKey, rawValue);
   }
 
-  Future<HashtagsDisplaySetting> getHashtagsDisplaySetting() async {
-    String rawValue = await _storage.get(hashtagsDisplaySettingStorageKey,
-        defaultValue: HashtagsDisplaySetting.traditional.toString());
+  Future<HashtagsDisplaySetting?> getHashtagsDisplaySetting() async {
+    String rawValue = (await _storage.get(hashtagsDisplaySettingStorageKey,
+        defaultValue: HashtagsDisplaySetting.traditional.toString()))!;
     return HashtagsDisplaySetting.parse(rawValue);
   }
 
@@ -214,13 +216,13 @@ class UserPreferencesService {
 
   Future<PostCommentsSortType> getPostCommentsSortType() async {
     if (_getPostCommentsSortTypeCache != null)
-      return _getPostCommentsSortTypeCache;
+      return _getPostCommentsSortTypeCache!;
     _getPostCommentsSortTypeCache = _getPostCommentsSortType();
-    return _getPostCommentsSortTypeCache;
+    return _getPostCommentsSortTypeCache!;
   }
 
   Future<PostCommentsSortType> _getPostCommentsSortType() async {
-    String rawType = await _storage.get(postCommentsSortTypeStorageKey);
+    String? rawType = await _storage.get(postCommentsSortTypeStorageKey);
     if (rawType == null) {
       PostCommentsSortType defaultSortType = _getDefaultPostCommentsSortType();
       await setPostCommentsSortType(defaultSortType);
@@ -239,7 +241,7 @@ class UserPreferencesService {
   }
 
   void _refreshLinkPreviewsAreEnabled() async {
-    LinkPreviewsSetting currentLinkPreviewsSetting =
+    LinkPreviewsSetting? currentLinkPreviewsSetting =
         await getLinkPreviewsSetting();
     _linkPreviewsAreEnabled =
         currentLinkPreviewsSetting == LinkPreviewsSetting.always ||
@@ -249,7 +251,7 @@ class UserPreferencesService {
   }
 
   void _refreshVideosAutoPlayAreEnabled() async {
-    VideosAutoPlaySetting currentVideosAutoPlaySetting =
+    VideosAutoPlaySetting? currentVideosAutoPlaySetting =
         await getVideosAutoPlaySetting();
     _videosAutoPlayAreEnabled =
         currentVideosAutoPlaySetting == VideosAutoPlaySetting.always ||
@@ -278,10 +280,10 @@ class VideosAutoPlaySetting {
 
   static values() => _values;
 
-  static VideosAutoPlaySetting parse(String string) {
+  static VideosAutoPlaySetting? parse(String? string) {
     if (string == null) return null;
 
-    VideosAutoPlaySetting autoPlaySetting;
+    VideosAutoPlaySetting? autoPlaySetting;
     for (var type in _values) {
       if (string == type.code) {
         autoPlaySetting = type;
@@ -312,10 +314,10 @@ class VideosSoundSetting {
 
   static values() => _values;
 
-  static VideosSoundSetting parse(String string) {
+  static VideosSoundSetting? parse(String? string) {
     if (string == null) return null;
 
-    VideosSoundSetting soundSetting;
+    VideosSoundSetting? soundSetting;
     for (var type in _values) {
       if (string == type.code) {
         soundSetting = type;
@@ -347,10 +349,10 @@ class LinkPreviewsSetting {
 
   static values() => _values;
 
-  static LinkPreviewsSetting parse(String string) {
+  static LinkPreviewsSetting? parse(String? string) {
     if (string == null) return null;
 
-    LinkPreviewsSetting autoPlaySetting;
+    LinkPreviewsSetting? autoPlaySetting;
     for (var type in _values) {
       if (string == type.code) {
         autoPlaySetting = type;
@@ -381,10 +383,10 @@ class HashtagsDisplaySetting {
 
   static values() => _values;
 
-  static HashtagsDisplaySetting parse(String string) {
+  static HashtagsDisplaySetting? parse(String? string) {
     if (string == null) return null;
 
-    HashtagsDisplaySetting setting;
+    HashtagsDisplaySetting? setting;
     for (var type in _values) {
       if (string == type.code) {
         setting = type;

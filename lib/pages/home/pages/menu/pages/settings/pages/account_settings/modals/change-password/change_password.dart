@@ -21,20 +21,20 @@ class OBChangePasswordModal extends StatefulWidget {
 }
 
 class OBChangePasswordModalState extends State<OBChangePasswordModal> {
-  ValidationService _validationService;
-  ToastService _toastService;
-  UserService _userService;
-  LocalizationService _localizationService;
+  late ValidationService _validationService;
+  late ToastService _toastService;
+  late UserService _userService;
+  late LocalizationService _localizationService;
   static const double INPUT_ICONS_SIZE = 16;
   static const EdgeInsetsGeometry INPUT_CONTENT_PADDING =
       EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _requestInProgress = false;
   bool _formWasSubmitted = false;
-  bool _isPasswordValid = true;
+  bool? _isPasswordValid = true;
   bool _formValid = true;
-  TextEditingController _currentPasswordController = TextEditingController();
-  TextEditingController _newPasswordController = TextEditingController();
+  late TextEditingController _currentPasswordController = TextEditingController();
+  late TextEditingController _newPasswordController = TextEditingController();
 
   @override
   void initState() {
@@ -76,14 +76,14 @@ class OBChangePasswordModalState extends State<OBChangePasswordModal> {
                         hintText: _localizationService
                             .auth__change_password_current_pwd_hint,
                       ),
-                      validator: (String password) {
+                      validator: (String? password) {
                         if (!_formWasSubmitted) return null;
-                        if (_isPasswordValid != null && !_isPasswordValid) {
+                        if (_isPasswordValid != null && !_isPasswordValid!) {
                           _setIsPasswordValid(true);
                           return _localizationService
                               .auth__change_password_current_pwd_incorrect;
                         }
-                        String validatePassword =
+                        String? validatePassword =
                             _validationService.validateUserPassword(password);
                         if (validatePassword != null) return validatePassword;
 
@@ -100,10 +100,10 @@ class OBChangePasswordModalState extends State<OBChangePasswordModal> {
                               .auth__change_password_new_pwd,
                           hintText: _localizationService
                               .auth__change_password_new_pwd_hint),
-                      validator: (String newPassword) {
+                      validator: (String? newPassword) {
                         if (!_formWasSubmitted) return null;
                         if (!_validationService
-                            .isPasswordAllowedLength(newPassword)) {
+                            .isPasswordAllowedLength(newPassword ?? '')) {
                           return _localizationService
                               .auth__change_password_new_pwd_error;
                         }
@@ -115,7 +115,7 @@ class OBChangePasswordModalState extends State<OBChangePasswordModal> {
         ));
   }
 
-  Widget _buildNavigationBar() {
+  ObstructingPreferredSizeWidget _buildNavigationBar() {
     return OBThemedNavigationBar(
       leading: GestureDetector(
         child: const OBIcon(OBIcons.close),
@@ -135,7 +135,7 @@ class OBChangePasswordModalState extends State<OBChangePasswordModal> {
   }
 
   bool _validateForm() {
-    return _formKey.currentState.validate();
+    return _formKey.currentState?.validate() ?? false;
   }
 
   bool _updateFormValid() {
@@ -175,8 +175,8 @@ class OBChangePasswordModalState extends State<OBChangePasswordModal> {
         _setIsPasswordValid(false);
         _validateForm();
       }
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);

@@ -5,10 +5,10 @@ import 'package:Okuna/services/string_template.dart';
 import 'package:meta/meta.dart';
 
 class CommunitiesApiService {
-  HttpieService _httpService;
-  StringTemplateService _stringTemplateService;
+  late HttpieService _httpService;
+  late StringTemplateService _stringTemplateService;
 
-  String apiURL;
+  late String apiURL;
 
   static const SEARCH_COMMUNITIES_PATH = 'api/communities/search/';
   static const GET_TRENDING_COMMUNITIES_PATH = 'api/communities/trending/';
@@ -103,13 +103,13 @@ class CommunitiesApiService {
     apiURL = newApiURL;
   }
 
-  Future<HttpieResponse> checkNameIsAvailable({@required String name}) {
+  Future<HttpieResponse> checkNameIsAvailable({required String name}) {
     return _httpService.postJSON('$apiURL$CHECK_COMMUNITY_NAME_PATH',
         body: {'name': name}, appendAuthorizationToken: true);
   }
 
   Future<HttpieResponse> getTrendingCommunities(
-      {bool authenticatedRequest = true, String category}) {
+      {bool authenticatedRequest = true, String? category}) {
     Map<String, dynamic> queryParams = {};
 
     if (category != null) queryParams['category'] = category;
@@ -127,9 +127,9 @@ class CommunitiesApiService {
 
   Future<HttpieStreamedResponse> createPostForCommunityWithId(
       String communityName,
-      {String text,
-      File image,
-      File video,
+      {String? text,
+      File? image,
+      File? video,
       bool isDraft = false}) {
     Map<String, dynamic> body = {};
 
@@ -156,7 +156,7 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> getPostsForCommunityWithName(String communityName,
-      {int maxId, int count, bool authenticatedRequest = true}) {
+      {int? maxId, int? count, bool authenticatedRequest = true}) {
     Map<String, dynamic> queryParams = {};
 
     if (count != null) queryParams['count'] = count;
@@ -180,8 +180,8 @@ class CommunitiesApiService {
 
   Future<HttpieResponse> getClosedPostsForCommunityWithName(
       String communityName,
-      {int maxId,
-      int count,
+      {int? maxId,
+      int? count,
       bool authenticatedRequest = true}) {
     Map<String, dynamic> queryParams = {};
 
@@ -198,8 +198,8 @@ class CommunitiesApiService {
 
   Future<HttpieResponse> searchCommunitiesWithQuery(
       {bool authenticatedRequest = true,
-      @required String query,
-      bool excludedFromProfilePosts}) {
+      required String query,
+      bool? excludedFromProfilePosts}) {
     Map<String, dynamic> queryParams = {'query': query};
 
     if (excludedFromProfilePosts != null)
@@ -219,18 +219,18 @@ class CommunitiesApiService {
   }
 
   Future<HttpieStreamedResponse> createCommunity(
-      {@required String name,
-      @required String title,
-      @required List<String> categories,
-      @required String type,
-      bool invitesEnabled,
-      String color,
-      String userAdjective,
-      String usersAdjective,
-      String description,
-      String rules,
-      File cover,
-      File avatar}) {
+      {required String name,
+      required String title,
+      required List<String> categories,
+      required String type,
+      bool? invitesEnabled,
+      String? color,
+      String? userAdjective,
+      String? usersAdjective,
+      String? description,
+      String? rules,
+      File? cover,
+      File? avatar}) {
     Map<String, dynamic> body = {
       'name': name,
       'title': title,
@@ -275,16 +275,16 @@ class CommunitiesApiService {
   }
 
   Future<HttpieStreamedResponse> updateCommunityWithName(String communityName,
-      {String name,
-      String title,
-      List<String> categories,
-      bool invitesEnabled,
-      String type,
-      String color,
-      String userAdjective,
-      String usersAdjective,
-      String description,
-      String rules}) {
+      {String? name,
+      String? title,
+      List<String>? categories,
+      bool? invitesEnabled,
+      String? type,
+      String? color,
+      String? userAdjective,
+      String? usersAdjective,
+      String? description,
+      String? rules}) {
     Map<String, dynamic> body = {};
 
     if (name != null) {
@@ -335,7 +335,7 @@ class CommunitiesApiService {
 
   Future<HttpieStreamedResponse> updateAvatarForCommunityWithName(
       String communityName,
-      {File avatar}) {
+      {File? avatar}) {
     Map<String, dynamic> body = {'avatar': avatar};
 
     return _httpService.putMultiform(
@@ -353,7 +353,7 @@ class CommunitiesApiService {
 
   Future<HttpieStreamedResponse> updateCoverForCommunityWithName(
       String communityName,
-      {File cover}) {
+      {File? cover}) {
     Map<String, dynamic> body = {'cover': cover};
 
     return _httpService.putMultiform(
@@ -376,7 +376,7 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> getMembersForCommunityWithId(String communityName,
-      {int count, int maxId, List<String> exclude}) {
+      {int? count, int? maxId, List<String>? exclude}) {
     Map<String, dynamic> queryParams = {};
     if (count != null) queryParams['count'] = count;
 
@@ -391,9 +391,9 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> searchMembers(
-      {@required String communityName,
-      @required String query,
-      List<String> exclude}) {
+      {required String communityName,
+      required String query,
+      List<String>? exclude}) {
     Map<String, dynamic> queryParams = {'query': query};
 
     if (exclude != null && exclude.isNotEmpty) queryParams['exclude'] = exclude;
@@ -405,7 +405,7 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> inviteUserToCommunity(
-      {@required String communityName, @required String username}) {
+      {required String communityName, required String username}) {
     Map<String, dynamic> body = {'username': username};
     String path = _makeInviteUserToCommunityPath(communityName);
     return _httpService.post(_makeApiUrl(path),
@@ -413,7 +413,7 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> uninviteUserFromCommunity(
-      {@required String communityName, @required String username}) {
+      {required String communityName, required String username}) {
     Map<String, dynamic> body = {'username': username};
     String path = _makeUninviteUserToCommunityPath(communityName);
     return _httpService.post(_makeApiUrl(path),
@@ -422,8 +422,8 @@ class CommunitiesApiService {
 
   Future<HttpieResponse> getJoinedCommunities(
       {bool authenticatedRequest = true,
-      int offset,
-      bool excludedFromProfilePosts}) {
+      int? offset,
+      bool? excludedFromProfilePosts}) {
     Map<String, dynamic> queryParams = {'offset': offset};
 
     if (excludedFromProfilePosts != null)
@@ -435,8 +435,8 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> searchJoinedCommunities({
-    @required String query,
-    int count,
+    required String query,
+    int? count,
   }) {
     Map<String, dynamic> queryParams = {'query': query};
 
@@ -457,7 +457,7 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> getModeratorsForCommunityWithId(String communityName,
-      {int count, int maxId}) {
+      {int? count, int? maxId}) {
     Map<String, dynamic> queryParams = {};
     if (count != null) queryParams['count'] = count;
 
@@ -470,8 +470,8 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> searchModerators({
-    @required String communityName,
-    @required String query,
+    required String communityName,
+    required String query,
   }) {
     Map<String, dynamic> queryParams = {'query': query};
 
@@ -482,7 +482,7 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> addCommunityModerator(
-      {@required String communityName, @required String username}) {
+      {required String communityName, required String username}) {
     Map<String, dynamic> body = {'username': username};
 
     String path = _makeAddCommunityModeratorPath(communityName);
@@ -491,7 +491,7 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> removeCommunityModerator(
-      {@required String communityName, @required String username}) {
+      {required String communityName, required String username}) {
     String path = _makeRemoveCommunityModeratorPath(communityName, username);
     return _httpService.delete(_makeApiUrl(path),
         appendAuthorizationToken: true);
@@ -499,8 +499,8 @@ class CommunitiesApiService {
 
   Future<HttpieResponse> getAdministratorsForCommunityWithName(
       String communityName,
-      {int count,
-      int maxId}) {
+      {int? count,
+      int? maxId}) {
     Map<String, dynamic> queryParams = {};
     if (count != null) queryParams['count'] = count;
 
@@ -513,8 +513,8 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> searchAdministrators({
-    @required String communityName,
-    @required String query,
+    required String communityName,
+    required String query,
   }) {
     Map<String, dynamic> queryParams = {'query': query};
 
@@ -525,7 +525,7 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> addCommunityAdministrator(
-      {@required String communityName, @required String username}) {
+      {required String communityName, required String username}) {
     Map<String, dynamic> body = {'username': username};
 
     String path = _makeAddCommunityAdministratorPath(communityName);
@@ -534,7 +534,7 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> removeCommunityAdministrator(
-      {@required String communityName, @required String username}) {
+      {required String communityName, required String username}) {
     String path =
         _makeRemoveCommunityAdministratorPath(communityName, username);
     return _httpService.delete(_makeApiUrl(path),
@@ -542,7 +542,7 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> getBannedUsersForCommunityWithId(String communityName,
-      {int count, int maxId}) {
+      {int? count, int? maxId}) {
     Map<String, dynamic> queryParams = {};
     if (count != null) queryParams['count'] = count;
 
@@ -555,8 +555,8 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> searchBannedUsers({
-    @required String communityName,
-    @required String query,
+    required String communityName,
+    required String query,
   }) {
     Map<String, dynamic> queryParams = {'query': query};
 
@@ -567,7 +567,7 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> banCommunityUser(
-      {@required String communityName, @required String username}) {
+      {required String communityName, required String username}) {
     Map<String, dynamic> body = {'username': username};
     String path = _makeBanCommunityUserPath(communityName);
     return _httpService.postJSON(_makeApiUrl(path),
@@ -575,7 +575,7 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> unbanCommunityUser(
-      {@required String communityName, @required String username}) {
+      {required String communityName, required String username}) {
     Map<String, dynamic> body = {'username': username};
     String path = _makeUnbanCommunityUserPath(communityName);
     return _httpService.post(_makeApiUrl(path),
@@ -583,14 +583,14 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> getFavoriteCommunities(
-      {bool authenticatedRequest = true, int offset}) {
+      {bool authenticatedRequest = true, int? offset}) {
     return _httpService.get('$apiURL$GET_FAVORITE_COMMUNITIES_PATH',
         appendAuthorizationToken: authenticatedRequest,
         queryParameters: {'offset': offset});
   }
 
   Future<HttpieResponse> searchFavoriteCommunities(
-      {@required String query, int count}) {
+      {required String query, int? count}) {
     Map<String, dynamic> queryParams = {'query': query};
 
     if (count != null) queryParams['count'] = count;
@@ -599,20 +599,20 @@ class CommunitiesApiService {
         queryParameters: queryParams, appendAuthorizationToken: true);
   }
 
-  Future<HttpieResponse> favoriteCommunity({@required String communityName}) {
+  Future<HttpieResponse> favoriteCommunity({required String communityName}) {
     String path = _makeFavoriteCommunityPath(communityName);
     return _httpService.putJSON(_makeApiUrl(path),
         appendAuthorizationToken: true);
   }
 
-  Future<HttpieResponse> unfavoriteCommunity({@required String communityName}) {
+  Future<HttpieResponse> unfavoriteCommunity({required String communityName}) {
     String path = _makeFavoriteCommunityPath(communityName);
     return _httpService.delete(_makeApiUrl(path),
         appendAuthorizationToken: true);
   }
 
   Future<HttpieResponse> enableNewPostNotificationsForCommunity(
-      {@required String communityName}) {
+      {required String communityName}) {
     String path =
         _makeEnableNewPostNotificationsForCommunityPath(communityName);
     return _httpService.putJSON(_makeApiUrl(path),
@@ -620,7 +620,7 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> disableNewPostNotificationsForCommunity(
-      {@required String communityName}) {
+      {required String communityName}) {
     String path =
         _makeEnableNewPostNotificationsForCommunityPath(communityName);
     return _httpService.delete(_makeApiUrl(path),
@@ -628,14 +628,14 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> getAdministratedCommunities(
-      {bool authenticatedRequest = true, int offset}) {
+      {bool authenticatedRequest = true, int? offset}) {
     return _httpService.get('$apiURL$GET_ADMINISTRATED_COMMUNITIES_PATH',
         appendAuthorizationToken: authenticatedRequest,
         queryParameters: {'offset': offset});
   }
 
   Future<HttpieResponse> searchAdministratedCommunities(
-      {@required String query, int count}) {
+      {required String query, int? count}) {
     Map<String, dynamic> queryParams = {'query': query};
 
     if (count != null) queryParams['count'] = count;
@@ -645,7 +645,7 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> searchModeratedCommunities(
-      {@required String query, int count}) {
+      {required String query, int? count}) {
     Map<String, dynamic> queryParams = {'query': query};
 
     if (count != null) queryParams['count'] = count;
@@ -655,16 +655,16 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> getModeratedCommunities(
-      {bool authenticatedRequest = true, int offset}) {
+      {bool authenticatedRequest = true, int? offset}) {
     return _httpService.get('$apiURL$GET_MODERATED_COMMUNITIES_PATH',
         appendAuthorizationToken: authenticatedRequest,
         queryParameters: {'offset': offset});
   }
 
   Future<HttpieResponse> reportCommunityWithName(
-      {@required String communityName,
-      @required int moderationCategoryId,
-      String description}) {
+      {required String communityName,
+      required int moderationCategoryId,
+      String? description}) {
     String path = _makeReportCommunityPath(communityName);
 
     Map<String, dynamic> body = {
@@ -680,13 +680,13 @@ class CommunitiesApiService {
   }
 
   Future<HttpieResponse> getModeratedObjects({
-    @required String communityName,
-    int count,
-    int maxId,
-    String type,
-    bool verified,
-    List<String> statuses,
-    List<String> types,
+    required String communityName,
+    int? count,
+    int? maxId,
+    String? type,
+    bool? verified,
+    List<String>? statuses,
+    List<String>? types,
   }) {
     Map<String, dynamic> queryParams = {};
     if (count != null) queryParams['count'] = count;

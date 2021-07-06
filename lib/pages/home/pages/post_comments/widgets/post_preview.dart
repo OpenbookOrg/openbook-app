@@ -11,12 +11,12 @@ import 'package:flutter/material.dart';
 
 class OBPostPreview extends StatelessWidget {
   final Post post;
-  final Function(Post) onPostDeleted;
-  final VoidCallback focusCommentInput;
+  final Function(Post)? onPostDeleted;
+  final VoidCallback? focusCommentInput;
   final bool showViewAllCommentsAction;
 
   OBPostPreview(
-      {this.post,
+      {required this.post,
       this.onPostDeleted,
       this.focusCommentInput,
       this.showViewAllCommentsAction = true});

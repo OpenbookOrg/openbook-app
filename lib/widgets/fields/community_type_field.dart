@@ -11,14 +11,14 @@ import 'package:flutter/material.dart';
 
 class OBCommunityTypeField extends StatelessWidget {
   final CommunityType value;
-  final ValueChanged<CommunityType> onChanged;
+  final ValueChanged<CommunityType>? onChanged;
   final String title;
-  final String hintText;
+  final String? hintText;
 
   const OBCommunityTypeField(
-      {@required this.value,
+      {required this.value,
       this.onChanged,
-      @required this.title,
+      required this.title,
       this.hintText});
 
   @override
@@ -59,7 +59,7 @@ class OBCommunityTypeField extends StatelessWidget {
                   )
                 ],
               ),
-              subtitle: hintText != null ? OBText(hintText) : null,
+              subtitle: hintText != null ? OBText(hintText!) : null,
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[

@@ -13,10 +13,10 @@ class OBAuthSubmitPage extends StatefulWidget {
 }
 
 class OBAuthSubmitPageState extends State<OBAuthSubmitPage> {
-  LocalizationService localizationService;
-  CreateAccountBloc createAccountBloc;
+  late LocalizationService localizationService;
+  late CreateAccountBloc createAccountBloc;
 
-  bool mustRequestCreateAccount;
+  late bool mustRequestCreateAccount;
 
   @override
   void initState() {
@@ -82,7 +82,7 @@ class OBAuthSubmitPageState extends State<OBAuthSubmitPage> {
       stream: createAccountBloc.createAccountErrorFeedback,
       initialData: null,
       builder: (context, snapshot) {
-        var createAccountErrorFeedback = snapshot.data;
+        var createAccountErrorFeedback = snapshot.data as String?;
 
         if (createAccountErrorFeedback != null) {
           return _buildStatusError(context, createAccountErrorFeedback);
@@ -164,7 +164,7 @@ class OBAuthSubmitPageState extends State<OBAuthSubmitPage> {
     );
   }
 
-  Widget _buildPreviousButton({@required BuildContext context}) {
+  Widget _buildPreviousButton({required BuildContext context}) {
     String buttonText = localizationService.trans('auth__create_acc__previous');
 
     return OBSecondaryButton(

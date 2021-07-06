@@ -4,10 +4,10 @@ class ModerationCategory {
   static final severityMedium = 'M';
   static final severityLow = 'L';
 
-  static ModerationCategorySeverity parseType(String notificationTypeStr) {
+  static ModerationCategorySeverity? parseType(String? notificationTypeStr) {
     if (notificationTypeStr == null) return null;
 
-    ModerationCategorySeverity notificationType;
+    ModerationCategorySeverity? notificationType;
     if (notificationTypeStr == ModerationCategory.severityCritical) {
       notificationType = ModerationCategorySeverity.critical;
     } else if (notificationTypeStr == ModerationCategory.severityHigh) {
@@ -24,11 +24,11 @@ class ModerationCategory {
     return notificationType;
   }
 
-  final int id;
-  final ModerationCategorySeverity severity;
-  final String name;
-  final String title;
-  final String description;
+  final int? id;
+  final ModerationCategorySeverity? severity;
+  final String? name;
+  final String? title;
+  final String? description;
 
   ModerationCategory(
       {this.id, this.severity, this.name, this.title, this.description});

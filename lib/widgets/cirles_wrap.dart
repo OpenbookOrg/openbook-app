@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 export 'package:Okuna/widgets/circle_color_preview.dart';
 
 class OBCirclesWrap extends StatelessWidget {
-  final List<Circle> circles;
-  final Widget leading;
+  final List<Circle>? circles;
+  final Widget? leading;
   final OBTextSize textSize;
   final OBCircleColorPreviewSize circlePreviewSize;
 
   const OBCirclesWrap(
-      {Key key,
+      {Key? key,
       this.circles,
       this.leading,
       this.textSize = OBTextSize.medium,
@@ -22,9 +22,9 @@ class OBCirclesWrap extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> connectionItems = [];
 
-    if (leading != null) connectionItems.add(leading);
+    if (leading != null) connectionItems.add(leading!);
 
-    circles.forEach((Circle circle) {
+    circles?.forEach((Circle circle) {
       connectionItems.add(Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -36,7 +36,7 @@ class OBCirclesWrap extends StatelessWidget {
             width: 5,
           ),
           OBText(
-            circle.name,
+            circle.name!,
             size: textSize,
           )
         ],

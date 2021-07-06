@@ -1,9 +1,9 @@
 import 'package:Okuna/services/httpie.dart';
 
 class ConnectionsApiService {
-  HttpieService _httpService;
+  late HttpieService _httpService;
 
-  String apiURL;
+  late String apiURL;
 
   static const CONNECT_WITH_USER_PATH = 'api/connections/connect/';
   static const DISCONNECT_FROM_USER_PATH = 'api/connections/disconnect/';
@@ -19,7 +19,7 @@ class ConnectionsApiService {
   }
 
   Future<HttpieResponse> connectWithUserWithUsername(String username,
-      {List<int> circlesIds}) {
+      {List<int>? circlesIds}) {
     Map<String, dynamic> body = {'username': username};
 
     if (circlesIds != null) body['circles_ids'] = circlesIds;
@@ -29,7 +29,7 @@ class ConnectionsApiService {
   }
 
   Future<HttpieResponse> confirmConnectionWithUserWithUsername(String username,
-      {List<int> circlesIds}) {
+      {List<int>? circlesIds}) {
     Map<String, dynamic> body = {'username': username};
 
     if (circlesIds != null) body['circles_ids'] = circlesIds;
@@ -44,7 +44,7 @@ class ConnectionsApiService {
   }
 
   Future<HttpieResponse> updateConnectionWithUsername(String username,
-      {List<int> circlesIds}) {
+      {List<int>? circlesIds}) {
     Map<String, dynamic> body = {'username': username};
 
     if (circlesIds != null) body['circles_ids'] = circlesIds;

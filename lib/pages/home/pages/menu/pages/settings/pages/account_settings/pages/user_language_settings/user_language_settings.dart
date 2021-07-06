@@ -23,17 +23,17 @@ class OBUserLanguageSettingsPage extends StatefulWidget {
 
 class OBUserLanguageSettingsPageState
     extends State<OBUserLanguageSettingsPage> {
-  Language _selectedLanguage;
-  Locale _selectedLocale;
-  Language _currentUserLanguage;
-  List<Language> _allLanguages;
-  UserService _userService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
+  Language? _selectedLanguage;
+  Locale? _selectedLocale;
+  Language? _currentUserLanguage;
+  late List<Language> _allLanguages;
+  late UserService _userService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
 
-  bool _needsBootstrap;
-  bool _bootstrapInProgress;
-  bool _requestInProgress;
+  late bool _needsBootstrap;
+  late bool _bootstrapInProgress;
+  late bool _requestInProgress;
 
   @override
   void initState() {
@@ -95,7 +95,7 @@ class OBUserLanguageSettingsPageState
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
                   Language language = _allLanguages[index];
-                  bool isSelected = language.code == _selectedLanguage.code;
+                  bool isSelected = language.code == _selectedLanguage?.code;
 
                   return OBLanguageSelectableTile(
                     language,
@@ -110,10 +110,14 @@ class OBUserLanguageSettingsPageState
   }
 
   void _saveNewLanguage() async {
+    if (_selectedLanguage == null || _selectedLocale == null) {
+      return;
+    }
+
     _setRequestInProgress(true);
     try {
-      await _userService.setNewLanguage(_selectedLanguage);
-      MyApp.setLocale(context, _selectedLocale);
+      await _userService.setNewLanguage(_selectedLanguage!);
+      MyApp.setLocale(context, _selectedLocale!);
     } catch (error) {
       _onError(error);
     } finally {
@@ -128,8 +132,8 @@ class OBUserLanguageSettingsPageState
   }
 
   void _setLanguagesList(LanguagesList list) {
-    List<Language> supportedList = list.languages.where((Language language) =>
-        supportedLanguages.contains(language.code)).toList();
+    List<Language> supportedList = list.languages?.where((Language language) =>
+        supportedLanguages.contains(language.code)).toList() ?? [];
     setState(() {
       _allLanguages = supportedList;
     });
@@ -165,7 +169,7 @@ class OBUserLanguageSettingsPageState
   void _bootstrap() async {
     Language userLanguage = _userService
         .getLoggedInUser()
-        .language;
+        !.language!;
     _setSelectedLanguageInWidget(userLanguage);
     _setCurrentUserLanguage(userLanguage);
     await _refreshLanguages();
@@ -186,8 +190,8 @@ class OBUserLanguageSettingsPageState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(
           message: _localizationService.error__unknown_error, context: context);
@@ -201,4 +205,3 @@ class OBUserLanguageSettingsPageState
     });
   }
 }
-

@@ -22,11 +22,11 @@ class OBPostCommentMoreActionsBottomSheet extends StatefulWidget {
   final ValueChanged<PostComment> onPostCommentReported;
 
   const OBPostCommentMoreActionsBottomSheet({
-    @required this.post,
-    @required this.postComment,
-    Key key,
-    @required this.onPostCommentDeleted,
-    @required this.onPostCommentReported,
+    required this.post,
+    required this.postComment,
+    Key? key,
+    required this.onPostCommentDeleted,
+    required this.onPostCommentReported,
   }) : super(key: key);
 
   @override
@@ -37,14 +37,14 @@ class OBPostCommentMoreActionsBottomSheet extends StatefulWidget {
 
 class OBPostCommentMoreActionsBottomSheetState
     extends State<OBPostCommentMoreActionsBottomSheet> {
-  ToastService _toastService;
-  UserService _userService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
-  ModalService _modalService;
-  BottomSheetService _bottomSheetService;
-  bool _requestInProgress;
-  CancelableOperation _requestOperation;
+  late ToastService _toastService;
+  late UserService _userService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
+  late ModalService _modalService;
+  late BottomSheetService _bottomSheetService;
+  late bool _requestInProgress;
+  CancelableOperation? _requestOperation;
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class OBPostCommentMoreActionsBottomSheetState
   @override
   void dispose() {
     super.dispose();
-    if (_requestOperation != null) _requestOperation.cancel();
+    if (_requestOperation != null) _requestOperation!.cancel();
   }
 
   @override
@@ -86,7 +86,7 @@ class OBPostCommentMoreActionsBottomSheetState
         post: widget.post,
       )
     ];
-    User loggedInUser = _userService.getLoggedInUser();
+    User loggedInUser = _userService.getLoggedInUser()!;
 
     if (loggedInUser.canReportPostComment(widget.postComment)) {
       actionTiles.add(

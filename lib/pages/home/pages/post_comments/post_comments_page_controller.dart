@@ -26,8 +26,8 @@ class OBPostCommentsPageController {
   UserPreferencesService userPreferencesService;
 
   List<PostComment> postComments = [];
-  PostComment linkedPostComment;
-  PostComment postComment;
+  PostComment? linkedPostComment;
+  PostComment? postComment;
 
   static const LOAD_MORE_COMMENTS_COUNT = 5;
   static const COUNT_MIN_INCLUDING_LINKED_COMMENT = 3;
@@ -35,31 +35,31 @@ class OBPostCommentsPageController {
   static const TOTAL_COMMENTS_IN_SLICE =
       COUNT_MIN_INCLUDING_LINKED_COMMENT + COUNT_MAX_AFTER_LINKED_COMMENT;
 
-  CancelableOperation _refreshCommentsOperation;
-  CancelableOperation _refreshCommentsSliceOperation;
-  CancelableOperation _refreshCommentsWithCreatedPostCommentVisibleOperation;
-  CancelableOperation _refreshPostOperation;
-  CancelableOperation _loadMoreBottomCommentsOperation;
-  CancelableOperation _loadMoreTopCommentsOperation;
-  CancelableOperation _toggleSortCommentsOperation;
+  CancelableOperation? _refreshCommentsOperation;
+  CancelableOperation? _refreshCommentsSliceOperation;
+  CancelableOperation? _refreshCommentsWithCreatedPostCommentVisibleOperation;
+  CancelableOperation? _refreshPostOperation;
+  CancelableOperation? _loadMoreBottomCommentsOperation;
+  CancelableOperation? _loadMoreTopCommentsOperation;
+  CancelableOperation? _toggleSortCommentsOperation;
 
   OBPostCommentsPageController({
-    @required this.post,
-    @required this.pageType,
-    @required this.currentSort,
-    @required this.userService,
-    @required this.userPreferencesService,
-    @required this.setPostComments,
-    @required this.setCurrentSortValue,
-    @required this.setNoMoreBottomItemsToLoad,
-    @required this.setNoMoreTopItemsToLoad,
-    @required this.addPostComments,
-    @required this.addToStartPostComments,
-    @required this.showNoMoreTopItemsToLoadToast,
-    @required this.scrollToTop,
-    @required this.scrollToNewComment,
-    @required this.unfocusCommentInput,
-    @required this.onError,
+    required this.post,
+    required this.pageType,
+    required this.currentSort,
+    required this.userService,
+    required this.userPreferencesService,
+    required this.setPostComments,
+    required this.setCurrentSortValue,
+    required this.setNoMoreBottomItemsToLoad,
+    required this.setNoMoreTopItemsToLoad,
+    required this.addPostComments,
+    required this.addToStartPostComments,
+    required this.showNoMoreTopItemsToLoadToast,
+    required this.scrollToTop,
+    required this.scrollToNewComment,
+    required this.unfocusCommentInput,
+    required this.onError,
     this.linkedPostComment,
     this.postComment
   }) {
@@ -74,8 +74,8 @@ class OBPostCommentsPageController {
     }
   }
 
-  CancelableOperation<PostCommentList> retrieveObjects({int minId, int maxId, int countMax,
-    int countMin, PostCommentsSortType sort}) {
+  CancelableOperation<PostCommentList> retrieveObjects({int? minId, int? maxId, int? countMax,
+    int? countMin, PostCommentsSortType? sort}) {
 
     if (this.pageType == PostCommentsPageType.comments) {
       return CancelableOperation.fromFuture(
@@ -88,7 +88,7 @@ class OBPostCommentsPageController {
 
     } else {
       return CancelableOperation.fromFuture(
-          this.userService.getCommentRepliesForPostComment(this.post, this.postComment,
+          this.userService.getCommentRepliesForPostComment(this.post, this.postComment!,
               sort: sort,
               minId: minId,
               maxId: maxId,
@@ -110,10 +110,10 @@ class OBPostCommentsPageController {
   }
 
   Future onWantsToRefreshComments() async {
-    if (_refreshCommentsOperation != null) _refreshCommentsOperation.cancel();
+    if (_refreshCommentsOperation != null) _refreshCommentsOperation!.cancel();
     try {
       _refreshCommentsOperation = this.retrieveObjects(sort: this.currentSort);
-      this.postComments = (await _refreshCommentsOperation.value).comments;
+      this.postComments = (await _refreshCommentsOperation!.value).comments;
       this.setPostComments(this.postComments);
       this.setNoMoreBottomItemsToLoad(false);
       this.setNoMoreTopItemsToLoad(true);
@@ -131,12 +131,12 @@ class OBPostCommentsPageController {
 
   Future<bool> loadMoreTopComments() async {
     if (_loadMoreTopCommentsOperation != null)
-      _loadMoreTopCommentsOperation.cancel();
+      _loadMoreTopCommentsOperation!.cancel();
     if (this.postComments.length == 0) return true;
 
     List<PostComment> topComments;
     PostComment firstPost = this.postComments.first;
-    int firstPostId = firstPost.id;
+    int firstPostId = firstPost.id!;
     try {
       if (this.currentSort == PostCommentsSortType.dec) {
         _loadMoreTopCommentsOperation = this.retrieveObjects(
@@ -150,7 +150,7 @@ class OBPostCommentsPageController {
                 maxId: firstPostId);
       }
 
-      topComments = (await _loadMoreTopCommentsOperation.value).comments;
+      topComments = (await _loadMoreTopCommentsOperation!.value).comments;
 
       if (topComments.length < LOAD_MORE_COMMENTS_COUNT &&
           topComments.length != 0) {
@@ -174,11 +174,11 @@ class OBPostCommentsPageController {
 
   Future<bool> loadMoreBottomComments() async {
     if (_loadMoreBottomCommentsOperation != null)
-      _loadMoreBottomCommentsOperation.cancel();
+      _loadMoreBottomCommentsOperation!.cancel();
     if (this.postComments.length == 0 || _refreshCommentsWithCreatedPostCommentVisibleOperation != null) return true;
 
     PostComment lastPost = this.postComments.last;
-    int lastPostId = lastPost.id;
+    int lastPostId = lastPost.id!;
     List<PostComment> moreComments;
     try {
       if (this.currentSort == PostCommentsSortType.dec) {
@@ -193,7 +193,7 @@ class OBPostCommentsPageController {
                 sort: this.currentSort);
       }
 
-      moreComments = (await _loadMoreBottomCommentsOperation.value).comments;
+      moreComments = (await _loadMoreBottomCommentsOperation!.value).comments;
 
       if (moreComments.length == 0) {
         this.setNoMoreBottomItemsToLoad(true);
@@ -212,16 +212,16 @@ class OBPostCommentsPageController {
 
   Future<void> refreshCommentsSlice() async {
     if (_refreshCommentsSliceOperation != null)
-      _refreshCommentsSliceOperation.cancel();
+      _refreshCommentsSliceOperation!.cancel();
     try {
       _refreshCommentsSliceOperation = this.retrieveObjects(
-              minId: this.linkedPostComment.id,
-              maxId: this.linkedPostComment.id,
+              minId: this.linkedPostComment?.id,
+              maxId: this.linkedPostComment?.id,
               countMax: COUNT_MAX_AFTER_LINKED_COMMENT,
               countMin: COUNT_MIN_INCLUDING_LINKED_COMMENT,
               sort: this.currentSort);
 
-      this.postComments = (await _refreshCommentsSliceOperation.value).comments;
+      this.postComments = (await _refreshCommentsSliceOperation!.value).comments;
       this.setPostComments(this.postComments);
       this.checkIfMoreTopItemsToLoad();
       this.setNoMoreBottomItemsToLoad(false);
@@ -233,14 +233,14 @@ class OBPostCommentsPageController {
   }
 
   void checkIfMoreTopItemsToLoad() {
-    int linkedCommentId = this.linkedPostComment.id;
+    int linkedCommentId = this.linkedPostComment!.id!;
     Iterable<PostComment> listBeforeLinkedComment = [];
     if (this.currentSort == PostCommentsSortType.dec) {
       listBeforeLinkedComment =
-          postComments.where((comment) => comment.id > linkedCommentId);
+          postComments.where((comment) => comment.id! > linkedCommentId);
     } else if (this.currentSort == PostCommentsSortType.asc) {
       listBeforeLinkedComment =
-          postComments.where((comment) => comment.id < linkedCommentId);
+          postComments.where((comment) => comment.id! < linkedCommentId);
     }
     if (listBeforeLinkedComment.length < 2) {
       this.setNoMoreTopItemsToLoad(true);
@@ -250,10 +250,10 @@ class OBPostCommentsPageController {
   void refreshCommentsWithCreatedPostCommentVisible(
       PostComment createdPostComment) async {
     if (_refreshCommentsWithCreatedPostCommentVisibleOperation != null)
-      _refreshCommentsWithCreatedPostCommentVisibleOperation.cancel();
+      _refreshCommentsWithCreatedPostCommentVisibleOperation!.cancel();
     this.unfocusCommentInput();
     List<PostComment> comments;
-    int createdCommentId = createdPostComment.id;
+    int createdCommentId = createdPostComment.id!;
     try {
       if (this.currentSort == PostCommentsSortType.dec) {
         _refreshCommentsWithCreatedPostCommentVisibleOperation = this.retrieveObjects(
@@ -271,7 +271,7 @@ class OBPostCommentsPageController {
         this.setNoMoreBottomItemsToLoad(false);
       }
       comments =
-          (await _refreshCommentsWithCreatedPostCommentVisibleOperation.value)
+          (await _refreshCommentsWithCreatedPostCommentVisibleOperation!.value)
               .comments;
       this.postComments = comments;
       this.setPostComments(this.postComments);
@@ -293,18 +293,18 @@ class OBPostCommentsPageController {
   }
 
   void dispose() {
-    if (_refreshCommentsOperation != null) _refreshCommentsOperation.cancel();
+    if (_refreshCommentsOperation != null) _refreshCommentsOperation!.cancel();
     if (_refreshCommentsSliceOperation != null)
-      _refreshCommentsSliceOperation.cancel();
+      _refreshCommentsSliceOperation!.cancel();
     if (_loadMoreBottomCommentsOperation != null)
-      _loadMoreBottomCommentsOperation.cancel();
-    if (_refreshPostOperation != null) _refreshPostOperation.cancel();
+      _loadMoreBottomCommentsOperation!.cancel();
+    if (_refreshPostOperation != null) _refreshPostOperation!.cancel();
     if (_toggleSortCommentsOperation != null)
-      _toggleSortCommentsOperation.cancel();
+      _toggleSortCommentsOperation!.cancel();
     if (_loadMoreTopCommentsOperation != null)
-      _loadMoreTopCommentsOperation.cancel();
+      _loadMoreTopCommentsOperation!.cancel();
     if (_refreshCommentsWithCreatedPostCommentVisibleOperation != null)
-      _refreshCommentsWithCreatedPostCommentVisibleOperation.cancel();
+      _refreshCommentsWithCreatedPostCommentVisibleOperation!.cancel();
   }
 }
 

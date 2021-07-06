@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 
 class OBSearchBar extends StatefulWidget {
   final OBSearchBarOnSearch onSearch;
-  final VoidCallback onCancel;
-  final String hintText;
+  final VoidCallback? onCancel;
+  final String? hintText;
 
-  OBSearchBar({Key key, @required this.onSearch, this.hintText, this.onCancel})
+  OBSearchBar({Key? key, required this.onSearch, this.hintText, this.onCancel})
       : super(key: key);
 
   @override
@@ -21,8 +21,8 @@ class OBSearchBar extends StatefulWidget {
 }
 
 class OBSearchBarState extends State<OBSearchBar> {
-  TextEditingController _textController;
-  FocusNode _textFocusNode;
+  late TextEditingController _textController;
+  late FocusNode _textFocusNode;
 
   @override
   void initState() {
@@ -52,7 +52,7 @@ class OBSearchBarState extends State<OBSearchBar> {
         builder: (BuildContext context, AsyncSnapshot<OBTheme> snapshot) {
           var theme = snapshot.data;
           Color primaryColor =
-              themeValueParserService.parseColor(theme.primaryColor);
+              themeValueParserService.parseColor(theme!.primaryColor);
           final bool isDarkPrimaryColor =
               primaryColor.computeLuminance() < 0.179;
 
@@ -138,7 +138,7 @@ class OBSearchBarState extends State<OBSearchBar> {
     // Unfocus text
     FocusScope.of(context).requestFocus(new FocusNode());
     _textController.clear();
-    if (widget.onCancel != null) widget.onCancel();
+    if (widget.onCancel != null) widget.onCancel!();
   }
 }
 

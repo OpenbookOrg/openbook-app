@@ -15,8 +15,8 @@ class OBSuggestedCommunitiesPage extends StatefulWidget {
 
 class OBSuggestedCommunitiesPageState
     extends State<OBSuggestedCommunitiesPage> {
-  LocalizationService localizationService;
-  CreateAccountBloc createAccountBloc;
+  late LocalizationService localizationService;
+  late CreateAccountBloc createAccountBloc;
   bool _isCommunitySelectionInProgress = false;
 
   @override
@@ -91,7 +91,7 @@ class OBSuggestedCommunitiesPageState
     });
   }
 
-  Widget _buildContinueButton({@required BuildContext context}) {
+  Widget _buildContinueButton({required BuildContext context}) {
     String buttonText = localizationService.auth__login__login;
 
     return OBSuccessButton(

@@ -28,7 +28,7 @@ import 'package:flutter/material.dart';
 import 'package:async/async.dart';
 
 class OBNotificationsPage extends StatefulWidget {
-  final OBNotificationsPageController controller;
+  final OBNotificationsPageController? controller;
   final OBNotificationsPageTab selectedTab;
 
   OBNotificationsPage(
@@ -62,35 +62,35 @@ class OBNotificationsPageState extends State<OBNotificationsPage>
     NotificationType.followRequest,
   ];
 
-  UserService _userService;
-  ToastService _toastService;
-  NavigationService _navigationService;
-  LocalizationService _localizationService;
-  PushNotificationsService _pushNotificationsService;
-  OBHttpListController<OBNotification> _generalNotificationsListController;
-  OBHttpListController<OBNotification> _requestsNotificationsListController;
-  StreamSubscription _pushNotificationSubscription;
-  OBNotificationsPageController _controller;
-  TabController _tabController;
+  late UserService _userService;
+  late ToastService _toastService;
+  late NavigationService _navigationService;
+  late LocalizationService _localizationService;
+  late PushNotificationsService _pushNotificationsService;
+  late OBHttpListController<OBNotification> _generalNotificationsListController;
+  late OBHttpListController<OBNotification> _requestsNotificationsListController;
+  late StreamSubscription _pushNotificationSubscription;
+  late OBNotificationsPageController _controller;
+  late TabController _tabController;
 
-  CancelableOperation _getUnreadGeneralNotificationsCountOperation;
-  CancelableOperation _getUnreadRequestNotificationsCountOperation;
+  CancelableOperation? _getUnreadGeneralNotificationsCountOperation;
+  CancelableOperation? _getUnreadRequestNotificationsCountOperation;
 
-  bool _needsBootstrap;
-  bool _isActivePage;
-  int _unreadRequestNotificationsCount;
-  int _unreadGeneralNotificationsCount;
+  late bool _needsBootstrap;
+  bool? _isActivePage;
+  late int? _unreadRequestNotificationsCount;
+  late int? _unreadGeneralNotificationsCount;
 
   // Should be the case when the page is visible to the user
-  bool _shouldMarkNotificationsAsRead;
+  late bool _shouldMarkNotificationsAsRead;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance?.addObserver(this);
     _generalNotificationsListController = OBHttpListController();
     _requestsNotificationsListController = OBHttpListController();
-    _controller = widget.controller ?? OBNotificationsPage();
+    _controller = widget.controller ?? OBNotificationsPageController();
     _controller.attach(state: this, context: context);
 
     _tabController = new TabController(length: 2, vsync: this);
@@ -160,7 +160,7 @@ class OBNotificationsPageState extends State<OBNotificationsPage>
                           OBText(_localizationService
                               .notifications__tab_general()),
                           _unreadGeneralNotificationsCount != null &&
-                                  _unreadGeneralNotificationsCount > 0
+                                  _unreadGeneralNotificationsCount! > 0
                               ? Positioned(
                                   right: -15,
                                   child: OBBadge(
@@ -180,7 +180,7 @@ class OBNotificationsPageState extends State<OBNotificationsPage>
                         OBText(
                             _localizationService.notifications__tab_requests()),
                         _unreadRequestNotificationsCount != null &&
-                                _unreadRequestNotificationsCount > 0
+                                _unreadRequestNotificationsCount! > 0
                             ? Positioned(
                                 right: -15,
                                 child: OBBadge(
@@ -235,12 +235,12 @@ class OBNotificationsPageState extends State<OBNotificationsPage>
     super.dispose();
 
     if (_getUnreadGeneralNotificationsCountOperation != null)
-      _getUnreadGeneralNotificationsCountOperation.cancel();
+      _getUnreadGeneralNotificationsCountOperation!.cancel();
 
     if (_getUnreadRequestNotificationsCountOperation != null)
-      _getUnreadRequestNotificationsCountOperation.cancel();
+      _getUnreadRequestNotificationsCountOperation!.cancel();
 
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance?.removeObserver(this);
     _pushNotificationSubscription.cancel();
   }
 
@@ -293,19 +293,19 @@ class OBNotificationsPageState extends State<OBNotificationsPage>
   }
 
   Future<List<OBNotification>> _refreshNotifications(
-      [List<NotificationType> types]) async {
+      [List<NotificationType>? types]) async {
     await _readNotifications(types: types);
 
     NotificationsList notificationsList =
         await _userService.getNotifications(types: types);
-    return notificationsList.notifications;
+    return notificationsList.notifications!;
   }
 
   Future _refreshUnreadGeneralNotificationsCount() async {
     _getUnreadGeneralNotificationsCountOperation =
         CancelableOperation.fromFuture(
             _userService.getUnreadNotificationsCount(types: _generalTypes));
-    int unreadCount = await _getUnreadGeneralNotificationsCountOperation.value;
+    int unreadCount = await _getUnreadGeneralNotificationsCountOperation!.value;
     setUnreadGeneralNotificationsCount(unreadCount);
   }
 
@@ -313,11 +313,11 @@ class OBNotificationsPageState extends State<OBNotificationsPage>
     _getUnreadRequestNotificationsCountOperation =
         CancelableOperation.fromFuture(
             _userService.getUnreadNotificationsCount(types: _requestTypes));
-    int unreadCount = await _getUnreadRequestNotificationsCountOperation.value;
+    int unreadCount = await _getUnreadRequestNotificationsCountOperation!.value;
     setUnreadRequestNotificationsCount(unreadCount);
   }
 
-  Future _readNotifications({List<NotificationType> types}) async {
+  Future _readNotifications({List<NotificationType>? types}) async {
     if (!_shouldMarkNotificationsAsRead) return;
     OBNotification firstItem;
 
@@ -331,7 +331,7 @@ class OBNotificationsPageState extends State<OBNotificationsPage>
       return;
     }
 
-    int maxId = firstItem.id;
+    int maxId = firstItem.id!;
     await _userService.readNotifications(maxId: maxId, types: types);
   }
 
@@ -347,12 +347,12 @@ class OBNotificationsPageState extends State<OBNotificationsPage>
 
   Future<List<OBNotification>> _loadMoreNotifications(
       List<OBNotification> currentNotifications,
-      [List<NotificationType> types]) async {
+      [List<NotificationType>? types]) async {
     OBNotification lastNotification = currentNotifications.last;
-    int lastNotificationId = lastNotification.id;
+    int lastNotificationId = lastNotification.id!;
     NotificationsList moreNotifications = await _userService.getNotifications(
         maxId: lastNotificationId, types: types);
-    return moreNotifications.notifications;
+    return moreNotifications.notifications!;
   }
 
   void _onNotificationTileDeleted(OBNotification notification) async {
@@ -374,8 +374,8 @@ class OBNotificationsPageState extends State<OBNotificationsPage>
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;
@@ -396,7 +396,7 @@ class OBNotificationsPageState extends State<OBNotificationsPage>
   void _onPushNotification(PushNotification pushNotification) {
     bool isNavigating = _controller.canPop();
 
-    if (!_isActivePage || isNavigating) {
+    if (_isActivePage == null || !_isActivePage! || isNavigating) {
       _triggerRefreshNotifications(shouldScrollToTop: true);
     } else {
       _showRefreshNotificationsToast();
@@ -406,6 +406,7 @@ class OBNotificationsPageState extends State<OBNotificationsPage>
   void _showRefreshNotificationsToast() {
     _toastService.info(
         duration: Duration(seconds: 2),
+        message: '',
         child: Row(
           children: <Widget>[
             const OBIcon(
@@ -436,7 +437,7 @@ class OBNotificationsPageState extends State<OBNotificationsPage>
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
       _triggerRefreshNotifications(
-          shouldScrollToTop: true, shouldUseRefreshIndicator: _isActivePage);
+          shouldScrollToTop: true, shouldUseRefreshIndicator: _isActivePage ?? false);
     }
   }
 
@@ -446,10 +447,10 @@ class OBNotificationsPageState extends State<OBNotificationsPage>
     bool shouldMarkNotificationsAsRead = false,
   }) async {
     _setShouldMarkNotificationsAsRead(shouldMarkNotificationsAsRead);
-    await _generalNotificationsListController?.refresh(
+    await _generalNotificationsListController.refresh(
         shouldScrollToTop: shouldScrollToTop,
         shouldUseRefreshIndicator: shouldUseRefreshIndicator);
-    await _requestsNotificationsListController?.refresh(
+    await _requestsNotificationsListController.refresh(
         shouldScrollToTop: shouldScrollToTop,
         shouldUseRefreshIndicator: shouldUseRefreshIndicator);
     _setShouldMarkNotificationsAsRead(true);
@@ -467,10 +468,10 @@ class OBNotificationsPageState extends State<OBNotificationsPage>
       notification.markNotificationAsRead();
       if (_generalTypes.contains(notification.type)) {
         setUnreadGeneralNotificationsCount(
-            _unreadGeneralNotificationsCount - 1);
+            _unreadGeneralNotificationsCount! - 1);
       } else if (_requestTypes.contains(notification.type)) {
         setUnreadRequestNotificationsCount(
-            _unreadRequestNotificationsCount - 1);
+            _unreadRequestNotificationsCount! - 1);
       }
     } on HttpieRequestError {
       // Nothing
@@ -482,32 +483,32 @@ class OBNotificationsPageState extends State<OBNotificationsPage>
 }
 
 class OBNotificationsPageController extends PoppablePageController {
-  OBNotificationsPageState _state;
-  bool _markNotificationsAsRead;
-  bool _isActivePage;
+  OBNotificationsPageState? _state;
+  bool? _markNotificationsAsRead;
+  bool? _isActivePage;
 
   void attach(
-      {@required BuildContext context, OBNotificationsPageState state}) {
+      {required BuildContext context, OBNotificationsPageState? state}) {
     super.attach(context: context);
     _state = state;
     if (_markNotificationsAsRead != null)
-      _state._setShouldMarkNotificationsAsRead(_markNotificationsAsRead);
+      _state?._setShouldMarkNotificationsAsRead(_markNotificationsAsRead!);
 
-    if (_isActivePage != null) _state.setIsActivePage(_isActivePage);
+    if (_isActivePage != null) _state?.setIsActivePage(_isActivePage!);
   }
 
   void scrollToTop() {
-    _state.scrollToTop();
+    _state?.scrollToTop();
   }
 
   void setIsActivePage(bool isActivePage) {
-    if (_state != null) _state.setIsActivePage(isActivePage);
+    if (_state != null) _state!.setIsActivePage(isActivePage);
     _isActivePage = isActivePage;
   }
 
   void setShouldMarkNotificationsAsRead(bool markNotificationsAsRead) {
     if (_state != null)
-      _state._setShouldMarkNotificationsAsRead(markNotificationsAsRead);
+      _state!._setShouldMarkNotificationsAsRead(markNotificationsAsRead);
 
     _markNotificationsAsRead = markNotificationsAsRead;
   }

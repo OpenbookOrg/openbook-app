@@ -3,10 +3,10 @@ import 'package:Okuna/services/httpie.dart';
 import 'package:Okuna/services/string_template.dart';
 
 class NotificationsApiService {
-  HttpieService _httpService;
-  StringTemplateService _stringTemplateService;
+  late HttpieService _httpService;
+  late StringTemplateService _stringTemplateService;
 
-  String apiURL;
+  late String apiURL;
 
   static const NOTIFICATIONS_PATH = 'api/notifications/';
   static const NOTIFICATIONS_READ_PATH = 'api/notifications/read/';
@@ -28,7 +28,7 @@ class NotificationsApiService {
   }
 
   Future<HttpieResponse> getNotifications(
-      {int maxId, int count, List<NotificationType> types}) {
+      {int? maxId, int? count, List<NotificationType>? types}) {
     Map<String, dynamic> queryParams = {};
 
     if (maxId != null) queryParams['max_id'] = maxId;
@@ -44,7 +44,7 @@ class NotificationsApiService {
   }
 
   Future<HttpieResponse> getUnreadNotificationsCount(
-      {int maxId, List<NotificationType> types}) {
+      {int? maxId, List<NotificationType>? types}) {
     Map<String, dynamic> queryParams = {};
 
     if (maxId != null) queryParams['max_id'] = maxId;
@@ -58,7 +58,7 @@ class NotificationsApiService {
   }
 
   Future<HttpieResponse> readNotifications(
-      {int maxId, List<NotificationType> types}) {
+      {int? maxId, List<NotificationType>? types}) {
     String url = _makeApiUrl(NOTIFICATIONS_READ_PATH);
     Map<String, dynamic> body = {};
 

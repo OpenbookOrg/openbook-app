@@ -19,7 +19,7 @@ class OBPostComments extends StatelessWidget {
       stream: _post.updateSubject,
       initialData: _post,
       builder: (BuildContext context, AsyncSnapshot<Post> snapshot) {
-        int commentsCount = _post.commentsCount;
+        int? commentsCount = _post.commentsCount;
         var openbookProvider = OpenbookProvider.of(context);
         var navigationService = openbookProvider.navigationService;
         LocalizationService _localizationService = openbookProvider.localizationService;
@@ -32,7 +32,7 @@ class OBPostComments extends StatelessWidget {
         if (!areCommentsEnabled) {
           canDisableOrEnableCommentsForPost = openbookProvider.userService
               .getLoggedInUser()
-              .canDisableOrEnableCommentsForPost(_post);
+              ?.canDisableOrEnableCommentsForPost(_post) ?? false;
         }
 
         List<Widget> rowItems = [];

@@ -1,7 +1,7 @@
 import 'package:Okuna/models/post.dart';
 
 class PostsList {
-  final List<Post> posts;
+  final List<Post>? posts;
 
   PostsList({
     this.posts,

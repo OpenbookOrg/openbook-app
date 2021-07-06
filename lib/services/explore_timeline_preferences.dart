@@ -4,7 +4,7 @@ import 'package:Okuna/services/storage.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ExploreTimelinePreferencesService {
-  OBStorage _storage;
+  late OBStorage _storage;
 
   static const excludeJoinedCommunitiesStorageKey = 'excludeJoinedCommunitiesSetting';
 
@@ -32,8 +32,8 @@ class ExploreTimelinePreferencesService {
   }
 
   Future<bool> getExcludeJoinedCommunitiesSetting() async {
-    String rawValue = await _storage.get(excludeJoinedCommunitiesStorageKey,
-        defaultValue: 'true');
+    String rawValue = (await _storage.get(excludeJoinedCommunitiesStorageKey,
+        defaultValue: 'true'))!;
     return rawValue == 'true';
   }
 

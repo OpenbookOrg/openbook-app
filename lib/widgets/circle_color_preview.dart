@@ -21,7 +21,7 @@ class OBCircleColorPreview extends StatelessWidget {
       height: circleSize,
       width: circleSize,
       decoration: BoxDecoration(
-          color: Pigment.fromString(circle.color),
+          color: Pigment.fromString(circle.color!),
           border: Border.all(color: Color.fromARGB(10, 0, 0, 0), width: 3),
           borderRadius: BorderRadius.circular(50)),
     );

@@ -23,35 +23,36 @@ class OBNotificationsSettingsPage extends StatefulWidget {
 
 class OBNotificationsSettingsPageState
     extends State<OBNotificationsSettingsPage> {
-  UserService _userService;
-  PushNotificationsService _pushNotificationsService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late PushNotificationsService _pushNotificationsService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
 
-  bool _needsBootstrap;
-  bool _bootstrapInProgress;
+  late bool _needsBootstrap;
+  late bool _bootstrapInProgress;
 
-  UserNotificationsSettings currentNotificationsSettings;
+  UserNotificationsSettings? currentNotificationsSettings;
 
-  bool _pushNotifications;
+  late bool _pushNotifications;
 
-  bool _postCommentNotifications;
-  bool _postCommentReactionNotifications;
-  bool _postCommentReplyNotifications;
-  bool _postCommentUserMentionNotifications;
-  bool _postUserMentionNotifications;
-  bool _postReactionNotifications;
-  bool _followNotifications;
-  bool _followRequestNotifications;
-  bool _followRequestApprovedNotifications;
-  bool _connectionRequestNotifications;
-  bool _communityInviteNotifications;
-  bool _communityNewPostNotifications;
-  bool _userNewPostNotifications;
+  late bool _postCommentNotifications;
+  late bool _postCommentReactionNotifications;
+  late bool _postCommentReplyNotifications;
+  late bool _postCommentUserMentionNotifications;
+  late bool _postUserMentionNotifications;
+  late bool _postReactionNotifications;
+  late bool _followNotifications;
+  late bool _followRequestNotifications;
+  late bool _followRequestApprovedNotifications;
+  late bool _connectionRequestNotifications;
+  late bool _communityInviteNotifications;
+  late bool _communityNewPostNotifications;
+  late bool _userNewPostNotifications;
 
   @override
   void initState() {
     super.initState();
+    _pushNotifications = true;
     _needsBootstrap = true;
     _bootstrapInProgress = true;
     _postCommentNotifications = true;
@@ -506,8 +507,8 @@ class OBNotificationsSettingsPageState
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.trans('error__unknown_error'), context: context);
     } else {
       _toastService.error(
           message: _localizationService.trans('error__unknown_error'),
@@ -520,27 +521,27 @@ class OBNotificationsSettingsPageState
       UserNotificationsSettings notificationSettings) {
     setState(() {
       _connectionRequestNotifications =
-          notificationSettings.connectionRequestNotifications;
-      _postCommentNotifications = notificationSettings.postCommentNotifications;
+          notificationSettings.connectionRequestNotifications ?? false;
+      _postCommentNotifications = notificationSettings.postCommentNotifications ?? false;
       _postCommentReactionNotifications =
-          notificationSettings.postCommentReactionNotifications;
+          notificationSettings.postCommentReactionNotifications ?? false;
       _postCommentUserMentionNotifications =
-          notificationSettings.postCommentUserMentionNotifications;
+          notificationSettings.postCommentUserMentionNotifications ?? false;
       _postUserMentionNotifications =
-          notificationSettings.postUserMentionNotifications;
+          notificationSettings.postUserMentionNotifications ?? false;
       _postCommentReplyNotifications =
-          notificationSettings.postCommentReplyNotifications;
+          notificationSettings.postCommentReplyNotifications ?? false;
       _postReactionNotifications =
-          notificationSettings.postReactionNotifications;
-      _followNotifications = notificationSettings.followNotifications;
-      _followRequestNotifications = notificationSettings.followRequestNotifications;
-      _followRequestApprovedNotifications = notificationSettings.followRequestApprovedNotifications;
+          notificationSettings.postReactionNotifications ?? false;
+      _followNotifications = notificationSettings.followNotifications ?? false;
+      _followRequestNotifications = notificationSettings.followRequestNotifications ?? false;
+      _followRequestApprovedNotifications = notificationSettings.followRequestApprovedNotifications ?? false;
       _communityInviteNotifications =
-          notificationSettings.communityInviteNotifications;
+          notificationSettings.communityInviteNotifications ?? false;
       _communityNewPostNotifications =
-          notificationSettings.communityNewPostNotifications;
+          notificationSettings.communityNewPostNotifications ?? false;
       _userNewPostNotifications =
-          notificationSettings.userNewPostNotifications;
+          notificationSettings.userNewPostNotifications ?? false;
     });
   }
 

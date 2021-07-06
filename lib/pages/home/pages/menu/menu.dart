@@ -11,13 +11,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class OBMainMenuPage extends StatelessWidget {
-  final OBMainMenuPageController controller;
+  final OBMainMenuPageController? controller;
 
   const OBMainMenuPage({this.controller});
 
   @override
   Widget build(BuildContext context) {
-    controller.attach(context: context);
+    controller?.attach(context: context);
     var openbookProvider = OpenbookProvider.of(context);
     var localizationService = openbookProvider.localizationService;
     var intercomService = openbookProvider.intercomService;
@@ -35,17 +35,17 @@ class OBMainMenuPage extends StatelessWidget {
               stream: userService.loggedInUserChange,
               initialData: userService.getLoggedInUser(),
               builder: (BuildContext context,
-                  AsyncSnapshot<User> loggedInUserSnapshot) {
-                User loggedInUser = loggedInUserSnapshot.data;
+                  AsyncSnapshot<User?> loggedInUserSnapshot) {
+                User? loggedInUser = loggedInUserSnapshot.data;
 
                 if (loggedInUser == null) return const SizedBox();
 
                 return StreamBuilder(
-                  stream: loggedInUserSnapshot.data.updateSubject,
+                  stream: loggedInUserSnapshot.data!.updateSubject,
                   initialData: loggedInUserSnapshot.data,
                   builder:
                       (BuildContext context, AsyncSnapshot<User> userSnapshot) {
-                    User user = userSnapshot.data;
+                    User user = userSnapshot.data!;
 
                     return Expanded(
                         child: ListView(
@@ -146,8 +146,8 @@ class OBMainMenuPage extends StatelessWidget {
                           stream: userService.loggedInUserChange,
                           initialData: userService.getLoggedInUser(),
                           builder: (BuildContext context,
-                              AsyncSnapshot<User> snapshot) {
-                            User loggedInUser = snapshot.data;
+                              AsyncSnapshot<User?> snapshot) {
+                            User? loggedInUser = snapshot.data;
 
                             if (loggedInUser == null) return const SizedBox();
 
@@ -165,8 +165,8 @@ class OBMainMenuPage extends StatelessWidget {
                           stream: userService.loggedInUserChange,
                           initialData: userService.getLoggedInUser(),
                           builder: (BuildContext context,
-                              AsyncSnapshot<User> snapshot) {
-                            User loggedInUser = snapshot.data;
+                              AsyncSnapshot<User?> snapshot) {
+                            User? loggedInUser = snapshot.data;
 
                             if (loggedInUser == null ||
                                 !(loggedInUser.isGlobalModerator ?? false))

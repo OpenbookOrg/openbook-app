@@ -22,18 +22,18 @@ class OBAcceptGuidelinesModal extends StatefulWidget {
 }
 
 class OBAcceptGuidelinesModalState extends State {
-  NavigationService _navigationService;
-  ToastService _toastService;
-  LocalizationService _localizationService;
-  UserService _userService;
-  String _guidelinesText;
-  bool _needsBootstrap;
-  bool _acceptButtonEnabled;
-  bool _acceptGuidelinesInProgress;
-  bool _refreshGuidelinesInProgress;
-  ScrollController _guidelinesScrollController;
+  late NavigationService _navigationService;
+  late ToastService _toastService;
+  late LocalizationService _localizationService;
+  late UserService _userService;
+  late String _guidelinesText;
+  late bool _needsBootstrap;
+  late bool _acceptButtonEnabled;
+  late bool _acceptGuidelinesInProgress;
+  late bool _refreshGuidelinesInProgress;
+  late ScrollController _guidelinesScrollController;
 
-  CancelableOperation _getGuidelinesOperation;
+  CancelableOperation? _getGuidelinesOperation;
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class OBAcceptGuidelinesModalState extends State {
   @override
   void dispose() {
     super.dispose();
-    if (_getGuidelinesOperation != null) _getGuidelinesOperation.cancel();
+    if (_getGuidelinesOperation != null) _getGuidelinesOperation!.cancel();
   }
 
   void _bootstrap() async {
@@ -150,7 +150,7 @@ class OBAcceptGuidelinesModalState extends State {
     );
   }
 
-  Widget _buildPreviousButton({@required BuildContext context}) {
+  Widget _buildPreviousButton({required BuildContext context}) {
     return OBButton(
       type: OBButtonType.danger,
       minWidth: double.infinity,
@@ -177,8 +177,10 @@ class OBAcceptGuidelinesModalState extends State {
       _getGuidelinesOperation = CancelableOperation.fromFuture(
           openbookProvider.documentsService.getCommunityGuidelines());
 
-      String guidelines = await _getGuidelinesOperation.value;
-      _setGuidelinesText(guidelines);
+      String? guidelines = await _getGuidelinesOperation?.value;
+      if (guidelines != null) {
+        _setGuidelinesText(guidelines);
+      }
     } catch (error) {
       _onError(error);
     } finally {
@@ -204,8 +206,8 @@ class OBAcceptGuidelinesModalState extends State {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

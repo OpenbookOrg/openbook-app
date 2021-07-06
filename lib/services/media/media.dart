@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:Okuna/plugins/image_converter/image_converter.dart';
 import 'package:Okuna/services/bottom_sheet.dart';
@@ -34,12 +35,12 @@ class MediaService {
 
   Map _thumbnail_cache = {};
 
-  ValidationService _validationService;
-  BottomSheetService _bottomSheetService;
-  LocalizationService _localizationService;
-  ToastService _toastService;
-  PermissionsService _permissionsService;
-  UtilsService _utilsService;
+  late ValidationService _validationService;
+  late BottomSheetService _bottomSheetService;
+  late LocalizationService _localizationService;
+  late ToastService _toastService;
+  late PermissionsService _permissionsService;
+  late UtilsService _utilsService;
 
   void setLocalizationService(LocalizationService localizationService) {
     _localizationService = localizationService;
@@ -72,22 +73,22 @@ class MediaService {
   ///
   /// The returned file may be either an image or a video. Use [MediaFile.type]
   /// to determine which one it is.
-  Future<MediaFile> pickMedia(
-      {@required BuildContext context,
-      @required ImageSource source,
-      bool flattenGifs}) async {
-    MediaFile media;
+  Future<MediaFile?> pickMedia(
+      {required BuildContext context,
+      required ImageSource source,
+      bool flattenGifs = false}) async {
+    MediaFile? media;
 
     if (source == ImageSource.gallery) {
       bool permissionGranted =
           await _permissionsService.requestStoragePermissions(context: context);
       if (permissionGranted) {
-        FilePickerResult result =
+        FilePickerResult? result =
             await FilePicker.platform.pickFiles(type: FileType.media);
 
         if (result != null) {
-          File file = File(result.files.single.path);
-          FileType type = await getMediaType(file);
+          File file = File(result.files.single.path!);
+          FileType type = (await getMediaType(file))!;
           media = MediaFile(file, type);
         }
       }
@@ -115,9 +116,9 @@ class MediaService {
   ///
   /// The returned file should always point to an image. If a GIF is picked it will
   /// be flattened.
-  Future<File> pickImage(
-      {@required OBImageType imageType, @required BuildContext context}) async {
-    File pickedImage =
+  Future<File?> pickImage(
+      {required OBImageType imageType, required BuildContext context}) async {
+    File? pickedImage =
         await _bottomSheetService.showImagePicker(context: context);
 
     if (pickedImage == null) return null;
@@ -129,15 +130,15 @@ class MediaService {
       imageType: imageType,
     );
 
-    return media.file;
+    return media?.file;
   }
 
   /// Opens a bottom sheet with the option to pick a video from gallery or take
   /// a new one with the camera.
   ///
   /// The returned file should always point to a video.
-  Future<File> pickVideo({@required BuildContext context}) async {
-    File pickedVideo =
+  Future<File?> pickVideo({required BuildContext context}) async {
+    File? pickedVideo =
         await _bottomSheetService.showVideoPicker(context: context);
 
     if (pickedVideo == null) return null;
@@ -147,16 +148,16 @@ class MediaService {
       context: context,
     );
 
-    return media.file;
+    return media?.file;
   }
 
-  Future<MediaFile> processMedia(
-      {@required MediaFile media,
-      @required BuildContext context,
+  Future<MediaFile?> processMedia(
+      {required MediaFile media,
+      required BuildContext context,
       bool flattenGifs = false,
       OBImageType imageType = OBImageType.post}) async {
     var mediaType = media.type;
-    MediaFile result;
+    MediaFile? result;
 
     // Copy the media to a temporary location.
     final tempPath = await _getTempPath();
@@ -190,7 +191,7 @@ class MediaService {
     return result;
   }
 
-  Future<MediaFile> _processImage(MediaFile media, String tempPath,
+  Future<MediaFile?> _processImage(MediaFile media, String tempPath,
       String mediaUuid, OBImageType imageType) async {
     var image = await fixExifRotation(media.file, deleteOriginal: true);
     String processedImageName = mediaUuid + '.jpg';
@@ -215,8 +216,10 @@ class MediaService {
       double ratioX = IMAGE_RATIOS[imageType]['x'];
       double ratioY = IMAGE_RATIOS[imageType]['y'];
 
-      File croppedFile =
+      File? croppedFile =
           await cropImage(processedImage, ratioX: ratioX, ratioY: ratioY);
+
+      if (croppedFile == null) return null;
 
       result = MediaFile(croppedFile, media.type);
     }
@@ -235,7 +238,7 @@ class MediaService {
   Future<File> fixExifRotation(File image, {deleteOriginal: false}) async {
     List<int> imageBytes = await image.readAsBytes();
 
-    List<int> result = await FlutterImageCompress.compressWithList(imageBytes,
+    List<int> result = await FlutterImageCompress.compressWithList(Uint8List.fromList(imageBytes),
         quality: 100, rotate: 0);
 
     final String processedImageUuid = _uuid.v4();
@@ -293,7 +296,7 @@ class MediaService {
     final String thumbnailPath = '$tempPath/$tmpImageName';
     final file = File(thumbnailPath);
     _thumbnail_cache[videoFile.path] = file;
-    file.writeAsBytesSync(thumbnailData);
+    file.writeAsBytesSync(thumbnailData!.toList());
 
     return file;
   }
@@ -321,7 +324,7 @@ class MediaService {
   }
 
   Future<File> compressImage(File image) async {
-    List<int> compressedImageData = await FlutterImageCompress.compressWithFile(
+    Uint8List? compressedImageData = await FlutterImageCompress.compressWithFile(
       image.absolute.path,
       quality: 80,
     );
@@ -331,7 +334,7 @@ class MediaService {
     final tempPath = await _getTempPath();
     final String thumbnailPath = '$tempPath/$tmpImageName';
     final file = File(thumbnailPath);
-    file.writeAsBytesSync(compressedImageData);
+    file.writeAsBytesSync(compressedImageData!.toList());
 
     return file;
   }
@@ -388,7 +391,7 @@ class MediaService {
     return mediaMimeSubtype == 'gif';
   }
 
-  Future<FileType> getMediaType(File file) async {
+  Future<FileType?> getMediaType(File file) async {
     String mediaMime = await _utilsService.getFileMimeType(file);
 
     String mediaMimeType = mediaMime.split('/')[0];
@@ -404,7 +407,7 @@ class MediaService {
     }
   }
 
-  Future<File> cropImage(File image, {double ratioX, double ratioY}) async {
+  Future<File?> cropImage(File image, {double? ratioX, double? ratioY}) async {
     return ImageCropper.cropImage(
         sourcePath: image.path,
         aspectRatio: ratioX != null && ratioY != null

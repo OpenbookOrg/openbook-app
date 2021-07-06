@@ -17,7 +17,7 @@ class OBFollowsListUsers extends StatelessWidget {
         initialData: followsList,
         builder: (BuildContext context, AsyncSnapshot<FollowsList> snapshot) {
           var followsList = snapshot.data;
-          List<User> users = followsList.users?.users ?? [];
+          List<User> users = followsList?.users?.users ?? [];
 
           return ListView.builder(
               padding: EdgeInsets.all(0),

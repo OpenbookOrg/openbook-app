@@ -39,19 +39,19 @@ import 'package:flutter/material.dart';
 import 'localization.dart';
 
 class ModalService {
-  LocalizationService localizationService;
+  late LocalizationService localizationService;
 
   void setLocalizationService(localizationService) {
     this.localizationService = localizationService;
   }
 
-  Future<OBNewPostData> openCreatePost(
-      {@required BuildContext context,
-      Community community,
-      String text,
-      File image,
-      File video}) async {
-    OBNewPostData createPostData =
+  Future<OBNewPostData?> openCreatePost(
+      {required BuildContext context,
+      Community? community,
+      String? text,
+      File? image,
+      File? video}) async {
+    OBNewPostData? createPostData =
         await Navigator.of(context, rootNavigator: true)
             .push(CupertinoPageRoute<OBNewPostData>(
                 fullscreenDialog: true,
@@ -69,9 +69,9 @@ class ModalService {
     return createPostData;
   }
 
-  Future<Post> openEditPost(
-      {@required BuildContext context, @required Post post}) async {
-    Post editedPost = await Navigator.of(context, rootNavigator: true)
+  Future<Post?> openEditPost(
+      {required BuildContext context, required Post post}) async {
+    Post? editedPost = await Navigator.of(context, rootNavigator: true)
         .push(CupertinoPageRoute<Post>(
             fullscreenDialog: true,
             builder: (BuildContext context) {
@@ -85,11 +85,11 @@ class ModalService {
     return editedPost;
   }
 
-  Future<PostComment> openExpandedCommenter(
-      {@required BuildContext context,
-      @required PostComment postComment,
-      @required Post post}) async {
-    PostComment editedComment = await Navigator.of(context, rootNavigator: true)
+  Future<PostComment?> openExpandedCommenter(
+      {required BuildContext context,
+      required PostComment postComment,
+      required Post post}) async {
+    PostComment? editedComment = await Navigator.of(context, rootNavigator: true)
         .push(CupertinoPageRoute<PostComment>(
             fullscreenDialog: true,
             builder: (BuildContext context) {
@@ -103,13 +103,13 @@ class ModalService {
     return editedComment;
   }
 
-  Future<PostComment> openExpandedReplyCommenter(
-      {@required BuildContext context,
-      @required PostComment postComment,
-      @required Post post,
-      @required Function(PostComment) onReplyAdded,
-      @required Function(PostComment) onReplyDeleted}) async {
-    PostComment replyComment = await Navigator.of(context, rootNavigator: true)
+  Future<PostComment?> openExpandedReplyCommenter(
+      {required BuildContext context,
+      required PostComment postComment,
+      required Post post,
+      required Function(PostComment)? onReplyAdded,
+      required Function(PostComment)? onReplyDeleted}) async {
+    PostComment? replyComment = await Navigator.of(context, rootNavigator: true)
         .push(CupertinoPageRoute<PostComment>(
             fullscreenDialog: true,
             builder: (BuildContext context) {
@@ -125,9 +125,9 @@ class ModalService {
   }
 
   Future<void> openEditProfile(
-      {@required User user,
-      @required BuildContext context,
-      VoidCallback onUserProfileUpdated}) async {
+      {required User user,
+      required BuildContext context,
+      VoidCallback? onUserProfileUpdated}) async {
     Navigator.of(context, rootNavigator: true)
         .push(CupertinoPageRoute<PostReaction>(
             fullscreenDialog: true,
@@ -137,9 +137,9 @@ class ModalService {
                 )));
   }
 
-  Future<FollowsList> openCreateFollowsList(
-      {@required BuildContext context}) async {
-    FollowsList createdFollowsList =
+  Future<FollowsList?> openCreateFollowsList(
+      {required BuildContext context}) async {
+    FollowsList? createdFollowsList =
         await Navigator.of(context, rootNavigator: true)
             .push(CupertinoPageRoute<FollowsList>(
                 fullscreenDialog: true,
@@ -152,10 +152,10 @@ class ModalService {
     return createdFollowsList;
   }
 
-  Future<FollowsList> openEditFollowsList(
-      {@required FollowsList followsList,
-      @required BuildContext context}) async {
-    FollowsList editedFollowsList =
+  Future<FollowsList?> openEditFollowsList(
+      {required FollowsList followsList,
+      required BuildContext context}) async {
+    FollowsList? editedFollowsList =
         await Navigator.of(context).push(CupertinoPageRoute<FollowsList>(
             fullscreenDialog: true,
             builder: (BuildContext context) {
@@ -167,24 +167,26 @@ class ModalService {
     return editedFollowsList;
   }
 
-  Future<Circle> openCreateConnectionsCircle(
-      {@required BuildContext context}) async {
-    Circle createdConnectionsCircle =
+  Future<Circle?> openCreateConnectionsCircle(
+      {required BuildContext context}) async {
+    Circle? createdConnectionsCircle =
         await Navigator.of(context).push(CupertinoPageRoute<Circle>(
             fullscreenDialog: true,
             builder: (BuildContext context) {
-              return OBSaveConnectionsCircleModal(
-                autofocusNameTextField: true,
-              );
+              return Material(
+                child: OBSaveConnectionsCircleModal(
+                  autofocusNameTextField: true,
+                )
+              )
             }));
 
     return createdConnectionsCircle;
   }
 
-  Future<Circle> openEditConnectionsCircle(
-      {@required Circle connectionsCircle,
-      @required BuildContext context}) async {
-    Circle editedConnectionsCircle =
+  Future<Circle?> openEditConnectionsCircle(
+      {required Circle connectionsCircle,
+      required BuildContext context}) async {
+    Circle? editedConnectionsCircle =
         await Navigator.of(context, rootNavigator: true)
             .push(CupertinoPageRoute<Circle>(
                 fullscreenDialog: true,
@@ -199,9 +201,9 @@ class ModalService {
     return editedConnectionsCircle;
   }
 
-  Future<Community> openEditCommunity(
-      {@required BuildContext context, @required Community community}) async {
-    Community editedCommunity = await Navigator.of(context, rootNavigator: true)
+  Future<Community?> openEditCommunity(
+      {required BuildContext context, required Community community}) async {
+    Community? editedCommunity = await Navigator.of(context, rootNavigator: true)
         .push(CupertinoPageRoute<Community>(
             fullscreenDialog: true,
             builder: (BuildContext context) {
@@ -215,8 +217,8 @@ class ModalService {
     return editedCommunity;
   }
 
-  Future<void> openInviteToCommunity(
-      {@required BuildContext context, @required Community community}) async {
+  Future<Community?> openInviteToCommunity(
+      {required BuildContext context, required Community community}) async {
     return Navigator.of(context, rootNavigator: true)
         .push(CupertinoPageRoute<Community>(
             fullscreenDialog: true,
@@ -229,9 +231,9 @@ class ModalService {
             }));
   }
 
-  Future<Community> openCreateCommunity(
-      {@required BuildContext context}) async {
-    Community createdCommunity =
+  Future<Community?> openCreateCommunity(
+      {required BuildContext context}) async {
+    Community? createdCommunity =
         await Navigator.of(context, rootNavigator: true)
             .push(CupertinoPageRoute<Community>(
                 fullscreenDialog: true,
@@ -244,9 +246,9 @@ class ModalService {
     return createdCommunity;
   }
 
-  Future<User> openAddCommunityAdministrator(
-      {@required BuildContext context, @required Community community}) async {
-    User addedCommunityAdministrator =
+  Future<User?> openAddCommunityAdministrator(
+      {required BuildContext context, required Community community}) async {
+    User? addedCommunityAdministrator =
         await Navigator.of(context, rootNavigator: true)
             .push(CupertinoPageRoute<User>(
                 fullscreenDialog: true,
@@ -261,9 +263,9 @@ class ModalService {
     return addedCommunityAdministrator;
   }
 
-  Future<User> openAddCommunityModerator(
-      {@required BuildContext context, @required Community community}) async {
-    User addedCommunityModerator =
+  Future<User?> openAddCommunityModerator(
+      {required BuildContext context, required Community community}) async {
+    User? addedCommunityModerator =
         await Navigator.of(context, rootNavigator: true)
             .push(CupertinoPageRoute<User>(
                 fullscreenDialog: true,
@@ -278,9 +280,9 @@ class ModalService {
     return addedCommunityModerator;
   }
 
-  Future<User> openBanCommunityUser(
-      {@required BuildContext context, @required Community community}) async {
-    User addedCommunityBannedUser =
+  Future<User?> openBanCommunityUser(
+      {required BuildContext context, required Community community}) async {
+    User? addedCommunityBannedUser =
         await Navigator.of(context, rootNavigator: true)
             .push(CupertinoPageRoute<User>(
                 fullscreenDialog: true,
@@ -296,8 +298,8 @@ class ModalService {
   }
 
   Future<void> openTimelineFilters(
-      {@required OBTimelinePageController timelineController,
-      @required BuildContext context}) {
+      {required OBTimelinePageController timelineController,
+      required BuildContext context}) {
     return Navigator.of(context, rootNavigator: true)
         .push(CupertinoPageRoute<Circle>(
             fullscreenDialog: true,
@@ -310,9 +312,9 @@ class ModalService {
             }));
   }
 
-  Future<UserInvite> openCreateUserInvite(
-      {@required BuildContext context}) async {
-    UserInvite createdUserInvite =
+  Future<UserInvite?> openCreateUserInvite(
+      {required BuildContext context}) async {
+    UserInvite? createdUserInvite =
         await Navigator.of(context).push(CupertinoPageRoute<UserInvite>(
             fullscreenDialog: true,
             builder: (BuildContext context) {
@@ -324,9 +326,9 @@ class ModalService {
     return createdUserInvite;
   }
 
-  Future<UserInvite> openEditUserInvite(
-      {@required BuildContext context, @required UserInvite userInvite}) async {
-    UserInvite editedUserInvite =
+  Future<UserInvite?> openEditUserInvite(
+      {required BuildContext context, required UserInvite userInvite}) async {
+    UserInvite? editedUserInvite =
         await Navigator.of(context).push(CupertinoPageRoute<UserInvite>(
             fullscreenDialog: true,
             builder: (BuildContext context) {
@@ -340,7 +342,7 @@ class ModalService {
   }
 
   Future<void> openSendUserInviteEmail(
-      {@required BuildContext context, @required UserInvite userInvite}) async {
+      {required BuildContext context, required UserInvite userInvite}) async {
     await Navigator.of(context).push(CupertinoPageRoute<UserInvite>(
         fullscreenDialog: true,
         builder: (BuildContext context) {
@@ -352,9 +354,9 @@ class ModalService {
   }
 
   Future<void> openModeratedObjectsFilters(
-      {@required
+      {required
           BuildContext context,
-      @required
+      required
           OBModeratedObjectsPageController
               moderatedObjectsPageController}) async {
     await Navigator.of(context).push(CupertinoPageRoute<UserInvite>(
@@ -366,7 +368,7 @@ class ModalService {
         }));
   }
 
-  Future<void> openAcceptGuidelines({@required BuildContext context}) async {
+  Future<void> openAcceptGuidelines({required BuildContext context}) async {
     await Navigator.of(context).push(CupertinoPageRoute<UserInvite>(
         fullscreenDialog: true,
         builder: (BuildContext context) {
@@ -376,9 +378,9 @@ class ModalService {
         }));
   }
 
-  Future<String> openModeratedObjectUpdateDescription(
-      {@required BuildContext context,
-      @required ModeratedObject moderatedObject}) async {
+  Future<String?> openModeratedObjectUpdateDescription(
+      {required BuildContext context,
+      required ModeratedObject moderatedObject}) async {
     return Navigator.of(context).push(CupertinoPageRoute<String>(
         fullscreenDialog: true,
         builder: (BuildContext context) {
@@ -388,9 +390,9 @@ class ModalService {
         }));
   }
 
-  Future<ModerationCategory> openModeratedObjectUpdateCategory(
-      {@required BuildContext context,
-      @required ModeratedObject moderatedObject}) async {
+  Future<ModerationCategory?> openModeratedObjectUpdateCategory(
+      {required BuildContext context,
+      required ModeratedObject moderatedObject}) async {
     return Navigator.of(context).push(CupertinoPageRoute<ModerationCategory>(
         fullscreenDialog: true,
         builder: (BuildContext context) {
@@ -400,9 +402,9 @@ class ModalService {
         }));
   }
 
-  Future<ModeratedObjectStatus> openModeratedObjectUpdateStatus(
-      {@required BuildContext context,
-      @required ModeratedObject moderatedObject}) async {
+  Future<ModeratedObjectStatus?> openModeratedObjectUpdateStatus(
+      {required BuildContext context,
+      required ModeratedObject moderatedObject}) async {
     return Navigator.of(context).push(CupertinoPageRoute<ModeratedObjectStatus>(
         fullscreenDialog: true,
         builder: (BuildContext context) {
@@ -412,8 +414,8 @@ class ModalService {
         }));
   }
 
-  Future<List<Community>> openExcludeCommunitiesFromProfilePosts(
-      {@required BuildContext context}) async {
+  Future<List<Community>?> openExcludeCommunitiesFromProfilePosts(
+      {required BuildContext context}) async {
     return Navigator.of(context, rootNavigator: true)
         .push(CupertinoPageRoute<List<Community>>(
             fullscreenDialog: true,

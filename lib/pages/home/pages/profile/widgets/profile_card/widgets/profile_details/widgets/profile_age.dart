@@ -20,10 +20,10 @@ class OBProfileAge extends StatefulWidget {
 }
 
 class OBProfileAgeState extends State<OBProfileAge> {
-  LocalizationService _localizationService;
-  ToastService _toastService;
-  UtilsService _utilsService;
-  bool _needsBootstrap;
+  late LocalizationService _localizationService;
+  late ToastService _toastService;
+  late UtilsService _utilsService;
+  late bool _needsBootstrap;
   static const MIN_AGE_IN_YEARS_FOR_ADULT = 1;
 
   @override
@@ -34,7 +34,7 @@ class OBProfileAgeState extends State<OBProfileAge> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime age = widget.user.dateJoined;
+    DateTime? age = widget.user.dateJoined;
 
     if (age == null) {
       return const SizedBox();
@@ -81,7 +81,7 @@ class OBProfileAgeState extends State<OBProfileAge> {
 
   bool _getIsUserBaby() {
     DateTime now = DateTime.now();
-    Duration difference = now.difference(widget.user.dateJoined);
+    Duration difference = now.difference(widget.user.dateJoined!);
     if ((difference.inDays / 365).floor() >= MIN_AGE_IN_YEARS_FOR_ADULT) {
       return false;
     }

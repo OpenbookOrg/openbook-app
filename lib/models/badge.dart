@@ -1,6 +1,6 @@
 class Badge {
-  final BadgeKeyword keyword;
-  final String keywordDescription;
+  final BadgeKeyword? keyword;
+  final String? keywordDescription;
 
   Badge(
       {this.keyword,
@@ -8,8 +8,6 @@ class Badge {
       });
 
   factory Badge.fromJson(Map<String, dynamic> parsedJson) {
-    if (parsedJson == null) return null;
-
     return Badge(
         keyword: BadgeKeyword.parse(parsedJson['keyword']),
         keywordDescription: parsedJson['keyword_description']
@@ -23,11 +21,11 @@ class Badge {
     };
   }
 
-  BadgeKeyword getKeyword() {
+  BadgeKeyword? getKeyword() {
     return this.keyword;
   }
 
-  String getKeywordDescription() {
+  String? getKeywordDescription() {
     return this.keywordDescription;
   }
 }
@@ -61,10 +59,10 @@ class BadgeKeyword {
 
   static values() => _values;
 
-  static BadgeKeyword parse(String string) {
+  static BadgeKeyword? parse(String? string) {
     if (string == null) return null;
 
-    BadgeKeyword badgeKeyword;
+    BadgeKeyword? badgeKeyword;
 
     for (var keyword in _values) {
       if (string == keyword.code) {
@@ -73,7 +71,7 @@ class BadgeKeyword {
       }
     }
 
-    if (BadgeKeyword == null) {
+    if (badgeKeyword == null) {
       print('Unsupported badge keyword');
     }
 

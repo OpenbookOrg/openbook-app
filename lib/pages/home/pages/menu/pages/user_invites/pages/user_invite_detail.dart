@@ -24,7 +24,7 @@ class OBUserInviteDetailPage extends StatefulWidget {
   final bool showEdit;
 
   OBUserInviteDetailPage({
-    @required this.userInvite,
+    required this.userInvite,
     this.showEdit = false
   });
 
@@ -35,12 +35,12 @@ class OBUserInviteDetailPage extends StatefulWidget {
 }
 
 class OBUserInviteDetailPageState extends State<OBUserInviteDetailPage> {
-  ToastService _toastService;
-  ModalService _modalService;
-  LocalizationService _localizationService;
-  UserInvitesApiService _userInvitesApiService;
-  StringTemplateService _stringTemplateService;
-  bool _needsBootstrap;
+  late ToastService _toastService;
+  late ModalService _modalService;
+  late LocalizationService _localizationService;
+  late UserInvitesApiService _userInvitesApiService;
+  late StringTemplateService _stringTemplateService;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -101,7 +101,7 @@ class OBUserInviteDetailPageState extends State<OBUserInviteDetailPage> {
         ),
         onTap: () {
           String apiURL = _userInvitesApiService.apiURL;
-          String token = widget.userInvite.token;
+          String token = widget.userInvite.token!;
           Share.share(getShareMessageForInviteWithToken(token, apiURL));
         },
       ),
@@ -154,8 +154,8 @@ class OBUserInviteDetailPageState extends State<OBUserInviteDetailPage> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? _localizationService.error__unknown_error, context: context);
     } else {
       _toastService.error(message: _localizationService.error__unknown_error, context: context);
       throw error;

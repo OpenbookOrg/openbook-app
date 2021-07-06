@@ -19,16 +19,16 @@ class OBPostReactionsModal extends StatefulWidget {
   final Post post;
 
   // The optional emoji to show first
-  final Emoji reactionEmoji;
+  final Emoji? reactionEmoji;
 
   // The post reactiosn emoji counts
-  final List<ReactionsEmojiCount> reactionsEmojiCounts;
+  final List<ReactionsEmojiCount?> reactionsEmojiCounts;
 
   const OBPostReactionsModal(
-      {Key key,
-      @required this.post,
+      {Key? key,
+      required this.post,
       this.reactionEmoji,
-      @required this.reactionsEmojiCounts})
+      required this.reactionsEmojiCounts})
       : super(key: key);
 
   @override
@@ -39,12 +39,12 @@ class OBPostReactionsModal extends StatefulWidget {
 
 class OBPostReactionsModalState extends State<OBPostReactionsModal>
     with TickerProviderStateMixin {
-  ThemeService _themeService;
-  LocalizationService _localizationService;
-  ThemeValueParserService _themeValueParserService;
-  bool _needsBootstrap;
+  late ThemeService _themeService;
+  late LocalizationService _localizationService;
+  late ThemeValueParserService _themeValueParserService;
+  late bool _needsBootstrap;
 
-  TabController _tabController;
+  late TabController _tabController;
 
   @override
   void initState() {
@@ -97,21 +97,25 @@ class OBPostReactionsModalState extends State<OBPostReactionsModal>
     return widget.reactionsEmojiCounts.map((reactionsEmojiCount) {
       return OBPostReactionList(
         post: widget.post,
-        emoji: reactionsEmojiCount.emoji,
+        emoji: reactionsEmojiCount?.emoji,
       );
     }).toList();
   }
 
   List<Widget> _buildPostReactionsIcons() {
     return widget.reactionsEmojiCounts.map((reactionsEmojiCount) {
+      if (reactionsEmojiCount == null) {
+        return SizedBox();
+      }
+
       return Padding(
         padding: EdgeInsets.symmetric(vertical: 5),
-        child: Tab(icon: OBEmoji(reactionsEmojiCount.emoji)),
+        child: Tab(icon: OBEmoji(reactionsEmojiCount.emoji!)),
       );
     }).toList();
   }
 
-  Widget _buildNavigationBar(LocalizationService localizationService) {
+  ObstructingPreferredSizeWidget _buildNavigationBar(LocalizationService localizationService) {
     return OBThemedNavigationBar(
         title: localizationService.post__post_reactions_title);
   }
@@ -121,7 +125,7 @@ class OBPostReactionsModalState extends State<OBPostReactionsModal>
 
     if (widget.reactionEmoji != null) {
       tabIndex = widget.reactionsEmojiCounts.indexWhere((reactionEmojiCount) {
-        return reactionEmojiCount.emoji.id == widget.reactionEmoji.id;
+        return reactionEmojiCount?.emoji?.id == widget.reactionEmoji!.id;
       });
     }
 

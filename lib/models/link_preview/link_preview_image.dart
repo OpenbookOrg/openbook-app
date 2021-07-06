@@ -1,7 +1,7 @@
 class LinkPreviewImage {
-  final String url;
-  final int width;
-  final int height;
+  final String? url;
+  final int? width;
+  final int? height;
 
   LinkPreviewImage({
     this.url,
@@ -10,8 +10,6 @@ class LinkPreviewImage {
   });
 
   factory LinkPreviewImage.fromJson(Map<String, dynamic> parsedJson) {
-    if (parsedJson == null) return null;
-
     return LinkPreviewImage(
       url: parsedJson['url'],
       width: parsedJson['width'],

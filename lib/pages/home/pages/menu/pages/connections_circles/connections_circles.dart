@@ -25,18 +25,18 @@ class OBConnectionsCirclesPage extends StatefulWidget {
 }
 
 class OBConnectionsCirclesPageState extends State<OBConnectionsCirclesPage> {
-  UserService _userService;
-  ToastService _toastService;
-  ModalService _modalService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late ModalService _modalService;
 
-  GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
-  ScrollController _connectionsCirclesScrollController;
+  late GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
+  late ScrollController _connectionsCirclesScrollController;
   List<Circle> _connectionsCircles = [];
   List<Circle> _connectionsCirclesSearchResults = [];
 
-  String _searchQuery;
+  String? _searchQuery;
 
-  bool _needsBootstrap;
+  late bool _needsBootstrap;
 
   @override
   void initState() {
@@ -119,7 +119,7 @@ class OBConnectionsCirclesPageState extends State<OBConnectionsCirclesPage> {
                               return OBConnectionsCircleTile(
                                 connectionsCircle: connectionsCircle,
                                 isReadOnly: loggedInUser
-                                    .isConnectionsCircle(connectionsCircle),
+                                    ?.isConnectionsCircle(connectionsCircle) ?? false,
                                 onConnectionsCircleDeletedCallback:
                                     onConnectionsCircleDeletedCallback,
                               );
@@ -140,7 +140,7 @@ class OBConnectionsCirclesPageState extends State<OBConnectionsCirclesPage> {
   Future<void> _refreshComments() async {
     try {
       _connectionsCircles =
-          (await _userService.getConnectionsCircles()).circles;
+          (await _userService.getConnectionsCircles()).circles!;
       // This assumes the connections circle always come last
       Circle connectionsCircle = _connectionsCircles.removeLast();
       _connectionsCircles.insert(0, connectionsCircle);
@@ -156,8 +156,8 @@ class OBConnectionsCirclesPageState extends State<OBConnectionsCirclesPage> {
       _toastService.error(
           message: error.toHumanReadableMessage(), context: context);
     } else if (error is HttpieRequestError) {
-      String errorMessage = await error.toHumanReadableMessage();
-      _toastService.error(message: errorMessage, context: context);
+      String? errorMessage = await error.toHumanReadableMessage();
+      _toastService.error(message: errorMessage ?? 'Unknown error', context: context);
     } else {
       _toastService.error(message: 'Unknown error', context: context);
       throw error;
@@ -165,7 +165,7 @@ class OBConnectionsCirclesPageState extends State<OBConnectionsCirclesPage> {
   }
 
   void _onWantsToCreateCircle() async {
-    Circle createdConnectionsCircle =
+    Circle? createdConnectionsCircle =
         await _modalService.openCreateConnectionsCircle(context: context);
     if (createdConnectionsCircle != null) {
       _onConnectionsCircleCreated(createdConnectionsCircle);
@@ -181,7 +181,7 @@ class OBConnectionsCirclesPageState extends State<OBConnectionsCirclesPage> {
     _setSearchQuery(query);
     String uppercaseQuery = query.toUpperCase();
     var searchResults = _connectionsCircles.where((connectionsCircle) {
-      return connectionsCircle.name.toUpperCase().contains(uppercaseQuery);
+      return connectionsCircle.name!.toUpperCase().contains(uppercaseQuery);
     }).toList();
 
     _setConnectionsCirclesSearchResults(searchResults);
@@ -226,7 +226,7 @@ class OBConnectionsCirclesPageState extends State<OBConnectionsCirclesPage> {
     });
   }
 
-  void _setSearchQuery(String searchQuery) {
+  void _setSearchQuery(String? searchQuery) {
     setState(() {
       _searchQuery = searchQuery;
     });

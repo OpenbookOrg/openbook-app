@@ -7,11 +7,11 @@ export 'package:Okuna/widgets/avatars/avatar.dart';
 class OBLetterAvatar extends StatelessWidget {
   final OBAvatarSize size;
   final Color color;
-  final Color labelColor;
+  final Color? labelColor;
   final String letter;
-  final VoidCallback onPressed;
-  final double borderRadius;
-  final double customSize;
+  final VoidCallback? onPressed;
+  final double? borderRadius;
+  final double? customSize;
 
   static const double fontSizeExtraSmall = 10.0;
   static const double fontSizeSmall = 14.0;
@@ -20,11 +20,11 @@ class OBLetterAvatar extends StatelessWidget {
   static const double fontSizeExtraLarge = 60.0;
 
   const OBLetterAvatar(
-      {Key key,
+      {Key? key,
       this.size = OBAvatarSize.medium,
-      @required this.color,
+      required this.color,
       this.labelColor,
-      @required this.letter,
+      required this.letter,
       this.onPressed,
       this.borderRadius,
       this.customSize})
@@ -37,7 +37,7 @@ class OBLetterAvatar extends StatelessWidget {
     double avatarSize = customSize ?? OBAvatar.getAvatarSize(size);
     double fontSize = getAvatarFontSize(size);
     Color finalLabelColor = labelColor != null
-        ? labelColor
+        ? labelColor!
         : (themeValueParserService.isDarkColor(color)
             ? Colors.white
             : Colors.black);

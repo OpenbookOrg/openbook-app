@@ -16,10 +16,10 @@ import 'package:flutter/material.dart';
 
 class OBCommunityActionsBottomSheet extends StatefulWidget {
   final Community community;
-  final OnCommunityReported onCommunityReported;
+  final OnCommunityReported? onCommunityReported;
 
   const OBCommunityActionsBottomSheet(
-      {Key key, @required this.community, this.onCommunityReported})
+      {Key? key, required this.community, this.onCommunityReported})
       : super(key: key);
 
   @override
@@ -30,10 +30,10 @@ class OBCommunityActionsBottomSheet extends StatefulWidget {
 
 class OBCommunityActionsBottomSheetState
     extends State<OBCommunityActionsBottomSheet> {
-  UserService _userService;
-  ToastService _toastService;
-  ModalService _modalService;
-  LocalizationService _localizationService;
+  late UserService _userService;
+  late ToastService _toastService;
+  late ModalService _modalService;
+  late LocalizationService _localizationService;
 
   @override
   Widget build(BuildContext context) {
@@ -51,13 +51,13 @@ class OBCommunityActionsBottomSheetState
       )
     ];
 
-    User loggedInUser = _userService.getLoggedInUser();
+    User loggedInUser = _userService.getLoggedInUser()!;
     Community community = widget.community;
 
     bool isMemberOfCommunity = community.isMember(loggedInUser);
     bool isCommunityAdministrator = community.isAdministrator(loggedInUser);
     bool isCommunityModerator = community.isModerator(loggedInUser);
-    bool communityHasInvitesEnabled = community.invitesEnabled;
+    bool communityHasInvitesEnabled = community.invitesEnabled ?? false;
 
     if (isMemberOfCommunity) {
       communityActions.add(OBNewPostNotificationsForCommunityTile(

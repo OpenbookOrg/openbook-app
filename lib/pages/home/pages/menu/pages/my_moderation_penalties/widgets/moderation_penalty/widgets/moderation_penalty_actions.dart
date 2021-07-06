@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 class OBModerationPenaltyActions extends StatelessWidget {
   final ModerationPenalty moderationPenalty;
 
-  OBModerationPenaltyActions({@required this.moderationPenalty});
+  OBModerationPenaltyActions({required this.moderationPenalty});
 
   @override
   Widget build(BuildContext context) {
